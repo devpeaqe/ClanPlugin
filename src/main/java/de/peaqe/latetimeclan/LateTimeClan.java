@@ -1,5 +1,6 @@
 package de.peaqe.latetimeclan;
 
+import de.peaqe.latetimeclan.config.DatabaseConfig;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.provider.ClanDatabase;
 import lombok.Getter;
@@ -10,11 +11,22 @@ public final class LateTimeClan extends JavaPlugin {
 
     private Messages messages;
     private ClanDatabase clanDatabase;
+    private DatabaseConfig databaseConfig;
 
     @Override
     public void onEnable() {
+
         this.messages = new Messages();
-        this.clanDatabase = new ClanDatabase("", "", "", "", 3306);
+
+        this.databaseConfig = new DatabaseConfig(this);
+        this.clanDatabase = new ClanDatabase(
+                this.databaseConfig.get("hostname"),
+                this.databaseConfig.get("username"),
+                this.databaseConfig.get("database"),
+                this.databaseConfig.get("password"),
+                this.databaseConfig.getInt("port")
+        );
+
     }
 
     @Override

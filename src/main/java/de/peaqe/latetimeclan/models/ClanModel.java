@@ -45,11 +45,11 @@ public class ClanModel {
         this.tag = tag;
     }
 
-    public String getClanFounderUuid() {
+    public String getClanFounderUUID() {
         return clanFounderUuid;
     }
 
-    public void setClanFounderUuid(String clanFounderUuid) {
+    public void setClanFounderUUID(String clanFounderUuid) {
         this.clanFounderUuid = clanFounderUuid;
     }
 
