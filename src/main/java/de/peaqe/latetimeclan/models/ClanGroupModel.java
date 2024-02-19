@@ -1,7 +1,5 @@
 package de.peaqe.latetimeclan.models;
 
-import lombok.Getter;
-
 /**
  * *
  *
@@ -11,7 +9,6 @@ import lombok.Getter;
  * *
  */
 
-@Getter
 public enum ClanGroupModel {
 
     MEMBER(0, "Mitglied", "§7"),
@@ -29,4 +26,15 @@ public enum ClanGroupModel {
         this.color = color;
     }
 
+    public int getPermissionLevel() {
+        return permissionLevel;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
 }

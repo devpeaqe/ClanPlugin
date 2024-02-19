@@ -1,7 +1,5 @@
 package de.peaqe.latetimeclan.models.util;
 
-import lombok.Getter;
-
 /**
  * *
  *
@@ -11,7 +9,6 @@ import lombok.Getter;
  * *
  */
 
-@Getter
 public enum ClanAction {
 
     DELETE(3),
@@ -26,5 +23,9 @@ public enum ClanAction {
 
     ClanAction(int permissionLevel) {
         this.permissionLevel = permissionLevel;
+    }
+
+    public int getPermissionLevel() {
+        return permissionLevel;
     }
 }

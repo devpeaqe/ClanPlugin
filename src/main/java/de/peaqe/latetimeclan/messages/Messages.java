@@ -41,7 +41,7 @@ public class Messages {
             }
         }
 
-        return result.toString();
+        return this.prefix + result.toString();
     }
 
     private String getColorHighlight(int index) {
