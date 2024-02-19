@@ -88,9 +88,7 @@ public class ClanDatabase {
                 Property.MEMBERS.getValue() +
                 ") VALUES (?, ?, ?, ?, ?, ?)";
 
-        if (this.databaseCache.containsValue(clanModel)) {
-            return;
-        }
+        if (this.clanExists(clanModel.getTag())) return;
 
         this.connect();
         try {
@@ -98,17 +96,35 @@ public class ClanDatabase {
             var statement = this.connection.prepareStatement(query);
 
             statement.setString(1, clanModel.getName());
-            statement.setString(2, clanModel.getTag());
+            statement.setString(2, clanModel.getTag().toLowerCase());
             statement.setString(3, clanModel.getClanFounderUUID());
             statement.setString(4, clanModel.getClanInvitationStatus());
             statement.setInt(5, clanModel.getMaxSize());
             statement.setString(6, ClanDecoder.mapToString(clanModel.getMembers()));
 
             this.databaseCache.addEntry(clanModel.getTag(), clanModel);
+            statement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            this.close();
         }
+    }
+
+    public boolean clanExists(String clanTag) {
+
+        if (!this.databaseCache.getClanCache().containsKey(clanTag.toLowerCase())) return false;
+
+        var clan = this.getClan(clanTag.toLowerCase());
+        if (clan == null) return false;
+
+        System.out.println(clan.toString());
+
+        this.getDatabaseCache().addEntry(clanTag, clan);
+        System.out.println("Addet clan to cache: " + clanTag);
+
+        return true;
 
     }
 
@@ -129,7 +145,7 @@ public class ClanDatabase {
             var statement = this.connection.prepareStatement(query);
 
             statement.setString(1, clanModel.getName());
-            statement.setString(2, clanModel.getTag());
+            statement.setString(2, clanModel.getTag().toLowerCase());
             statement.setString(3, clanModel.getClanFounderUUID());
             statement.setString(4, clanModel.getClanInvitationStatus());
             statement.setInt(5, clanModel.getMaxSize());
@@ -138,9 +154,12 @@ public class ClanDatabase {
 
             this.databaseCache.removeEntry(clanModel.getTag());
             this.databaseCache.addEntry(clanModel.getTag(), clanModel);
+            statement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            this.close();
         }
     }
 
@@ -148,14 +167,14 @@ public class ClanDatabase {
 
         final var query = "SELECT * FROM latetime.clan WHERE tag = ?";
 
-        if (this.databaseCache.containsKey(clanTag)) {
-            return this.databaseCache.getEntry(clanTag);
-        }
+            //if (this.databaseCache.containsKey(clanTag)) {
+            //    return this.databaseCache.getEntry(clanTag);
+            //}
 
         this.connect();
         try {
             var statement = this.connection.prepareStatement(query);
-            statement.setString(1, clanTag);
+            statement.setString(1, clanTag.toLowerCase());
 
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -176,6 +195,8 @@ public class ClanDatabase {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            this.close();
         }
 
         return null;
@@ -211,4 +232,7 @@ public class ClanDatabase {
         return null;
     }
 
+    public DatabaseCache getDatabaseCache() {
+        return databaseCache;
+    }
 }

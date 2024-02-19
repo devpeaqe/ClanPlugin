@@ -2,3 +2,6 @@ name: latetime-clan
 version: '${version}'
 main: de.peaqe.latetimeclan.LateTimeClan
 api-version: '1.20'
+
+commands:
+  test:
