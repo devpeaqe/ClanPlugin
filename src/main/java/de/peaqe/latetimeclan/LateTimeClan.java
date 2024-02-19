@@ -9,6 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 @Getter
 public final class LateTimeClan extends JavaPlugin {
 
+    @Getter
+    private static LateTimeClan instance;
     private Messages messages;
     private ClanDatabase clanDatabase;
     private DatabaseConfig databaseConfig;
@@ -16,6 +18,7 @@ public final class LateTimeClan extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        instance = this;
         this.messages = new Messages();
 
         this.databaseConfig = new DatabaseConfig(this);
@@ -33,4 +36,5 @@ public final class LateTimeClan extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
     }
+
 }

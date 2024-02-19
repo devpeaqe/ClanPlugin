@@ -5,6 +5,7 @@ import de.peaqe.latetimeclan.models.util.ClanDecoder;
 import de.peaqe.latetimeclan.provider.cache.DatabaseCache;
 import de.peaqe.latetimeclan.provider.util.Property;
 
+import javax.annotation.Nullable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -175,6 +176,36 @@ public class ClanDatabase {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public ClanModel getClanModelByCondition(Property property, Object conditionItem) throws SQLException {
+
+        var sql = "SELECT * FROM latetime.clan WHERE " + property.getValue() + " = ?";
+        this.connect();
+
+        var preparedStatement = this.connection.prepareStatement(sql);
+        preparedStatement.setObject(1, conditionItem);
+
+        var resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+
+            var clanTag = resultSet.getString(Property.TAG.getValue());
+
+            var clanModel = new ClanModel(
+                    resultSet.getString(Property.NAME.getValue()),
+                    clanTag,
+                    resultSet.getString(Property.CLAN_FOUNDER_UUID.getValue()),
+                    resultSet.getString(Property.CLAN_INVITATION_STATUS.getValue()),
+                    resultSet.getInt(Property.MAX_SIZE.getValue()),
+                    ClanDecoder.stringToMap(resultSet.getString(Property.MEMBERS.getValue()))
+            );
+
+            this.databaseCache.addEntry(clanTag, clanModel);
+            return clanModel;
         }
 
         return null;
