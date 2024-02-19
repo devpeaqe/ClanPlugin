@@ -21,13 +21,13 @@ public final class LateTimeClan extends JavaPlugin {
 
         this.databaseConfig = new DatabaseConfig(this);
 
-        //this.clanDatabase = new ClanDatabase(
-        //        this.databaseConfig.get("hostname"),
-        //        this.databaseConfig.get("username"),
-        //        this.databaseConfig.get("database"),
-        //        this.databaseConfig.get("password"),
-        //        this.databaseConfig.getInt("port")
-        //);
+        this.clanDatabase = new ClanDatabase(
+                this.databaseConfig.get("hostname"),
+                this.databaseConfig.get("username"),
+                this.databaseConfig.get("database"),
+                this.databaseConfig.get("password"),
+                this.databaseConfig.getInt("port")
+        );
 
     }
 
