@@ -3,7 +3,6 @@ package de.peaqe.latetimeclan;
 import de.peaqe.latetimeclan.config.DatabaseConfig;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.provider.ClanDatabase;
-import de.peaqe.latetimeclan.provider.cache.DatabaseCache;
 import de.peaqe.latetimeclan.test.TestCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,7 +13,7 @@ public final class LateTimeClan extends JavaPlugin {
     private Messages messages;
     private ClanDatabase clanDatabase;
     private DatabaseConfig databaseConfig;
-    private DatabaseCache databaseCache;
+    //private DatabaseCache databaseCache;
 
     @Override
     public void onEnable() {
@@ -31,7 +30,7 @@ public final class LateTimeClan extends JavaPlugin {
                 this.databaseConfig.get("password"),
                 this.databaseConfig.getInt("port")
         );
-        this.databaseCache = this.clanDatabase.getDatabaseCache();
+        //this.databaseCache = this.clanDatabase.getDatabaseCache();
 
         new TestCommand(this);
 
@@ -58,7 +57,7 @@ public final class LateTimeClan extends JavaPlugin {
         return clanDatabase;
     }
 
-    public DatabaseCache getDatabaseCache() {
-        return databaseCache;
-    }
+    //public DatabaseCache getDatabaseCache() {
+    //    return databaseCache;
+    //}
 }
