@@ -2,7 +2,6 @@ package de.peaqe.latetimeclan.provider;
 
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.util.ClanDecoder;
-import de.peaqe.latetimeclan.provider.cache.DatabaseCache;
 import de.peaqe.latetimeclan.provider.util.Property;
 
 import javax.annotation.Nullable;
@@ -233,6 +232,6 @@ public class ClanDatabase {
     }
 
     //public DatabaseCache getDatabaseCache() {
-        return databaseCache;
-    }
+    //    return databaseCache;
+    //}
 }
