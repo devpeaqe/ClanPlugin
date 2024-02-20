@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan.provider;
 
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.util.ClanDecoder;
+import de.peaqe.latetimeclan.provider.cache.SimpleCache;
 import de.peaqe.latetimeclan.provider.util.Property;
 
 import javax.annotation.Nullable;
@@ -24,6 +25,7 @@ public class ClanDatabase {
     private final int port;
     private Connection connection;
     //private final DatabaseCache databaseCache;
+    private final SimpleCache simpleCache;
 
     public ClanDatabase(String hostname, String username, String password, String database, int port) {
         this.hostname = hostname;
@@ -37,6 +39,7 @@ public class ClanDatabase {
         this.close();
 
         //this.databaseCache = new DatabaseCache();
+        this.simpleCache = new SimpleCache();
 
     }
 
@@ -87,7 +90,11 @@ public class ClanDatabase {
                 Property.MEMBERS.getValue() +
                 ") VALUES (?, ?, ?, ?, ?, ?)";
 
-        if (this.clanExists(clanModel.getTag())) return;
+        if (this.clanExists(clanModel.getTag())) {
+            if (this.getClan(clanModel.getTag()).equals(clanModel)) return;
+            this.updateClan(clanModel);
+            return;
+        }
 
         this.connect();
         try {
@@ -102,6 +109,8 @@ public class ClanDatabase {
             statement.setString(6, ClanDecoder.mapToString(clanModel.getMembers()));
 
             //this.databaseCache.addEntry(clanModel.getTag(), clanModel);
+            this.simpleCache.cache(clanModel);
+
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -113,18 +122,42 @@ public class ClanDatabase {
 
     public boolean clanExists(String clanTag) {
 
-        //if (!this.databaseCache.getClanCache().containsKey(clanTag.toLowerCase())) return false;
+        if (!this.simpleCache.containsKey(clanTag.toLowerCase())) {
 
-        var clan = this.getClan(clanTag.toLowerCase());
-        if (clan == null) return false;
+            var query = "SELECT * FROM latetime.clan WHERE tag = ?";
 
-        System.out.println(clan.toString());
+            try {
 
-        //this.getDatabaseCache().addEntry(clanTag, clan);
-        System.out.println("Addet clan to cache: " + clanTag);
+                var statement = this.connection.prepareStatement(query);
+                statement.setString(1, clanTag.toLowerCase());
+
+                var resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    var clanModel = new ClanModel(
+                            resultSet.getString(Property.NAME.getValue()),
+                            resultSet.getString(Property.TAG.getValue()),
+                            resultSet.getString(Property.CLAN_FOUNDER_UUID.getValue()),
+                            resultSet.getString(Property.CLAN_INVITATION_STATUS.getValue()),
+                            resultSet.getInt(Property.MAX_SIZE.getValue()),
+                            ClanDecoder.stringToMap(resultSet.getString(Property.MEMBERS.getValue()))
+                    );
+
+                    this.simpleCache.cache(clanModel);
+                    return true;
+                }
+
+                return false;
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                this.close();
+            }
+
+        }
 
         return true;
-
     }
 
     public void updateClan(ClanModel clanModel) {
@@ -137,6 +170,11 @@ public class ClanDatabase {
         //if (!this.databaseCache.containsValue(clanModel)) {
         //    return;
         //}
+
+        if (this.getClan(clanModel.getTag()) == null) {
+            this.createClan(clanModel);
+            return;
+        }
 
         this.connect();
         try {
@@ -153,6 +191,10 @@ public class ClanDatabase {
 
             //this.databaseCache.removeEntry(clanModel.getTag());
             //this.databaseCache.addEntry(clanModel.getTag(), clanModel);
+
+            this.simpleCache.remove(clanModel.getTag());
+            this.simpleCache.cache(clanModel);
+
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -169,6 +211,10 @@ public class ClanDatabase {
             //if (this.databaseCache.containsKey(clanTag)) {
             //    return this.databaseCache.getEntry(clanTag);
             //}
+
+        if (this.clanExists(clanTag)) {
+            return this.simpleCache.get(clanTag);
+        }
 
         this.connect();
         try {
@@ -188,6 +234,8 @@ public class ClanDatabase {
                 );
 
                 //this.databaseCache.addEntry(clanTag, clanModel);
+                this.simpleCache.cache(clanModel);
+
                 return clanModel;
 
             }
@@ -205,6 +253,7 @@ public class ClanDatabase {
     public ClanModel getClanModelByCondition(Property property, Object conditionItem) throws SQLException {
 
         var sql = "SELECT * FROM latetime.clan WHERE " + property.getValue() + " = ?";
+
         this.connect();
 
         var preparedStatement = this.connection.prepareStatement(sql);
@@ -213,11 +262,9 @@ public class ClanDatabase {
         var resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
 
-            var clanTag = resultSet.getString(Property.TAG.getValue());
-
             var clanModel = new ClanModel(
                     resultSet.getString(Property.NAME.getValue()),
-                    clanTag,
+                    resultSet.getString(Property.TAG.getValue()),
                     resultSet.getString(Property.CLAN_FOUNDER_UUID.getValue()),
                     resultSet.getString(Property.CLAN_INVITATION_STATUS.getValue()),
                     resultSet.getInt(Property.MAX_SIZE.getValue()),
@@ -225,6 +272,8 @@ public class ClanDatabase {
             );
 
             //this.databaseCache.addEntry(clanTag, clanModel);
+            this.simpleCache.cache(clanModel);
+
             return clanModel;
         }
 

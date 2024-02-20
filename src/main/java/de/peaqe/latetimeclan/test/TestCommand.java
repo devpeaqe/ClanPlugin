@@ -67,7 +67,7 @@ public class TestCommand implements CommandExecutor, TabExecutor {
                 clan.getMembers().toString()
         ));
 
-        System.out.println("Cache: " + this.lateTimeClan.getDatabaseCache().getClanCache().toString());
+        //System.out.println("Cache: " + this.lateTimeClan.getDatabaseCache().getClanCache().toString());
 
         return false;
     }

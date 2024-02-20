@@ -69,4 +69,54 @@ public class ClanDecoder {
         return map;
     }
 
+    public static String toString(ClanModel clan) {
+        return "Name: " + clan.getName() + "\n" +
+                "Tag: " + clan.getTag() + "\n" +
+                "Clan Founder UUID: " + clan.getClanFounderUUID() + "\n" +
+                "Clan Invitation Status: " + clan.getClanInvitationStatus() + "\n" +
+                "Max Size: " + clan.getMaxSize() + "\n" +
+                "Members: " + mapToString(clan.getMembers()) + "\n";
+    }
+
+    public static ClanModel fromString(String str) {
+
+        var parts = str.split("\n");
+        var clan = new ClanModel();
+
+        for (String part : parts) {
+
+            var keyValue = part.split(": ");
+
+            if (keyValue.length == 2) {
+
+                var key = keyValue[0].trim();
+                var value = keyValue[1].trim();
+
+                switch (key) {
+                    case "Name":
+                        clan.setName(value);
+                        break;
+                    case "Tag":
+                        clan.setTag(value);
+                        break;
+                    case "Clan Founder UUID":
+                        clan.setClanFounderUUID(value);
+                        break;
+                    case "Clan Invitation Status":
+                        clan.setClanInvitationStatus(value);
+                        break;
+                    case "Max Size":
+                        clan.setMaxSize(Integer.parseInt(value));
+                        break;
+                    case "Members":
+                        clan.setMembers(stringToMap(value));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return clan;
+    }
+
 }
