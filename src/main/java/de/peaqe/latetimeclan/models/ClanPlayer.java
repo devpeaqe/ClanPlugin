@@ -1,9 +1,12 @@
 package de.peaqe.latetimeclan.models;
 
+import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.util.UUIDFetcher;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * *
@@ -66,12 +69,40 @@ public class ClanPlayer {
         return new ClanPlayer(
                 player.getName(),
                 player.getUniqueId(),
-                new ClanModel(), // TODO: Remove test data
-                ClanGroupModel.OWNER);
+                LateTimeClan.getInstance().getClanDatabase().getClanModelOfMember(player.getUniqueId()),
+                getClanGroupModel(player.getUniqueId())
+        );
+    }
+
+    public static ClanPlayer fromPlayer(UUID uniqueId) {
+        return new ClanPlayer(
+                UUIDFetcher.getName(uniqueId),
+                uniqueId,
+                LateTimeClan.getInstance().getClanDatabase().getClanModelOfMember(uniqueId),
+                getClanGroupModel(uniqueId)
+        );
     }
 
     public boolean hasPermission(ClanAction clanAction) {
         return clanGroup.getPermissionLevel() >= clanAction.getPermissionLevel();
+    }
+
+    public static ClanGroupModel getClanGroupModel(UUID uniqueId) {
+
+        var clan = LateTimeClan.getInstance().getClanDatabase().getClanModelOfMember(uniqueId);
+        if (clan == null) return null;
+        if (!clan.getMembers().containsKey(uniqueId)) return null;
+
+        var atomicClanGroupModel = new AtomicReference<ClanGroupModel>();
+
+        clan.getMembers().forEach((uuid, clanGroupModel) -> {
+            if (uuid.equals(uniqueId)) {
+                atomicClanGroupModel.set(clanGroupModel);
+            }
+        });
+
+        return atomicClanGroupModel.get();
+
     }
 
 }

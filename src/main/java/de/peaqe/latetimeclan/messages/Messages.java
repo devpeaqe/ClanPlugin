@@ -15,7 +15,7 @@ public class Messages {
     private final String colorNormal;
 
     public Messages() {
-        this.prefix = "§8» §9Clan §8┃";
+        this.prefix = "§8» §9Clan §8┃ §7";
         this.colorNormal = "§7";
     }
 

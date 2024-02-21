@@ -1,5 +1,6 @@
 package de.peaqe.latetimeclan;
 
+import de.peaqe.latetimeclan.commands.ClanCommand;
 import de.peaqe.latetimeclan.config.DatabaseConfig;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.provider.ClanDatabase;
@@ -33,6 +34,7 @@ public final class LateTimeClan extends JavaPlugin {
         //this.databaseCache = this.clanDatabase.getDatabaseCache();
 
         new TestCommand(this);
+        new ClanCommand(this);
 
     }
 

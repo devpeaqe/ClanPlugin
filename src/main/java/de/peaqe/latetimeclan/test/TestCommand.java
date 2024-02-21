@@ -53,29 +53,13 @@ public class TestCommand implements CommandExecutor, TabExecutor {
                         "open",
                         10,
                         Map.of(
-                                ClanGroupModel.OWNER, randomFounder
+                                randomFounder, ClanGroupModel.OWNER
                         )
                 )
         );
 
         // Load clan data
         var clan = this.lateTimeClan.getClanDatabase().getClan("test");
-
-        if (clan == null) {
-            System.out.println(this.messages.compileMessage(
-                    "Der Clan %s konnte nicht gefunden werden!",
-                    "test"
-            ));
-            return true;
-        }
-
-        System.out.println(this.messages.compileMessage(
-                "Der Clan %s hat folgende Mitglieder: %s",
-                clan.getTag(),
-                clan.getMembers().toString()
-        ));
-
-        //System.out.println("Cache: " + this.lateTimeClan.getDatabaseCache().getClanCache().toString());
 
         return false;
     }

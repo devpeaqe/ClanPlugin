@@ -3,13 +3,11 @@ package de.peaqe.latetimeclan.models.util;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanModel;
+import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.provider.util.Property;
 
-import javax.annotation.Nullable;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * *
@@ -22,7 +20,6 @@ import java.util.UUID;
 
 public class ClanDecoder {
 
-    @Nullable
     public static ClanModel getClanModel(String clanTag) {
         return LateTimeClan.getInstance().getClanDatabase().getClan(clanTag);
     }
@@ -36,12 +33,12 @@ public class ClanDecoder {
         }
     }
 
-    public static String mapToString(Map<ClanGroupModel, UUID> map) {
+    public static String mapToString(Map<UUID, ClanGroupModel> map) {
 
         var stringBuilder = new StringBuilder();
 
-        for (Map.Entry<ClanGroupModel, UUID> entry : map.entrySet()) {
-            stringBuilder.append(entry.getKey().name()).append("=").append(entry.getValue()).append(",");
+        for (Map.Entry<UUID, ClanGroupModel> entry : map.entrySet()) {
+            stringBuilder.append(entry.getValue().name()).append("=").append(entry.getKey()).append(",");
         }
 
         if (!stringBuilder.isEmpty()) {
@@ -50,17 +47,17 @@ public class ClanDecoder {
         return stringBuilder.toString();
     }
 
-    public static Map<ClanGroupModel, UUID> stringToMap(String str) {
+    public static Map<UUID, ClanGroupModel> stringToMap(String str) {
 
-        Map<ClanGroupModel, UUID> map = new HashMap<>();
+        Map<UUID, ClanGroupModel> map = new HashMap<>();
 
         if (str != null && !str.isEmpty()) {
             String[] pairs = str.split(",");
             for (String pair : pairs) {
                 String[] keyValue = pair.split("=");
                 if (keyValue.length == 2) {
-                    ClanGroupModel key = ClanGroupModel.valueOf(keyValue[0]);
-                    UUID value = UUID.fromString(keyValue[1]);
+                    ClanGroupModel value = ClanGroupModel.valueOf(keyValue[0]);
+                    UUID key = UUID.fromString(keyValue[1]);
                     map.put(key, value);
                 }
             }
@@ -117,6 +114,28 @@ public class ClanDecoder {
             }
         }
         return clan;
+    }
+
+    public List<ClanPlayer> getPlayersFromClan(String clanTag) {
+
+        var clan = getClanModel(clanTag);
+        if (clan == null) return new ArrayList<>();
+
+        var members = getClanModel(clanTag).getMembers();
+        var memberList = new ArrayList<ClanPlayer>();
+
+        members.forEach((uuid, clanGroupModel) -> memberList.add(ClanPlayer.fromPlayer(uuid)));
+        return memberList;
+
+    }
+
+    public static List<ClanPlayer> getPlayersFromClan(ClanModel clan) {
+
+        var members = getClanModel(clan.getTag()).getMembers();
+        var memberList = new ArrayList<ClanPlayer>();
+
+        members.forEach((uuid, clanGroupModel) -> memberList.add(ClanPlayer.fromPlayer(uuid)));
+        return memberList;
     }
 
 }

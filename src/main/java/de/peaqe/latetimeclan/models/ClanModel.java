@@ -16,9 +16,9 @@ public class ClanModel {
 
     private String name, tag, clanFounderUuid, clanInvitationStatus;
     private int maxSize;
-    private Map<ClanGroupModel, UUID> members;
+    private Map<UUID, ClanGroupModel> members;
 
-    public ClanModel(String name, String tag, String clanFounderUuid, String clanInvitationStatus, int maxSize, Map<ClanGroupModel, UUID> members) {
+    public ClanModel(String name, String tag, String clanFounderUuid, String clanInvitationStatus, int maxSize, Map<UUID, ClanGroupModel> members) {
         this.name = name;
         this.tag = tag;
         this.clanFounderUuid = clanFounderUuid;
@@ -69,11 +69,11 @@ public class ClanModel {
         this.maxSize = maxSize;
     }
 
-    public Map<ClanGroupModel, UUID> getMembers() {
+    public Map<UUID, ClanGroupModel> getMembers() {
         return members;
     }
 
-    public void setMembers(Map<ClanGroupModel, UUID> members) {
+    public void setMembers(Map<UUID, ClanGroupModel> members) {
         this.members = members;
     }
 }

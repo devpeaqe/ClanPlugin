@@ -1,15 +1,17 @@
 package de.peaqe.latetimeclan.provider;
 
+import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.util.ClanDecoder;
 import de.peaqe.latetimeclan.provider.util.Property;
 import org.bukkit.Bukkit;
 
 import javax.annotation.Nullable;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * *
@@ -262,4 +264,63 @@ public class ClanDatabase {
 
         return null;
     }
+
+    public Map<UUID, ClanGroupModel> getAllPlayersInClan(String clanTag) {
+
+        var players = new HashMap<UUID, ClanGroupModel>();
+        this.connect();
+
+        try {
+            var query = "SELECT * FROM latetime.clan WHERE " + Property.TAG.getValue() + " = ?";
+            var statement = this.connection.prepareStatement(query);
+            statement.setString(1, clanTag.toLowerCase());
+
+            var resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return ClanDecoder.stringToMap(resultSet.getString(Property.MEMBERS.getValue()));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.close();
+        }
+
+        return players;
+    }
+
+    public ClanModel getClanModelOfMember(UUID memberUUID) {
+
+        var clanModel = (ClanModel) null;
+        this.connect();
+
+        try {
+
+            var query = "SELECT * FROM latetime.clan WHERE " + Property.MEMBERS.getValue() + " LIKE ?";
+            var statement = this.connection.prepareStatement(query);
+
+            statement.setString(1, "%" + memberUUID.toString() + "%");
+
+            var resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                clanModel = new ClanModel(
+                        resultSet.getString(Property.NAME.getValue()),
+                        resultSet.getString(Property.TAG.getValue()),
+                        resultSet.getString(Property.CLAN_FOUNDER_UUID.getValue()),
+                        resultSet.getString(Property.CLAN_INVITATION_STATUS.getValue()),
+                        resultSet.getInt(Property.MAX_SIZE.getValue()),
+                        ClanDecoder.stringToMap(resultSet.getString(Property.MEMBERS.getValue()))
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.close();
+        }
+
+        return clanModel;
+    }
+
 }
