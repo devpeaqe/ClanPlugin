@@ -3,6 +3,8 @@ package de.peaqe.latetimeclan;
 import de.peaqe.latetimeclan.commands.ClanCommand;
 import de.peaqe.latetimeclan.config.DatabaseConfig;
 import de.peaqe.latetimeclan.listener.ClanInfoPageListener;
+import de.peaqe.latetimeclan.listener.ClanMemberEditPageListener;
+import de.peaqe.latetimeclan.listener.ClanMemberPageListener;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.provider.ClanDatabase;
 import de.peaqe.latetimeclan.test.TestCommand;
@@ -40,6 +42,8 @@ public final class LateTimeClan extends JavaPlugin {
 
         // Listener's
         new ClanInfoPageListener(this);
+        new ClanMemberPageListener(this);
+        new ClanMemberEditPageListener(this);
 
     }
 

@@ -13,6 +13,7 @@ public enum ClanAction {
 
     DELETE(3),
     CHANGE_COLOR(3),
+    CHANGE_GROUP(2),
     PROMOTE(2),
     DEMOTE(2),
     INVITE(1),

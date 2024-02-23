@@ -1,8 +1,9 @@
 package de.peaqe.latetimeclan.listener;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.inventory.ClanMemberPage;
+import de.peaqe.latetimeclan.inventory.ClanMemberEditPage;
 import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.util.UUIDFetcher;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,11 +20,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
  * *
  */
 
-public class ClanInfoPageListener implements Listener {
+public class ClanMemberPageListener implements Listener {
 
     private final LateTimeClan lateTimeClan;
 
-    public ClanInfoPageListener(LateTimeClan lateTimeClan) {
+    public ClanMemberPageListener(LateTimeClan lateTimeClan) {
         this.lateTimeClan = lateTimeClan;
         Bukkit.getPluginManager().registerEvents(this, this.lateTimeClan);
     }
@@ -35,33 +36,23 @@ public class ClanInfoPageListener implements Listener {
         if (event.getClickedInventory() == null) return;
         if (!Component.text(event.getView().getOriginalTitle()).equals(
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Informationen"
+                        "§8Mitglieder"
                 ))
         )) return;
 
         event.setCancelled(true);
-        var slot = event.getSlot();
 
-        switch (slot) {
-            case 20 -> {
-                // 20 » Statics
+        var currentItem = event.getCurrentItem();
+        if (currentItem == null || !currentItem.hasItemMeta() || !currentItem.getItemMeta().hasDisplayName()) return;
 
-            }
+        var currentItemPlayerName = currentItem.getItemMeta().getDisplayName().split("§8• §a")[1];
+        var currentClanPlayer = ClanPlayer.fromPlayer(UUIDFetcher.getUUID(currentItemPlayerName));
 
-            case 22 -> {
-                // 22 » Settings (Clan Leader)
+        var clanPlayer = ClanPlayer.fromPlayer(player);
 
-            }
-
-            case 24 -> {
-                // 23 » Clan Member
-                var clanPlayer = ClanPlayer.fromPlayer(player);
-                var clan = clanPlayer.getClan();
-
-                player.closeInventory();
-                player.openInventory(new ClanMemberPage(this.lateTimeClan, clan).getInventory());
-            }
-        }
+        player.closeInventory();
+        player.openInventory(new ClanMemberEditPage(this.lateTimeClan, clanPlayer.getClan())
+                .getInventory(clanPlayer, currentClanPlayer));
 
     }
 

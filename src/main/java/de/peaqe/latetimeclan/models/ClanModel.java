@@ -1,5 +1,7 @@
 package de.peaqe.latetimeclan.models;
 
+import de.peaqe.latetimeclan.LateTimeClan;
+
 import java.util.Map;
 import java.util.UUID;
 
@@ -76,4 +78,18 @@ public class ClanModel {
     public void setMembers(Map<UUID, ClanGroupModel> members) {
         this.members = members;
     }
+
+    public void kick(ClanPlayer clanPlayer) {
+
+        var currentMembers = this.getMembers();
+
+        currentMembers.remove(clanPlayer.getUniqueId());
+        this.setMembers(currentMembers);
+
+        // TODO: Add cache
+        LateTimeClan.getInstance().getClanDatabase().updateClan(this);
+        clanPlayer.reload();
+
+    }
+
 }

@@ -65,6 +65,13 @@ public class ClanPlayer {
         this.clanGroup = clanGroup;
     }
 
+    public void reload() {
+        if (!this.clan.getMembers().containsKey(this.uniqueId)) {
+            this.setClan(null);
+            this.setClanGroup(null);
+        }
+    }
+
     public static ClanPlayer fromPlayer(Player player) {
         return new ClanPlayer(
                 player.getName(),

@@ -70,7 +70,7 @@ public class ClanMemberPage {
 
             var clanPlayer = ClanPlayer.fromPlayer((UUID) uuid);
             var playerHead = new ItemBuilder(PlayerHeadFetcher.getPlayerHeadFromUUID((UUID) uuid))
-                    .setDisplayName("§8• " + tempClanGroupModel.getColor() + clanPlayer.getName())
+                    .setDisplayName("§8• §a" + clanPlayer.getName())
                     .addLore(
                             " ",
                             "§7Gruppe: " + tempClanGroupModel.getColor() + tempClanGroupModel.getName()
