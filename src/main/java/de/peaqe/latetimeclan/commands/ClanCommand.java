@@ -1,6 +1,8 @@
 package de.peaqe.latetimeclan.commands;
 
 import de.peaqe.latetimeclan.LateTimeClan;
+import de.peaqe.latetimeclan.inventory.ClanInfoPage;
+import de.peaqe.latetimeclan.inventory.ClanMemberPage;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanModel;
@@ -43,6 +45,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
 
         if (!(sender instanceof Player player)) return true;
+
+
 
         // /clan create <name> <tag>
         if (args.length == 3 && args[0].equalsIgnoreCase("create")) {
@@ -119,6 +123,89 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                             " §8| (" + clanPlayer.getClanGroup().getColor() + clanPlayer.getClanGroup().getName() + "§8)"
                     )
             ));
+        }
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("open")) {
+
+            var clan = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
+
+            player.sendMessage(this.messages.compileMessage(
+                    "Spielerdaten werden abgerufen...\n "
+            ));
+
+            if (clan == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit in keinem Clan!"
+                ));
+                return true;
+            }
+
+            player.openInventory(new ClanMemberPage(this.lateTimeClan, clan).getInventory());
+
+        }
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("open2")) {
+
+            var clan = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
+
+            player.sendMessage(this.messages.compileMessage(
+                    "Spielerdaten werden abgerufen...\n "
+            ));
+
+            if (clan == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit in keinem Clan!"
+                ));
+                return true;
+            }
+
+            player.openInventory(new ClanInfoPage(this.lateTimeClan, clan).getInventory());
+
+        }
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("stats")) {
+
+            var clan = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
+
+            player.sendMessage(this.messages.compileMessage(
+                    "Statistiken werden abgerufen...\n "
+            ));
+
+            if (clan == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit in keinem Clan!"
+                ));
+                return true;
+            }
+
+            var memberList = ClanDecoder.getPlayersFromClan(clan);
+
+            // TODO: Remove comment
+            //if (memberList.size() <= 1) {
+            //    player.sendMessage(this.messages.compileMessage(
+            //            "Dein Clan hat derzeit keine Mitglieder!"
+            //    ));
+            //    return true;
+            //}
+
+            player.sendMessage(this.messages.compileMessage(
+                    "Clan-Statistiken:"
+            ));
+
+            player.sendMessage(this.messages.compileMessage(
+                    "Name: %s",
+                    clan.getName()
+            ));
+
+            player.sendMessage(this.messages.compileMessage(
+                    "Tag: %s",
+                    clan.getTag()
+            ));
+
+            player.sendMessage(this.messages.compileMessage(
+                    "Mitgliederanzahl: %s",
+                    "" + clan.getMembers().size()
+            ));
 
 
         }
@@ -134,6 +221,9 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
         if (args.length == 1) {
             matches.add("create");
             matches.add("info");
+            matches.add("open");
+            matches.add("open2");
+            matches.add("stats");
         }
 
         return matches;
