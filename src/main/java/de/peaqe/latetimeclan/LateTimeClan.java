@@ -4,6 +4,7 @@ import de.peaqe.latetimeclan.commands.ClanCommand;
 import de.peaqe.latetimeclan.config.DatabaseConfig;
 import de.peaqe.latetimeclan.listener.ClanInfoPageListener;
 import de.peaqe.latetimeclan.listener.ClanMemberEditPageListener;
+import de.peaqe.latetimeclan.listener.ClanMemberKickConfirmPageListener;
 import de.peaqe.latetimeclan.listener.ClanMemberPageListener;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.provider.ClanDatabase;
@@ -44,6 +45,7 @@ public final class LateTimeClan extends JavaPlugin {
         new ClanInfoPageListener(this);
         new ClanMemberPageListener(this);
         new ClanMemberEditPageListener(this);
+        new ClanMemberKickConfirmPageListener(this);
 
     }
 

@@ -3,7 +3,6 @@ package de.peaqe.latetimeclan.util.heads;
 import de.peaqe.latetimeclan.util.PlayerHeadFetcher;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 
 /**
@@ -33,18 +32,12 @@ public enum Head {
         return base64;
     }
 
-    @Nullable
     public static ItemStack compile(Head head) {
-
-        var itemStack = (ItemStack) null;
-
         try {
-            itemStack = PlayerHeadFetcher.fromBase64(head.getBase64());
+            return PlayerHeadFetcher.fromBase64(head.getBase64());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return itemStack;
     }
 
 }

@@ -79,7 +79,10 @@ public class PlayerHeadFetcher {
      */
     public static ItemStack fromBase64(String data) throws IOException {
         try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
+
+            var decodedBytes = Base64Coder.decodeLines(data);
+
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(decodedBytes);
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
 
             ItemStack item = (ItemStack) dataInput.readObject();

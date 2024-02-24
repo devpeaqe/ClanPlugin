@@ -6,7 +6,6 @@ import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.PlayerHeadFetcher;
-import de.peaqe.latetimeclan.util.heads.Head;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,20 +20,20 @@ import org.bukkit.inventory.Inventory;
  * *
  */
 
-public class ClanMemberEditPage {
+public class ClanMemberKickConfirmPage {
 
     private final LateTimeClan lateTimeClan;
     private final Inventory inventory;
     private final ClanModel clanModel;
 
-    public ClanMemberEditPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
+    public ClanMemberKickConfirmPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
         this.lateTimeClan = lateTimeClan;
         this.clanModel = clanModel;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*4,
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Mitglieder verwalten"
+                        "§8Mitglied rausschmeißen"
                 ))
         );
     }
@@ -62,31 +61,28 @@ public class ClanMemberEditPage {
                 .build();
 
 
-        final var clanKickItem = new ItemBuilder(Head.compile(Head.RED_BUTTON))
-                .setDisplayName(" §8• §cRausschmeißen")
+        final var decline = new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
+                .setDisplayName(" §8• §cAblehnen")
+                .addLore(
+                        " ",
+                        "§8• §7Kehre zurück zur Mitgliederliste"
+                )
+                .glow()
+                .build();
+
+        final var confirm = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE)
+                .setDisplayName("§8• §aAkzeptieren")
                 .addLore(
                         " ",
                         "§8• §7Schmeiße §e" + target.getName() + "§7 aus dem Clan.",
-                        " §8» §cVORSICHT! Dieser Vorgang kann §nnicht§r §crückgängig gemacht werden!",
-                        " ",
-                        "§8• §7Berechtigt: " + (isPermitted(sender, target, ClanAction.KICK) ? "§aJa" : "§cNein")
+                        "§8• §c§lVORSICHT! §r§cDieser Vorgang kann §nnicht§r §crückgängig gemacht werden!"
                 )
                 .glow(isPermitted(sender, target, ClanAction.KICK))
                 .build();
 
-        final var clanChangeGroupItem = new ItemBuilder(Head.compile(Head.EDIT))
-                .setDisplayName("§8• §aRang verwaltung")
-                .addLore(
-                        " ",
-                        "§8• §7Verwalte die Rollen von §e" + target.getName() + "§7.",
-                        "§8• §7Berechtigt: " + (isPermitted(sender, target, ClanAction.CHANGE_GROUP) ? "§aJa" : "§cNein")
-                )
-                .glow(isPermitted(sender, target, ClanAction.CHANGE_GROUP))
-                .build();
-
         this.inventory.setItem(13, clanNameItem);
-        this.inventory.setItem(20, clanKickItem);
-        this.inventory.setItem(24, clanChangeGroupItem);
+        this.inventory.setItem(20, decline);
+        this.inventory.setItem(24, confirm);
 
     }
 
