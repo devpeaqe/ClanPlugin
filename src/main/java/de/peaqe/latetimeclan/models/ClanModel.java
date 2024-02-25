@@ -79,6 +79,14 @@ public class ClanModel {
         this.members = members;
     }
 
+    public void addMember(ClanPlayer clanPlayer) {
+        if (clanPlayer.getClan() == null) {
+            clanPlayer.setClan(this);
+            clanPlayer.reload();
+            // TODO: Add to cache
+        }
+    }
+
     public void kick(ClanPlayer clanPlayer) {
 
         var currentMembers = this.getMembers();

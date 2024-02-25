@@ -206,8 +206,27 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     "Mitgliederanzahl: %s",
                     "" + clan.getMembers().size()
             ));
+        }
 
+        // /clan user add <name> randomUUID <group>
+        if (args.length == 5 && args[0].equalsIgnoreCase("user")) {
+            if (args[1].equalsIgnoreCase("add")) {
 
+                var clanPlayer = new ClanPlayer(
+                        args[2],
+                        UUID.randomUUID(),
+                        ClanPlayer.fromPlayer(player).getClan(),
+                        ClanGroupModel.valueOf(args[3])
+                );
+
+                ClanPlayer.fromPlayer(player).getClan().addMember(clanPlayer);
+
+                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Clanmitglied wurde registriert."
+                ));
+                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+
+            }
         }
 
         return false;
@@ -218,12 +237,27 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
         ArrayList<String> matches = new ArrayList<>();
 
+        // /clan user add <name> randomUUID <group>
+
         if (args.length == 1) {
             matches.add("create");
             matches.add("info");
             matches.add("open");
             matches.add("open2");
             matches.add("stats");
+            matches.add("user");
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("user")) {
+            matches.add("add");
+        }
+
+        if (args.length == 5 && args[0].equalsIgnoreCase("user") && args[1].equalsIgnoreCase("add")) {
+            for (var value : ClanGroupModel.values()) {
+                if (args[4].startsWith(value.name())) {
+                    matches.add(value.name());
+                }
+            }
         }
 
         return matches;
