@@ -3,11 +3,13 @@ package de.peaqe.latetimeclan.inventory;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.PlayerHeadFetcher;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.util.UUID;
@@ -39,7 +41,7 @@ public class ClanInfoPage {
         );
     }
 
-    public void initializeInventory() {
+    public void initializeInventory(Player player) {
 
         var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
 
@@ -90,13 +92,16 @@ public class ClanInfoPage {
 
         this.inventory.setItem(13, clanNameItem);
         this.inventory.setItem(20, clanStaticsItem);
-        this.inventory.setItem(22, clanSettingsItem);
         this.inventory.setItem(24, clanMemberItem);
+
+        if (ClanPlayer.fromPlayer(player).hasPermission(ClanAction.DELETE))
+            this.inventory.setItem(22, clanSettingsItem);
+
 
     }
 
-    public Inventory getInventory() {
-        this.initializeInventory();
+    public Inventory getInventory(Player player) {
+        this.initializeInventory(player);
         return inventory;
     }
 }

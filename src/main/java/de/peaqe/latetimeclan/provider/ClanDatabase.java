@@ -313,6 +313,7 @@ public class ClanDatabase {
                         resultSet.getInt(Property.MAX_SIZE.getValue()),
                         ClanDecoder.stringToMap(resultSet.getString(Property.MEMBERS.getValue()))
                 );
+
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -62,7 +62,19 @@ public class ClanPlayer {
     }
 
     public void setClanGroup(ClanGroupModel clanGroup) {
+
         this.clanGroup = clanGroup;
+
+        var clan = this.getClan();
+        var members = clan.getMembers();
+
+        if (members.containsKey(this.getUniqueId())) {
+            members.remove(this.getUniqueId());
+            members.put(this.getUniqueId(), clanGroup);
+        }
+
+        clan.setMembers(members);
+        clan.reload();
     }
 
     public void reload() {
@@ -73,6 +85,12 @@ public class ClanPlayer {
     }
 
     public static ClanPlayer fromPlayer(Player player) {
+
+        var clan = LateTimeClan.getInstance().getClanDatabase().getClanModelOfMember(player.getUniqueId());
+        var clanGroupModel = getClanGroupModel(player.getUniqueId());
+
+        if (clan == null || clanGroupModel == null) return null;
+
         return new ClanPlayer(
                 player.getName(),
                 player.getUniqueId(),

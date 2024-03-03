@@ -1,5 +1,7 @@
 package de.peaqe.latetimeclan.models;
 
+import java.util.List;
+
 /**
  * *
  *
@@ -37,4 +39,9 @@ public enum ClanGroupModel {
     public String getColor() {
         return color;
     }
+
+    public static List<ClanGroupModel> getGroups() {
+        return List.of(MEMBER, MODERATOR, MANAGER, OWNER);
+    }
+
 }

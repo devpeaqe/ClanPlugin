@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.peaqe.latetimeclan.util.uuid.LocalUniqueIdDatabase;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -85,6 +86,11 @@ public class UUIDFetcher {
      */
     public static UUID getUUIDAt(String name, long timestamp) {
         name = name.toLowerCase();
+
+        if (LocalUniqueIdDatabase.getLocalUniqueIdDatabaseName().containsKey(name.toLowerCase())) {
+            return LocalUniqueIdDatabase.getLocalUniqueIdDatabaseName().get(name.toLowerCase());
+        }
+
         if (uuidCache.containsKey(name)) {
             return uuidCache.get(name);
         }
@@ -120,12 +126,18 @@ public class UUIDFetcher {
      * @return The name
      */
     public static String getName(UUID uuid) {
+
         if (nameCache.containsKey(uuid)) {
             return nameCache.get(uuid);
         }
 
+        if (LocalUniqueIdDatabase.getLocalUniqueIdDatabaseUniqueId().containsKey(uuid)) {
+            return LocalUniqueIdDatabase.getLocalUniqueIdDatabaseUniqueId().get(uuid);
+        }
+
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(String.format(NAME_URL, UUIDTypeAdapter.fromUUID(uuid))).openConnection();
+
             connection.setReadTimeout(5000);
             UUIDFetcher currentNameData = gson.fromJson(new BufferedReader(new InputStreamReader(connection.getInputStream())), UUIDFetcher.class);
 
@@ -137,4 +149,5 @@ public class UUIDFetcher {
             throw new RuntimeException(e);
         }
     }
+
 }

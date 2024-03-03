@@ -1,6 +1,7 @@
 package de.peaqe.latetimeclan.inventory;
 
 import de.peaqe.latetimeclan.LateTimeClan;
+import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
@@ -20,27 +21,27 @@ import org.bukkit.inventory.Inventory;
  * *
  */
 
-public class ClanMemberEditPage {
+public class ClanMemberChangeGroupPage {
 
     private final LateTimeClan lateTimeClan;
     private final Inventory inventory;
     private final ClanModel clanModel;
 
-    public ClanMemberEditPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
+    public ClanMemberChangeGroupPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
         this.lateTimeClan = lateTimeClan;
         this.clanModel = clanModel;
         this.inventory = Bukkit.createInventory(
                 null,
-                9*4,
+                9*5,
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Mitglieder verwalten"
+                        "§8Clan-Gruppe bearbeiten"
                 ))
         );
     }
 
     public void initializeInventory(ClanPlayer sender, ClanPlayer target) {
 
-        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
+        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
 
         for (var borderItemSlot : borderItemSlots) {
             this.inventory.setItem(
@@ -56,36 +57,42 @@ public class ClanMemberEditPage {
                 .setDisplayName(" §8• §e" + target.getName())
                 .addLore(
                         " ",
-                        "§8• §6Rang: §a" + target.getClanGroup().getName()
+                        "§8• §6Aktueller Rang: §a" + target.getClanGroup().getName()
                 )
                 .build();
 
 
-        final var clanKickItem = new ItemBuilder(Material.GRASS_BLOCK)
-                .setDisplayName(" §8• §cRausschmeißen")
+        final var member = new ItemBuilder(Material.PLAYER_HEAD)
+                .setDisplayName(" §8• §7Mitglied")
                 .addLore(
                         " ",
-                        "§8• §7Schmeiße §e" + target.getName() + "§7 aus dem Clan.",
-                        " §8» §cVORSICHT! Dieser Vorgang kann §nnicht§r §crückgängig gemacht werden!",
-                        " ",
-                        "§8• §7Berechtigt: " + (isPermitted(sender, target, ClanAction.KICK) ? "§aJa" : "§cNein")
+                        "§8• §7Ändere den Rang des Mitglieds zum §7Mitglied"
                 )
-                .glow(isPermitted(sender, target, ClanAction.KICK))
+                .glow(target.getClanGroup().equals(ClanGroupModel.MEMBER))
                 .build();
 
-        final var clanChangeGroupItem = new ItemBuilder(Material.GRASS_BLOCK)
-                .setDisplayName("§8• §aRang verwaltung")
+        final var moderator = new ItemBuilder(Material.PLAYER_HEAD)
+                .setDisplayName(" §8• §3Moderator")
                 .addLore(
                         " ",
-                        "§8• §7Verwalte die Rollen von §e" + target.getName() + "§7.",
-                        "§8• §7Berechtigt: " + (isPermitted(sender, target, ClanAction.CHANGE_GROUP) ? "§aJa" : "§cNein")
+                        "§8• §7Ändere den Rang des Mitglieds zum §3Moderator"
                 )
-                .glow(isPermitted(sender, target, ClanAction.CHANGE_GROUP))
+                .glow(target.getClanGroup().equals(ClanGroupModel.MODERATOR))
+                .build();
+
+        final var leader = new ItemBuilder(Material.PLAYER_HEAD)
+                .setDisplayName(" §8• §cLeitung")
+                .addLore(
+                        " ",
+                        "§8• §7Ändere den Rang des Mitglieds zur §cLeitung"
+                )
+                .glow(target.getClanGroup().equals(ClanGroupModel.MANAGER))
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
-        this.inventory.setItem(20, clanKickItem);
-        this.inventory.setItem(24, clanChangeGroupItem);
+        this.inventory.setItem(29, member);
+        this.inventory.setItem(31, moderator);
+        this.inventory.setItem(33, leader);
 
     }
 

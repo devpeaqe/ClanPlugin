@@ -80,11 +80,21 @@ public class ClanModel {
     }
 
     public void addMember(ClanPlayer clanPlayer) {
-        if (clanPlayer.getClan() == null) {
-            clanPlayer.setClan(this);
-            clanPlayer.reload();
-            // TODO: Add to cache
-        }
+        clanPlayer.setClan(this);
+
+        var members = this.getMembers();
+        members.put(clanPlayer.getUniqueId(), clanPlayer.getClanGroup());
+
+        this.setMembers(members);
+
+        this.reload();
+        clanPlayer.reload();
+
+        // TODO: Add to cache
+    }
+
+    public void reload() {
+        LateTimeClan.getInstance().getClanDatabase().updateClan(this);
     }
 
     public void kick(ClanPlayer clanPlayer) {

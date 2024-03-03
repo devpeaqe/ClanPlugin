@@ -57,19 +57,18 @@ public class ClanMemberPage {
             );
         }
 
-        var clanMember = this.clanModel.getMembers();
-
-        var sortedMembers = new TreeMap<>(Comparator.comparingInt(uuid ->
-                clanModel.getMembers().get((UUID) uuid).getPermissionLevel()).reversed());
+        var sortedMembers = new TreeMap<>(Comparator.comparingInt((UUID uuid) -> clanModel.getMembers().get(uuid).getPermissionLevel())
+                .thenComparing(UUID::toString).reversed());
 
         sortedMembers.putAll(clanModel.getMembers());
+
 
         sortedMembers.forEach((uuid, clanGroupModel) -> {
 
             var tempClanGroupModel = (ClanGroupModel) clanGroupModel;
 
-            var clanPlayer = ClanPlayer.fromPlayer((UUID) uuid);
-            var playerHead = new ItemBuilder(PlayerHeadFetcher.getPlayerHeadFromUUID((UUID) uuid))
+            var clanPlayer = ClanPlayer.fromPlayer(uuid);
+            var playerHead = new ItemBuilder(PlayerHeadFetcher.getPlayerHeadFromUUID(uuid))
                     .setDisplayName("§8• §a" + clanPlayer.getName())
                     .addLore(
                             " ",
