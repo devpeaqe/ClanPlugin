@@ -5,7 +5,7 @@ import de.peaqe.latetimeclan.inventory.ClanMemberEditPage;
 import de.peaqe.latetimeclan.inventory.ClanMemberPage;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
-import de.peaqe.latetimeclan.util.UUIDFetcher;
+import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

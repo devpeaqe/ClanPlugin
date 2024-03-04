@@ -1,4 +1,4 @@
-package de.peaqe.latetimeclan.util;
+package de.peaqe.latetimeclan.util.heads;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,14 +16,14 @@ import java.util.UUID;
 
 /**
  *
- * PlayerHeadFetcher fetches player heads as ItemStacks and provides methods to serialize and deserialize them.
+ * Base64Compiler fetches player heads as ItemStacks and provides methods to serialize and deserialize them.
  *
  * @author peaqe
  * @version 1.0
  * @since 21.02.2024 | 19:40 Uhr
  *
  */
-public class PlayerHeadFetcher {
+public class Base64Compiler {
 
     /**
      * Retrieves the head of the player with the given UUID.

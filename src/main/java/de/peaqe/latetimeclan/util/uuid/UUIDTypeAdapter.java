@@ -1,4 +1,4 @@
-package de.peaqe.latetimeclan.util;
+package de.peaqe.latetimeclan.util.uuid;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

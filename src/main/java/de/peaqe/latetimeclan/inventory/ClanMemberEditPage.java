@@ -5,7 +5,7 @@ import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.ItemBuilder;
-import de.peaqe.latetimeclan.util.PlayerHeadFetcher;
+import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -51,12 +51,12 @@ public class ClanMemberEditPage {
             );
         }
 
-        var clanTargetSkull = PlayerHeadFetcher.getPlayerHeadFromUUID(target.getUniqueId());
+        var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(target.getUniqueId());
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
                 .setDisplayName(" §8• §e" + target.getName())
                 .addLore(
                         " ",
-                        "§8• §6Rang: §a" + target.getClanGroup().getName()
+                        "§8• §7Gruppe: " + target.getClanGroup().getColor() + target.getClanGroup().getName()
                 )
                 .build();
 

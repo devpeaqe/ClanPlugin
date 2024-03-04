@@ -1,8 +1,7 @@
-package de.peaqe.latetimeclan.util;
+package de.peaqe.latetimeclan.util.uuid;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.peaqe.latetimeclan.util.uuid.LocalUniqueIdDatabase;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

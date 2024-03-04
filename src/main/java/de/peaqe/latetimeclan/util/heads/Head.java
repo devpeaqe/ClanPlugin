@@ -1,6 +1,5 @@
 package de.peaqe.latetimeclan.util.heads;
 
-import de.peaqe.latetimeclan.util.PlayerHeadFetcher;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,7 +35,7 @@ public enum Head {
     public static ItemStack compile(Head head) {
         try {
 
-            var item = PlayerHeadFetcher.fromBase64(head.getBase64());
+            var item = Base64Compiler.fromBase64(head.getBase64());
             if (item == null) return new ItemStack(Material.GRASS);
 
             return item;

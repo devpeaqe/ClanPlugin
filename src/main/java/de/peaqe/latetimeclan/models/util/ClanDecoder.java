@@ -4,7 +4,7 @@ import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
-import de.peaqe.latetimeclan.provider.util.Property;
+import de.peaqe.latetimeclan.provider.util.ClanProperty;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -27,7 +27,7 @@ public class ClanDecoder {
     public static ClanModel getClanModel(UUID clanFounderUUID) {
         try {
             return LateTimeClan.getInstance().getClanDatabase()
-                    .getClanModelByCondition(Property.CLAN_FOUNDER_UUID, clanFounderUUID.toString());
+                    .getClanModelByCondition(ClanProperty.CLAN_FOUNDER_UUID, clanFounderUUID.toString());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

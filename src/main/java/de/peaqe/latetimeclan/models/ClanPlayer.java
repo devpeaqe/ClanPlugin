@@ -2,7 +2,8 @@ package de.peaqe.latetimeclan.models;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.util.ClanAction;
-import de.peaqe.latetimeclan.util.UUIDFetcher;
+import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -75,6 +76,31 @@ public class ClanPlayer {
 
         clan.setMembers(members);
         clan.reload();
+    }
+
+    public void sendMessage(String message) {
+
+        var bukkitOnlinePlayer = Bukkit.getPlayer(this.uniqueId);
+
+        if (bukkitOnlinePlayer != null) {
+            bukkitOnlinePlayer.sendMessage(LateTimeClan.getInstance().getMessages().compileMessage(
+                    message.replace("%s",
+                            "§e«« §c" +
+                            "An dieser Stelle ist ein Fehler aufgetreten.".toUpperCase() +
+                            "§e »» §7")
+            ));
+        }
+    }
+
+    public void sendMessage(String message, String... highlights) {
+
+        var bukkitOnlinePlayer = Bukkit.getPlayer(this.uniqueId);
+
+        if (bukkitOnlinePlayer != null) {
+            bukkitOnlinePlayer.sendMessage(LateTimeClan.getInstance().getMessages().compileMessage(
+                    message, highlights
+            ));
+        }
     }
 
     public void reload() {

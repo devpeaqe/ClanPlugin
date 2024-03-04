@@ -5,7 +5,7 @@ import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.ItemBuilder;
-import de.peaqe.latetimeclan.util.PlayerHeadFetcher;
+import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -57,14 +57,14 @@ public class ClanInfoPage {
         var clanOwnerUUID = UUID.fromString(clanModel.getClanFounderUUID());
         var clanOwnerName = ClanPlayer.fromPlayer(clanOwnerUUID).getName();
 
-        var clanOwnerSkull = PlayerHeadFetcher.getPlayerHeadFromUUID(clanOwnerUUID);
+        var clanOwnerSkull = Base64Compiler.getPlayerHeadFromUUID(clanOwnerUUID);
         final var clanNameItem = new ItemBuilder(clanOwnerSkull)
                 .setDisplayName(" §8• §e" + clanModel.getName())
                 .addLore(
                         " ",
-                        "§8• §6Clan-Tag: §a" + clanModel.getTag(),
-                        "§8• §6Mitglieder: §a" + clanModel.getMembers().size() + "§8/§c" + clanModel.getMaxSize(),
-                        "§8• §6Besitzer: §a" + clanOwnerName
+                        "§8• §7Clan-Tag: §a" + clanModel.getTag(),
+                        "§8• §7Mitglieder: §a" + clanModel.getMembers().size() + "§8/§c" + clanModel.getMaxSize(),
+                        "§8• §7Besitzer: §4" + clanOwnerName
                 )
                 .glow()
                 .build();
@@ -75,7 +75,7 @@ public class ClanInfoPage {
                 .addLore(
                         " ",
                         "§8• §7Zeige dir die aktuellen Mitglieder des Clans an.",
-                        "§8• §6Mitglieder: §a" + clanModel.getMembers().size() + "§8/§c" + clanModel.getMaxSize()
+                        "§8• §7Mitglieder: §a" + clanModel.getMembers().size() + "§8/§c" + clanModel.getMaxSize()
                 )
                 .build();
 

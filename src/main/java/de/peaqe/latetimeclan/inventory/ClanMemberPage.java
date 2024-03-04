@@ -4,13 +4,14 @@ import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.provider.util.HeadProperty;
 import de.peaqe.latetimeclan.util.ItemBuilder;
-import de.peaqe.latetimeclan.util.PlayerHeadFetcher;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Comparator;
 import java.util.TreeMap;
@@ -68,7 +69,11 @@ public class ClanMemberPage {
             var tempClanGroupModel = (ClanGroupModel) clanGroupModel;
 
             var clanPlayer = ClanPlayer.fromPlayer(uuid);
-            var playerHead = new ItemBuilder(PlayerHeadFetcher.getPlayerHeadFromUUID(uuid))
+
+            var clanPlayerHead = this.lateTimeClan.getHeadDatabase().getHead(HeadProperty.UUID, uuid.toString());
+            if (clanPlayerHead == null) clanPlayerHead = new ItemStack(Material.ZOMBIE_HEAD);
+
+            var playerHead = new ItemBuilder(clanPlayerHead)
                     .setDisplayName("§8• §a" + clanPlayer.getName())
                     .addLore(
                             " ",

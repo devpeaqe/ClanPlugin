@@ -5,22 +5,19 @@ package de.peaqe.latetimeclan.provider.util;
  *
  * @author peaqe
  * @version 1.0
- * @since 18.02.2024 | 08:20 Uhr
+ * @since 04.03.2024 | 17:18 Uhr
  * *
  */
 
-public enum Property {
+public enum HeadProperty {
 
     NAME("name"),
-    TAG("tag"),
-    CLAN_INVITATION_STATUS("clan_invitation_status"),
-    CLAN_FOUNDER_UUID("clan_founder_uuid"),
-    MAX_SIZE("max_size"),
-    MEMBERS("members");
+    UUID("uniqueId"),
+    HEAD("base64");
 
     private final String value;
 
-    Property(String value) {
+    HeadProperty(String value) {
         this.value = value;
     }
 
