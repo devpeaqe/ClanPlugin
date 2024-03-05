@@ -8,6 +8,7 @@ import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.provider.ClanDatabase;
 import de.peaqe.latetimeclan.provider.HeadDatabase;
 import de.peaqe.latetimeclan.test.TestCommand;
+import de.peaqe.latetimeclan.util.manager.HeadManager;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,6 +26,7 @@ public final class LateTimeClan extends JavaPlugin {
     //private DatabaseCache databaseCache;
     private InvitationManager invitationManager;
     public Map<UUID, ClanGroupModel> cache;
+    public HeadManager headManager;
 
     @Override
     public void onEnable() {
@@ -49,6 +51,8 @@ public final class LateTimeClan extends JavaPlugin {
                 this.databaseConfig.get("database"),
                 this.databaseConfig.getInt("port")
         );
+
+        this.headManager = new HeadManager(this);
 
         //this.databaseCache = this.clanDatabase.getDatabaseCache();
         this.invitationManager = new InvitationManager();
@@ -104,5 +108,9 @@ public final class LateTimeClan extends JavaPlugin {
 
     public HeadDatabase getHeadDatabase() {
         return headDatabase;
+    }
+
+    public HeadManager getHeadManager() {
+        return headManager;
     }
 }

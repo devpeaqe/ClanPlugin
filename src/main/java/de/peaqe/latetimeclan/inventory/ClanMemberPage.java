@@ -11,7 +11,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Comparator;
 import java.util.TreeMap;
@@ -71,7 +70,7 @@ public class ClanMemberPage {
             var clanPlayer = ClanPlayer.fromPlayer(uuid);
 
             var clanPlayerHead = this.lateTimeClan.getHeadDatabase().getHead(HeadProperty.UUID, uuid.toString());
-            if (clanPlayerHead == null) clanPlayerHead = new ItemStack(Material.ZOMBIE_HEAD);
+            if (clanPlayerHead == null) clanPlayerHead = this.lateTimeClan.getHeadManager().registerHead(uuid);
 
             var playerHead = new ItemBuilder(clanPlayerHead)
                     .setDisplayName("§8• §a" + clanPlayer.getName())

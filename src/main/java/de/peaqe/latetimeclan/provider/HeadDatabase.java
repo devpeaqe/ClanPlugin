@@ -81,8 +81,8 @@ public class HeadDatabase {
     }
 
     public void insertHead(String name, UUID uuid, ItemStack itemStack) {
-        var headBase64 = Base64Compiler.toBase64(itemStack);
 
+        var headBase64 = Base64Compiler.toBase64(itemStack);
         if (this.headCache.containsValue(headBase64) || this.headCache.containsKey(uuid)) return;
 
         var query = "INSERT INTO latetime.heads (`" +
@@ -95,7 +95,7 @@ public class HeadDatabase {
         this.connect();
         try (var statement = this.connection.prepareStatement(query)) {
 
-            statement.setString(1, name);
+            statement.setString(1, name.toLowerCase());
             statement.setString(2, uuid.toString());
             statement.setString(3, headBase64);
 
@@ -117,6 +117,7 @@ public class HeadDatabase {
 
         if (string.isEmpty()) return null;
 
+        if (headProperty.equals(HeadProperty.NAME)) string = string.toLowerCase();
         if (headProperty.equals(HeadProperty.HEAD) && this.headCache.containsValue(string)) {
             try {
                 return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));

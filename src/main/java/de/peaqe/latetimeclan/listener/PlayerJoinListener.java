@@ -32,8 +32,6 @@ public class PlayerJoinListener implements Listener {
 
         var player = event.getPlayer();
 
-        // Instert player head into database
-
         var playerSkull = new ItemStack(Material.PLAYER_HEAD);
         var playerSkullMeta = (SkullMeta) playerSkull.getItemMeta();
 
