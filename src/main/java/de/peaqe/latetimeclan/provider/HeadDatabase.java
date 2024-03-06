@@ -7,7 +7,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -48,7 +51,7 @@ public class HeadDatabase {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS latetime.heads (" +
                     "  `" + HeadProperty.NAME.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + HeadProperty.UUID.getValue() + "` VARCHAR(255) NOT NULL," +
-                    "  `" + HeadProperty.HEAD.getValue() + "` VARCHAR(255) NOT NULL," +
+                    "  `" + HeadProperty.HEAD.getValue() + "` BLOB NOT NULL," +
                     "  PRIMARY KEY (`" + HeadProperty.UUID.getValue() + "`)" +
                     ")");
         } catch (SQLException e) {
@@ -82,34 +85,45 @@ public class HeadDatabase {
 
     public void insertHead(String name, UUID uuid, ItemStack itemStack) {
 
+        System.out.println(1);
+
         var headBase64 = Base64Compiler.toBase64(itemStack);
         if (this.headCache.containsValue(headBase64) || this.headCache.containsKey(uuid)) return;
+
+        System.out.println(2);
 
         var query = "INSERT INTO latetime.heads (`" +
                 HeadProperty.NAME.getValue() + "`, `" +
                 HeadProperty.UUID.getValue() + "`, `" +
                 HeadProperty.HEAD.getValue() +
                 "`) VALUES (?, ?, ?) " +
-                "ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `head` = VALUES(`head`)";
+                "ON DUPLICATE KEY UPDATE `" +
+                HeadProperty.NAME.getValue() + "` = VALUES(`" + HeadProperty.NAME.getValue() + "`), `" +
+                HeadProperty.HEAD.getValue() + "` = VALUES(`" + HeadProperty.HEAD.getValue() + "`);";
 
         this.connect();
         try (var statement = this.connection.prepareStatement(query)) {
 
+            System.out.println(3);
             statement.setString(1, name.toLowerCase());
             statement.setString(2, uuid.toString());
             statement.setString(3, headBase64);
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
+                System.out.println(4);
                 this.headCache.put(uuid, headBase64);
             }
 
         } catch (SQLException e) {
+            System.out.println(5);
             Bukkit.getConsoleSender().sendMessage("§cError executing SQL query: " + e.getMessage());
             throw new RuntimeException(e);
         } finally {
+            System.out.println(6);
             this.close();
         }
+        System.out.println(7);
     }
 
     @Nullable
@@ -146,6 +160,13 @@ public class HeadDatabase {
             var resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
+
+                if (headProperty.equals(HeadProperty.HEAD)) {
+                    var headBase64 = this.convertBlobToString(resultSet.getBlob(headProperty.getValue()));
+                    this.headCache.put(UUID.fromString(string), headBase64);
+                    return Base64Compiler.fromBase64(headBase64);
+                }
+
                 var headBase64 = resultSet.getString(headProperty.getValue());
                 this.headCache.put(UUID.fromString(string), headBase64);
                 return Base64Compiler.fromBase64(headBase64);
@@ -162,6 +183,28 @@ public class HeadDatabase {
 
     public boolean headExists(HeadProperty headProperty, String string) {
         return this.getHead(headProperty, string) != null;
+    }
+
+    private String convertBlobToString(Blob blob) {
+
+        if (blob == null) {
+            return null;
+        }
+
+        try (InputStream inputStream = blob.getBinaryStream()) {
+
+            var outputStream = new ByteArrayOutputStream();
+            var buffer = new byte[4096];
+            var bytesRead = 0;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            return outputStream.toString();
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

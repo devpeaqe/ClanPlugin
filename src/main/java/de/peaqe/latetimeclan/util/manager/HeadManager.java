@@ -53,6 +53,7 @@ public class HeadManager {
 
         var target = Bukkit.getOfflinePlayerIfCached(UUIDFetcher.getName(playerUniqueId));
         if (target == null) target = Bukkit.getOfflinePlayer(playerUniqueId);
+        if (!target.hasPlayedBefore()) return null;
 
         headMeta.setOwningPlayer(target);
         head.setItemMeta(headMeta);

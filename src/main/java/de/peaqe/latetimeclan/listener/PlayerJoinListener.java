@@ -1,6 +1,7 @@
 package de.peaqe.latetimeclan.listener;
 
 import de.peaqe.latetimeclan.LateTimeClan;
+import de.peaqe.latetimeclan.provider.util.HeadProperty;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -39,6 +40,20 @@ public class PlayerJoinListener implements Listener {
         playerSkull.setItemMeta(playerSkullMeta);
 
         this.lateTimeClan.getHeadDatabase().insertHead(player.getName(), player.getUniqueId(), playerSkull);
+
+        /**
+         * @TEST: HEAD
+         */
+        var headItem = this.lateTimeClan.getHeadDatabase().getHead(HeadProperty.UUID, player.getUniqueId().toString());
+
+        if (headItem == null) {
+            player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                    "§cEs ist ein Fehler aufgetreten!"
+            ));
+            return;
+        }
+
+        player.getInventory().addItem(headItem);
 
         // TODO: Clan notify
     }

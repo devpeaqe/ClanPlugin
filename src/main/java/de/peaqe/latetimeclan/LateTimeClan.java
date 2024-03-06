@@ -68,6 +68,7 @@ public final class LateTimeClan extends JavaPlugin {
         var clanMemberChangeGroupPageListener = new ClanMemberChangeGroupPageListener(this);
         new ClanMemberKickConfirmPageListener(this);
         new ClanMemberChangeGroupConfirmPageListener(this);
+        new PlayerJoinListener(this);
 
         cache = clanMemberChangeGroupPageListener.getCache();
 
