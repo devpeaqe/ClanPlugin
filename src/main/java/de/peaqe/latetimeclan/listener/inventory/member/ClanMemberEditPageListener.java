@@ -1,14 +1,14 @@
-package de.peaqe.latetimeclan.listener;
+package de.peaqe.latetimeclan.listener.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.inventory.ClanMemberEditPage;
-import de.peaqe.latetimeclan.inventory.ClanMemberPage;
+import de.peaqe.latetimeclan.inventory.member.ClanMemberChangeGroupPage;
+import de.peaqe.latetimeclan.inventory.member.ClanMemberEditPage;
+import de.peaqe.latetimeclan.inventory.member.ClanMemberKickConfirmPage;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,11 +24,11 @@ import org.bukkit.inventory.ItemStack;
  * *
  */
 
-public class ClanMemberKickConfirmPageListener implements Listener {
+public class ClanMemberEditPageListener implements Listener {
 
     private final LateTimeClan lateTimeClan;
 
-    public ClanMemberKickConfirmPageListener(LateTimeClan lateTimeClan) {
+    public ClanMemberEditPageListener(LateTimeClan lateTimeClan) {
         this.lateTimeClan = lateTimeClan;
         Bukkit.getPluginManager().registerEvents(this, this.lateTimeClan);
     }
@@ -40,7 +40,7 @@ public class ClanMemberKickConfirmPageListener implements Listener {
         if (event.getClickedInventory() == null) return;
         if (!Component.text(event.getView().getOriginalTitle()).equals(
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Mitglied rausschmeißen"
+                        "§8Mitglieder verwalten"
                 ))
         )) return;
 
@@ -49,14 +49,8 @@ public class ClanMemberKickConfirmPageListener implements Listener {
         switch (event.getSlot()) {
 
             case 20 -> {
-                // DECLINE
-                player.closeInventory();
-                player.openInventory(new ClanMemberPage(this.lateTimeClan, ClanPlayer.fromPlayer(player).getClan()).getInventory());
-            }
 
-            case 24 -> {
-
-                // CONFIRM
+                // KICK
                 var clanPlayer = ClanPlayer.fromPlayer(player);
 
                 var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
@@ -64,19 +58,20 @@ public class ClanMemberKickConfirmPageListener implements Listener {
 
                 if (ClanMemberEditPage.isPermitted(clanPlayer, target, ClanAction.KICK)) {
 
-                    // Kick target from clan
+                    player.closeInventory();
+                    player.openInventory(new ClanMemberKickConfirmPage(this.lateTimeClan, clanPlayer.getClan()).getInventory(
+                            clanPlayer, target
+                    ));
+
+                    /*
                     clanPlayer.getClan().kick(target);
 
-                    // Sender notify
                     player.closeInventory();
-                    player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
                     player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
                             "Der Spieler %s wurde erfolgreich aus deinem Clan geschmissen!",
                             target.getName()
                     ));
-                    player.openInventory(new ClanMemberPage(this.lateTimeClan, clanPlayer.getClan()).getInventory());
 
-                    // Target notify
                     var targetPlayer = Bukkit.getPlayer(target.getUniqueId());
                     if (targetPlayer != null) {
                         targetPlayer.sendMessage(this.lateTimeClan.getMessages().compileMessage(
@@ -84,17 +79,37 @@ public class ClanMemberKickConfirmPageListener implements Listener {
                                 clanPlayer.getClan().getName()
                         ));
                     }
+                     */
 
-                    // Clan notify
-                    // TODO: Global notify
+                } else {
 
+                    player.closeInventory();
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Du hast nicht die benötigte Berechtigung um %s aus dem Clan zu werfen!",
+                            target.getName()
+                    ));
+                }
+            }
+
+            case 24 -> {
+
+                // CHANGE GROUP
+                var clanPlayer = ClanPlayer.fromPlayer(player);
+                if (clanPlayer == null) return;
+
+                var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
+                if (target == null) return;
+
+                if (clanPlayer.hasPermission(ClanAction.CHANGE_GROUP)) {
+                    player.closeInventory();
+                    player.openInventory(new ClanMemberChangeGroupPage(this.lateTimeClan, clanPlayer.getClan())
+                            .getInventory(clanPlayer, target));
                     return;
                 }
 
-                // If it is not permitted
                 player.closeInventory();
                 player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                        "§cDu bist derzeit nicht berechtigt %s §caus dem Clan werfen zu können!",
+                        "Du hast nicht die benötigte Berechtigung um die Gruppe von %s zu bearbeiten!",
                         target.getName()
                 ));
 

@@ -1,7 +1,6 @@
-package de.peaqe.latetimeclan.inventory;
+package de.peaqe.latetimeclan.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
@@ -21,25 +20,25 @@ import org.bukkit.inventory.Inventory;
  * *
  */
 
-public class ClanMemberChangeGroupConfirmPage {
+public class ClanMemberKickConfirmPage {
 
     private final LateTimeClan lateTimeClan;
     private final Inventory inventory;
     private final ClanModel clanModel;
 
-    public ClanMemberChangeGroupConfirmPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
+    public ClanMemberKickConfirmPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
         this.lateTimeClan = lateTimeClan;
         this.clanModel = clanModel;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*4,
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Gruppenwechsel bestätigen"
+                        "§8Mitglied rausschmeißen"
                 ))
         );
     }
 
-    public void initializeInventory(ClanPlayer sender, ClanPlayer target, ClanGroupModel clanGroupModel) {
+    public void initializeInventory(ClanPlayer sender, ClanPlayer target) {
 
         var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
 
@@ -75,8 +74,8 @@ public class ClanMemberChangeGroupConfirmPage {
                 .setDisplayName("§8• §aAkzeptieren")
                 .addLore(
                         " ",
-                        "§8• §7Ändere die Clan-Gruppe von §e" + target.getName() + "§7 zum " +
-                                clanGroupModel.getColor() + clanGroupModel.getName() + "§7."
+                        "§8• §7Schmeiße §e" + target.getName() + "§7 aus dem Clan.",
+                        "§8• §c§lVORSICHT! §r§cDieser Vorgang kann §nnicht§r §crückgängig gemacht werden!"
                 )
                 .glow(isPermitted(sender, target, ClanAction.KICK))
                 .build();
@@ -87,8 +86,8 @@ public class ClanMemberChangeGroupConfirmPage {
 
     }
 
-    public Inventory getInventory(ClanPlayer sender, ClanPlayer target, ClanGroupModel clanGroupModel) {
-        this.initializeInventory(sender, target, clanGroupModel);
+    public Inventory getInventory(ClanPlayer sender, ClanPlayer target) {
+        this.initializeInventory(sender, target);
         return inventory;
     }
 

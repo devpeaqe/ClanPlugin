@@ -1,9 +1,8 @@
-package de.peaqe.latetimeclan.listener;
+package de.peaqe.latetimeclan.listener.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.inventory.ClanMemberChangeGroupPage;
-import de.peaqe.latetimeclan.inventory.ClanMemberEditPage;
-import de.peaqe.latetimeclan.inventory.ClanMemberKickConfirmPage;
+import de.peaqe.latetimeclan.inventory.member.ClanMemberEditPage;
+import de.peaqe.latetimeclan.inventory.member.ClanMemberPage;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
@@ -24,11 +23,11 @@ import org.bukkit.inventory.ItemStack;
  * *
  */
 
-public class ClanMemberEditPageListener implements Listener {
+public class ClanMemberChangeGroupConfirmPageListener implements Listener {
 
     private final LateTimeClan lateTimeClan;
 
-    public ClanMemberEditPageListener(LateTimeClan lateTimeClan) {
+    public ClanMemberChangeGroupConfirmPageListener(LateTimeClan lateTimeClan) {
         this.lateTimeClan = lateTimeClan;
         Bukkit.getPluginManager().registerEvents(this, this.lateTimeClan);
     }
@@ -40,7 +39,7 @@ public class ClanMemberEditPageListener implements Listener {
         if (event.getClickedInventory() == null) return;
         if (!Component.text(event.getView().getOriginalTitle()).equals(
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Mitglieder verwalten"
+                        "§8Gruppenwechsel bestätigen"
                 ))
         )) return;
 
@@ -49,67 +48,49 @@ public class ClanMemberEditPageListener implements Listener {
         switch (event.getSlot()) {
 
             case 20 -> {
-
-                // KICK
-                var clanPlayer = ClanPlayer.fromPlayer(player);
+                // DECLINE
+                player.closeInventory();
 
                 var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
                 if (target == null) return;
 
-                if (ClanMemberEditPage.isPermitted(clanPlayer, target, ClanAction.KICK)) {
+                this.lateTimeClan.getCache().remove(target.getUniqueId());
 
-                    player.closeInventory();
-                    player.openInventory(new ClanMemberKickConfirmPage(this.lateTimeClan, clanPlayer.getClan()).getInventory(
-                            clanPlayer, target
-                    ));
+                player.openInventory(new ClanMemberPage(this.lateTimeClan, ClanPlayer.fromPlayer(player)
+                        .getClan()).getInventory());
 
-                    /*
-                    clanPlayer.getClan().kick(target);
-
-                    player.closeInventory();
-                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                            "Der Spieler %s wurde erfolgreich aus deinem Clan geschmissen!",
-                            target.getName()
-                    ));
-
-                    var targetPlayer = Bukkit.getPlayer(target.getUniqueId());
-                    if (targetPlayer != null) {
-                        targetPlayer.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                                "Du wurdest aus dem Clan %s geschmissen!",
-                                clanPlayer.getClan().getName()
-                        ));
-                    }
-                     */
-
-                } else {
-
-                    player.closeInventory();
-                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                            "Du hast nicht die benötigte Berechtigung um %s aus dem Clan zu werfen!",
-                            target.getName()
-                    ));
-                }
+                return;
             }
 
             case 24 -> {
 
-                // CHANGE GROUP
+                // CONFIRM
                 var clanPlayer = ClanPlayer.fromPlayer(player);
-                if (clanPlayer == null) return;
 
                 var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
                 if (target == null) return;
 
-                if (clanPlayer.hasPermission(ClanAction.CHANGE_GROUP)) {
+                if (ClanMemberEditPage.isPermitted(clanPlayer, target, ClanAction.CHANGE_GROUP)) {
+
+                    if (!this.lateTimeClan.getCache().containsKey(target.getUniqueId())) return;
+                    var clanGroupModel = this.lateTimeClan.getCache().get(target.getUniqueId());
+
+                    if (target.getClanGroup().equals(clanGroupModel)) return;
+
+                    target.setClanGroup(clanGroupModel);
+
                     player.closeInventory();
-                    player.openInventory(new ClanMemberChangeGroupPage(this.lateTimeClan, clanPlayer.getClan())
-                            .getInventory(clanPlayer, target));
+
+                    target.getClan().reload();
+                    player.openInventory(new ClanMemberPage(this.lateTimeClan, clanPlayer.getClan()).getInventory());
+
                     return;
                 }
 
+                // If it is not permitted
                 player.closeInventory();
                 player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                        "Du hast nicht die benötigte Berechtigung um die Gruppe von %s zu bearbeiten!",
+                        "§cDu bist derzeit nicht berechtigt die Gruppe von %s §czu bearbeiten!",
                         target.getName()
                 ));
 
@@ -133,6 +114,5 @@ public class ClanMemberEditPageListener implements Listener {
 
         return ClanPlayer.fromPlayer(targetUUID);
     }
-
 
 }

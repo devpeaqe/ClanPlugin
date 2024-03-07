@@ -1,9 +1,9 @@
-package de.peaqe.latetimeclan.inventory;
+package de.peaqe.latetimeclan.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
+import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
-import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -20,27 +20,27 @@ import org.bukkit.inventory.Inventory;
  * *
  */
 
-public class ClanMemberKickConfirmPage {
+public class ClanSettingsPage {
 
     private final LateTimeClan lateTimeClan;
     private final Inventory inventory;
     private final ClanModel clanModel;
 
-    public ClanMemberKickConfirmPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
+    public ClanSettingsPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
         this.lateTimeClan = lateTimeClan;
         this.clanModel = clanModel;
         this.inventory = Bukkit.createInventory(
                 null,
-                9*4,
+                9*5,
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Mitglied rausschmeißen"
+                        "§8Clan Einstellungen"
                 ))
         );
     }
 
     public void initializeInventory(ClanPlayer sender, ClanPlayer target) {
 
-        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
+        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
 
         for (var borderItemSlot : borderItemSlots) {
             this.inventory.setItem(
@@ -55,46 +55,45 @@ public class ClanMemberKickConfirmPage {
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
                 .setDisplayName(" §8• §e" + target.getName())
                 .addLore(
-                        " ",
-                        "§8• §7Gruppe: " + target.getClanGroup().getColor() + target.getClanGroup().getName()
+                        "§8» Looren kommen bald..."
                 )
                 .build();
 
 
-        final var decline = new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
-                .setDisplayName(" §8• §cAblehnen")
+        final var clanStatus = new ItemBuilder(Material.SPRUCE_DOOR)
+                .setDisplayName(" §8• §eClan Status")
                 .addLore(
-                        " ",
-                        "§8• §7Kehre zurück zur Mitgliederliste"
+                        "§8» Looren kommen bald..."
                 )
-                .glow()
+                .glow(target.getClanGroup().equals(ClanGroupModel.MEMBER))
                 .build();
 
-        final var confirm = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE)
-                .setDisplayName("§8• §aAkzeptieren")
+        final var moderator = new ItemBuilder(Material.PLAYER_HEAD)
+                .setDisplayName(" §8• §3Moderator")
                 .addLore(
-                        " ",
-                        "§8• §7Schmeiße §e" + target.getName() + "§7 aus dem Clan.",
-                        "§8• §c§lVORSICHT! §r§cDieser Vorgang kann §nnicht§r §crückgängig gemacht werden!"
+                        "§8» Looren kommen bald..."
                 )
-                .glow(isPermitted(sender, target, ClanAction.KICK))
+                .glow(target.getClanGroup().equals(ClanGroupModel.MODERATOR))
+                .build();
+
+        final var leader = new ItemBuilder(Material.PLAYER_HEAD)
+                .setDisplayName(" §8• §cLeitung")
+                .addLore(
+                        "§8» Looren kommen bald..."
+                )
+                .glow(target.getClanGroup().equals(ClanGroupModel.MANAGER))
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
-        this.inventory.setItem(20, decline);
-        this.inventory.setItem(24, confirm);
+        this.inventory.setItem(29, clanStatus);
+        this.inventory.setItem(31, moderator);
+        this.inventory.setItem(33, leader);
 
     }
 
     public Inventory getInventory(ClanPlayer sender, ClanPlayer target) {
         this.initializeInventory(sender, target);
         return inventory;
-    }
-
-    public static boolean isPermitted(ClanPlayer sender, ClanPlayer target, ClanAction clanAction) {
-        return (sender.hasPermission(clanAction) &&
-                sender.getClanGroup().getPermissionLevel() > target.getClanGroup().getPermissionLevel());
-
     }
 
 }

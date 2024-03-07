@@ -1,4 +1,4 @@
-package de.peaqe.latetimeclan.listener;
+package de.peaqe.latetimeclan.listener.connection;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.provider.util.HeadProperty;

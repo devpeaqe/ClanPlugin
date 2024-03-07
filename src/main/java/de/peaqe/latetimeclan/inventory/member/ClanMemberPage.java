@@ -1,4 +1,4 @@
-package de.peaqe.latetimeclan.inventory;
+package de.peaqe.latetimeclan.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanGroupModel;

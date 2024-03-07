@@ -1,8 +1,8 @@
-package de.peaqe.latetimeclan.listener;
+package de.peaqe.latetimeclan.listener.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.inventory.ClanMemberChangeGroupConfirmPage;
-import de.peaqe.latetimeclan.inventory.ClanMemberEditPage;
+import de.peaqe.latetimeclan.inventory.member.ClanMemberChangeGroupConfirmPage;
+import de.peaqe.latetimeclan.inventory.member.ClanMemberEditPage;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
