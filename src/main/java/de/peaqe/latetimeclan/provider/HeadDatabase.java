@@ -14,6 +14,7 @@ import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -98,8 +99,7 @@ public class HeadDatabase {
                 HeadProperty.HEAD.getValue() +
                 "`) VALUES (?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE `" +
-                HeadProperty.NAME.getValue() + "` = VALUES(`" + HeadProperty.NAME.getValue() + "`), `" +
-                HeadProperty.HEAD.getValue() + "` = VALUES(`" + HeadProperty.HEAD.getValue() + "`);";
+                HeadProperty.NAME.getValue() + "` = VALUES(`" + HeadProperty.NAME.getValue() + "`);";
 
         this.connect();
         try (var statement = this.connection.prepareStatement(query)) {
@@ -107,7 +107,7 @@ public class HeadDatabase {
             System.out.println(3);
             statement.setString(1, name.toLowerCase());
             statement.setString(2, uuid.toString());
-            statement.setString(3, headBase64);
+            statement.setBytes(3, Base64.getDecoder().decode(headBase64));
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
@@ -133,19 +133,11 @@ public class HeadDatabase {
 
         if (headProperty.equals(HeadProperty.NAME)) string = string.toLowerCase();
         if (headProperty.equals(HeadProperty.HEAD) && this.headCache.containsValue(string)) {
-            try {
-                return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
         }
 
         if (headProperty.equals(HeadProperty.UUID) && this.headCache.containsKey(UUID.fromString(string))) {
-            try {
-                return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
         }
 
         var query = "SELECT `" + headProperty.getValue() + "` FROM latetime.heads WHERE `" + headProperty.getValue() + "` = ?";
@@ -172,7 +164,7 @@ public class HeadDatabase {
                 return Base64Compiler.fromBase64(headBase64);
             }
 
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             this.close();
