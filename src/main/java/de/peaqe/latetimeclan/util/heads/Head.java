@@ -3,8 +3,6 @@ package de.peaqe.latetimeclan.util.heads;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
-
 /**
  * *
  *
@@ -33,15 +31,11 @@ public enum Head {
     }
 
     public static ItemStack compile(Head head) {
-        try {
 
-            var item = Base64Compiler.fromBase64(head.getBase64());
-            if (item == null) return new ItemStack(Material.GRASS);
+        var item = Base64Compiler.fromBase64(head.getBase64());
+        if (item == null) return new ItemStack(Material.GRASS);
 
-            return item;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return item;
     }
 
 }

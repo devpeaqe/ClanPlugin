@@ -86,12 +86,8 @@ public class HeadDatabase {
 
     public void insertHead(String name, UUID uuid, ItemStack itemStack) {
 
-        System.out.println(1);
-
         var headBase64 = Base64Compiler.toBase64(itemStack);
         if (this.headCache.containsValue(headBase64) || this.headCache.containsKey(uuid)) return;
-
-        System.out.println(2);
 
         var query = "INSERT INTO latetime.heads (`" +
                 HeadProperty.NAME.getValue() + "`, `" +
@@ -104,26 +100,21 @@ public class HeadDatabase {
         this.connect();
         try (var statement = this.connection.prepareStatement(query)) {
 
-            System.out.println(3);
             statement.setString(1, name.toLowerCase());
             statement.setString(2, uuid.toString());
             statement.setBytes(3, Base64.getDecoder().decode(headBase64));
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println(4);
                 this.headCache.put(uuid, headBase64);
             }
 
         } catch (SQLException e) {
-            System.out.println(5);
             Bukkit.getConsoleSender().sendMessage("§cError executing SQL query: " + e.getMessage());
             throw new RuntimeException(e);
         } finally {
-            System.out.println(6);
             this.close();
         }
-        System.out.println(7);
     }
 
     @Nullable

@@ -1,5 +1,7 @@
 package de.peaqe.latetimeclan.util.heads;
 
+import de.peaqe.latetimeclan.LateTimeClan;
+import de.peaqe.latetimeclan.provider.util.HeadProperty;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -8,6 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.UUID;
 
 /**
  *
@@ -43,5 +46,9 @@ public class Base64Compiler {
         } catch (IOException | ClassNotFoundException e) {
             throw new IllegalStateException("Unable to load item stack.", e);
         }
+    }
+
+    public static ItemStack getPlayerHeadFromUUID(UUID clanOwnerUUID) {
+        return LateTimeClan.getInstance().getHeadDatabase().getHead(HeadProperty.UUID, clanOwnerUUID.toString());
     }
 }
