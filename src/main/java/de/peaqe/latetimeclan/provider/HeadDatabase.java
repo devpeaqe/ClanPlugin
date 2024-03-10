@@ -184,10 +184,13 @@ public class HeadDatabase {
                 outputStream.write(buffer, 0, bytesRead);
             }
 
-            return outputStream.toString();
+            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    public Map<UUID, String> getHeadCache() {
+        return headCache;
+    }
 }

@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan.listener.inventory.navigation;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberPage;
+import de.peaqe.latetimeclan.inventory.settings.ClanSettingsPage;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -49,13 +50,28 @@ public class ClanInfoPageListener implements Listener {
             }
 
             case 22 -> {
-                // 22 » Settings (Clan Leader)
+
+                var clanPlayer = ClanPlayer.fromPlayer(player);
+                if (clanPlayer == null) {
+                    player.closeInventory();
+                    return;
+                }
+
+                var clan = clanPlayer.getClan();
+
+                player.closeInventory();
+                player.openInventory(new ClanSettingsPage(this.lateTimeClan, clan).getInventory());
 
             }
 
             case 24 -> {
                 // 23 » Clan Member
                 var clanPlayer = ClanPlayer.fromPlayer(player);
+                if (clanPlayer == null) {
+                    player.closeInventory();
+                    return;
+                }
+
                 var clan = clanPlayer.getClan();
 
                 player.closeInventory();

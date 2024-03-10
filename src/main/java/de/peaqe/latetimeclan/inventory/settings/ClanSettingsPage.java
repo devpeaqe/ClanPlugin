@@ -1,15 +1,15 @@
 package de.peaqe.latetimeclan.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanModel;
-import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+
+import java.util.UUID;
 
 /**
  * *
@@ -38,7 +38,7 @@ public class ClanSettingsPage {
         );
     }
 
-    public void initializeInventory(ClanPlayer sender, ClanPlayer target) {
+    public void initializeInventory() {
 
         var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
 
@@ -51,9 +51,9 @@ public class ClanSettingsPage {
             );
         }
 
-        var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(target.getUniqueId());
+        var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanModel.getClanFounderUUID()));
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
-                .setDisplayName(" §8• §e" + target.getName())
+                .setDisplayName(" §8• §e" + clanModel.getName())
                 .addLore(
                         "§8» Looren kommen bald..."
                 )
@@ -65,7 +65,6 @@ public class ClanSettingsPage {
                 .addLore(
                         "§8» Looren kommen bald..."
                 )
-                .glow(target.getClanGroup().equals(ClanGroupModel.MEMBER))
                 .build();
 
         final var moderator = new ItemBuilder(Material.PLAYER_HEAD)
@@ -73,7 +72,6 @@ public class ClanSettingsPage {
                 .addLore(
                         "§8» Looren kommen bald..."
                 )
-                .glow(target.getClanGroup().equals(ClanGroupModel.MODERATOR))
                 .build();
 
         final var leader = new ItemBuilder(Material.PLAYER_HEAD)
@@ -81,7 +79,6 @@ public class ClanSettingsPage {
                 .addLore(
                         "§8» Looren kommen bald..."
                 )
-                .glow(target.getClanGroup().equals(ClanGroupModel.MANAGER))
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
@@ -91,8 +88,8 @@ public class ClanSettingsPage {
 
     }
 
-    public Inventory getInventory(ClanPlayer sender, ClanPlayer target) {
-        this.initializeInventory(sender, target);
+    public Inventory getInventory() {
+        this.initializeInventory();
         return inventory;
     }
 
