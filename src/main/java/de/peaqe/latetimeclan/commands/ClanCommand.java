@@ -4,6 +4,7 @@ import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
+import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
@@ -231,7 +232,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     clanName,
                     clanTag,
                     player.getUniqueId().toString(),
-                    "open",
+                    ClanInvitationStatus.OPEN,
                     10,
                     Map.of(
                             player.getUniqueId(), ClanGroupModel.OWNER,

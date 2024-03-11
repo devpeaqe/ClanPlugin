@@ -1,5 +1,6 @@
 package de.peaqe.latetimeclan.util.manager;
 
+import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanModel;
 
 import java.util.*;
@@ -87,7 +88,7 @@ class InvitationCache {
 
     public boolean isClanJoinable(ClanModel clanModel) {
         if (clanModel.getMaxSize() <= clanModel.getMembers().size()) return false;
-        return (!clanModel.getClanInvitationStatus().equalsIgnoreCase("closed"));
+        return (!clanModel.getClanInvitationStatus().equals(ClanInvitationStatus.CLOSED));
     }
 
     public Map<UUID, List<String>> getInvitations() {

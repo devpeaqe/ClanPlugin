@@ -16,6 +16,7 @@ public enum ClanAction {
     CHANGE_GROUP(2),
     PROMOTE(2),
     DEMOTE(2),
+    CHANGE_STATE(2),
     INVITE(1),
     KICK(1),
     CHAT(0);

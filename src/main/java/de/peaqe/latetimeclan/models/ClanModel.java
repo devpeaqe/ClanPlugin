@@ -16,11 +16,12 @@ import java.util.UUID;
 
 public class ClanModel {
 
-    private String name, tag, clanFounderUuid, clanInvitationStatus;
+    private String name, tag, clanFounderUuid;
+    private ClanInvitationStatus clanInvitationStatus;
     private int maxSize;
     private Map<UUID, ClanGroupModel> members;
 
-    public ClanModel(String name, String tag, String clanFounderUuid, String clanInvitationStatus, int maxSize, Map<UUID, ClanGroupModel> members) {
+    public ClanModel(String name, String tag, String clanFounderUuid, ClanInvitationStatus clanInvitationStatus, int maxSize, Map<UUID, ClanGroupModel> members) {
         this.name = name;
         this.tag = tag;
         this.clanFounderUuid = clanFounderUuid;
@@ -55,11 +56,11 @@ public class ClanModel {
         this.clanFounderUuid = clanFounderUuid;
     }
 
-    public String getClanInvitationStatus() {
+    public ClanInvitationStatus getClanInvitationStatus() {
         return clanInvitationStatus;
     }
 
-    public void setClanInvitationStatus(String clanInvitationStatus) {
+    public void setClanInvitationStatus(ClanInvitationStatus clanInvitationStatus) {
         this.clanInvitationStatus = clanInvitationStatus;
     }
 
@@ -111,3 +112,5 @@ public class ClanModel {
     }
 
 }
+
+

@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan.models.util;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
+import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.provider.util.ClanProperty;
@@ -70,7 +71,7 @@ public class ClanDecoder {
         return "Name: " + clan.getName() + "\n" +
                 "Tag: " + clan.getTag() + "\n" +
                 "Clan Founder UUID: " + clan.getClanFounderUUID() + "\n" +
-                "Clan Invitation Status: " + clan.getClanInvitationStatus() + "\n" +
+                "Clan Invitation Status: " + clan.getClanInvitationStatus().getStatus() + "\n" +
                 "Max Size: " + clan.getMaxSize() + "\n" +
                 "Members: " + mapToString(clan.getMembers()) + "\n";
     }
@@ -100,7 +101,7 @@ public class ClanDecoder {
                         clan.setClanFounderUUID(value);
                         break;
                     case "Clan Invitation Status":
-                        clan.setClanInvitationStatus(value);
+                        clan.setClanInvitationStatus(ClanInvitationStatus.getFromStatus(value));
                         break;
                     case "Max Size":
                         clan.setMaxSize(Integer.parseInt(value));

@@ -1,9 +1,11 @@
 package de.peaqe.latetimeclan.listener.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.inventory.settings.ClanSettingsChangeStatePage;
+import de.peaqe.latetimeclan.inventory.settings.ClanSettingsPage;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
+import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -26,12 +28,12 @@ import java.util.UUID;
  * *
  */
 
-public class ClanSettingsPageListener implements Listener {
+public class ClanSettingsChangeStatePageListener implements Listener {
 
     private final LateTimeClan lateTimeClan;
     private final Map<UUID, ClanGroupModel> cache;
 
-    public ClanSettingsPageListener(LateTimeClan lateTimeClan) {
+    public ClanSettingsChangeStatePageListener(LateTimeClan lateTimeClan) {
         this.lateTimeClan = lateTimeClan;
         Bukkit.getPluginManager().registerEvents(this, this.lateTimeClan);
         this.cache = new HashMap<>();
@@ -44,28 +46,41 @@ public class ClanSettingsPageListener implements Listener {
         if (event.getClickedInventory() == null) return;
         if (!Component.text(event.getView().getOriginalTitle()).equals(
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Clan Einstellungen"
+                        "§8Clan-Status ändern"
                 ))
         )) return;
 
         event.setCancelled(true);
 
         var clanPlayer = ClanPlayer.fromPlayer(player);
-
         if (clanPlayer == null) return;
+
+        var clan = clanPlayer.getClan();
+        if (clan == null) return;
+        if (!clanPlayer.hasPermission(ClanAction.CHANGE_STATE)) return;
 
         switch (event.getSlot()) {
 
             case 29 -> {
-                // Clan Status
+                clan.setClanInvitationStatus(ClanInvitationStatus.OPEN);
+                clan.reload();
                 player.closeInventory();
-                player.openInventory(new ClanSettingsChangeStatePage(this.lateTimeClan, clanPlayer.getClan())
-                        .getInventory());
+                player.openInventory(new ClanSettingsPage(this.lateTimeClan, clan).getInventory());
             }
 
-            case 31 -> {}
+            case 31 -> {
+                clan.setClanInvitationStatus(ClanInvitationStatus.INVITATION);
+                clan.reload();
+                player.closeInventory();
+                player.openInventory(new ClanSettingsPage(this.lateTimeClan, clan).getInventory());
+            }
 
-            case 33 -> {}
+            case 33 -> {
+                clan.setClanInvitationStatus(ClanInvitationStatus.CLOSED);
+                clan.reload();
+                player.closeInventory();
+                player.openInventory(new ClanSettingsPage(this.lateTimeClan, clan).getInventory());
+            }
 
         }
 

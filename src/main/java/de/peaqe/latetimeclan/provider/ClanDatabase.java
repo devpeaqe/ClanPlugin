@@ -1,6 +1,7 @@
 package de.peaqe.latetimeclan.provider;
 
 import de.peaqe.latetimeclan.models.ClanGroupModel;
+import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.util.ClanDecoder;
 import de.peaqe.latetimeclan.provider.util.ClanProperty;
@@ -108,7 +109,7 @@ public class ClanDatabase {
             statement.setString(1, clanModel.getName());
             statement.setString(2, clanModel.getTag().toLowerCase());
             statement.setString(3, clanModel.getClanFounderUUID());
-            statement.setString(4, clanModel.getClanInvitationStatus());
+            statement.setString(4, clanModel.getClanInvitationStatus().getStatus());
             statement.setInt(5, clanModel.getMaxSize());
             statement.setString(6, ClanDecoder.mapToString(clanModel.getMembers()));
 
@@ -176,7 +177,8 @@ public class ClanDatabase {
                         resultSet.getString(ClanProperty.NAME.getValue()),
                         resultSet.getString(ClanProperty.TAG.getValue()),
                         resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
-                        resultSet.getString(ClanProperty.CLAN_INVITATION_STATUS.getValue()),
+                        ClanInvitationStatus.getFromStatus(resultSet
+                                .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                         resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
                         ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue()))
                 );
@@ -218,7 +220,7 @@ public class ClanDatabase {
             statement.setString(1, clanModel.getName());
             statement.setString(2, clanModel.getTag().toLowerCase());
             statement.setString(3, clanModel.getClanFounderUUID());
-            statement.setString(4, clanModel.getClanInvitationStatus());
+            statement.setString(4, clanModel.getClanInvitationStatus().getStatus());
             statement.setInt(5, clanModel.getMaxSize());
             statement.setString(6, ClanDecoder.mapToString(clanModel.getMembers()));
             statement.setString(7, clanModel.getTag());
@@ -252,7 +254,8 @@ public class ClanDatabase {
                     resultSet.getString(ClanProperty.NAME.getValue()),
                     resultSet.getString(ClanProperty.TAG.getValue()),
                     resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
-                    resultSet.getString(ClanProperty.CLAN_INVITATION_STATUS.getValue()),
+                    ClanInvitationStatus.getFromStatus(resultSet
+                            .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                     resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
                     ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue()))
             );
@@ -309,7 +312,8 @@ public class ClanDatabase {
                         resultSet.getString(ClanProperty.NAME.getValue()),
                         resultSet.getString(ClanProperty.TAG.getValue()),
                         resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
-                        resultSet.getString(ClanProperty.CLAN_INVITATION_STATUS.getValue()),
+                        ClanInvitationStatus.getFromStatus(resultSet
+                                .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                         resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
                         ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue()))
                 );

@@ -3,6 +3,7 @@ package de.peaqe.latetimeclan.test;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
+import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanModel;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -50,7 +51,7 @@ public class TestCommand implements CommandExecutor, TabExecutor {
                         "Test123",
                         "Test",
                         randomFounder.toString(),
-                        "open",
+                        ClanInvitationStatus.OPEN,
                         10,
                         Map.of(
                                 randomFounder, ClanGroupModel.OWNER

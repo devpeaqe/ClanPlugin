@@ -5,6 +5,7 @@ import de.peaqe.latetimeclan.config.DatabaseConfig;
 import de.peaqe.latetimeclan.listener.connection.PlayerJoinListener;
 import de.peaqe.latetimeclan.listener.inventory.member.*;
 import de.peaqe.latetimeclan.listener.inventory.navigation.ClanInfoPageListener;
+import de.peaqe.latetimeclan.listener.inventory.settings.ClanSettingsChangeStatePageListener;
 import de.peaqe.latetimeclan.listener.inventory.settings.ClanSettingsPageListener;
 import de.peaqe.latetimeclan.listener.plugin.PluginDisableListener;
 import de.peaqe.latetimeclan.messages.Messages;
@@ -75,6 +76,7 @@ public final class LateTimeClan extends JavaPlugin {
         new PlayerJoinListener(this);
         new ClanSettingsPageListener(this);
         new PluginDisableListener(this);
+        new ClanSettingsChangeStatePageListener(this);
 
         cache = clanMemberChangeGroupPageListener.getCache();
 
