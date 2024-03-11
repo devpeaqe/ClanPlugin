@@ -15,8 +15,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -33,7 +31,7 @@ public class HeadDatabase {
     private final String hostname, username, password, database;
     private final int port;
     private Connection connection;
-    private final Map<UUID, String> headCache;
+    //private final Map<UUID, String> headCache;
 
     public HeadDatabase(String hostname, String username, String password, String database, int port) {
         this.hostname = hostname;
@@ -43,7 +41,7 @@ public class HeadDatabase {
         this.port = port;
 
         this.createTableIfNotExists();
-        this.headCache = new HashMap<>();
+        //this.headCache = new HashMap<>();
     }
 
     public void createTableIfNotExists() {
@@ -87,7 +85,7 @@ public class HeadDatabase {
     public void insertHead(String name, UUID uuid, ItemStack itemStack) {
 
         var headBase64 = Base64Compiler.toBase64(itemStack);
-        if (this.headCache.containsValue(headBase64) || this.headCache.containsKey(uuid)) return;
+        //if (this.headCache.containsValue(headBase64) || this.headCache.containsKey(uuid)) return;
 
         var query = "INSERT INTO latetime.heads (`" +
                 HeadProperty.NAME.getValue() + "`, `" +
@@ -106,7 +104,7 @@ public class HeadDatabase {
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
-                this.headCache.put(uuid, headBase64);
+                //this.headCache.put(uuid, headBase64);
             }
 
         } catch (SQLException e) {
@@ -123,13 +121,13 @@ public class HeadDatabase {
         if (string.isEmpty()) return null;
 
         if (headProperty.equals(HeadProperty.NAME)) string = string.toLowerCase();
-        if (headProperty.equals(HeadProperty.HEAD) && this.headCache.containsValue(string)) {
-            return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
-        }
+        //if (headProperty.equals(HeadProperty.HEAD) && this.headCache.containsValue(string)) {
+        //    return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
+        //}
 
-        if (headProperty.equals(HeadProperty.UUID) && this.headCache.containsKey(UUID.fromString(string))) {
-            return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
-        }
+        //if (headProperty.equals(HeadProperty.UUID) && this.headCache.containsKey(UUID.fromString(string))) {
+        //    return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
+        //}
 
         var query = "SELECT `" + headProperty.getValue() + "` FROM latetime.heads WHERE `" + headProperty.getValue() + "` = ?";
 
@@ -146,12 +144,12 @@ public class HeadDatabase {
 
                 if (headProperty.equals(HeadProperty.HEAD)) {
                     var headBase64 = this.convertBlobToString(resultSet.getBlob(headProperty.getValue()));
-                    this.headCache.put(UUID.fromString(string), headBase64);
+                    //this.headCache.put(UUID.fromString(string), headBase64);
                     return Base64Compiler.fromBase64(headBase64);
                 }
 
                 var headBase64 = resultSet.getString(headProperty.getValue());
-                this.headCache.put(UUID.fromString(string), headBase64);
+                //this.headCache.put(UUID.fromString(string), headBase64);
                 return Base64Compiler.fromBase64(headBase64);
             }
 
@@ -190,7 +188,7 @@ public class HeadDatabase {
         }
     }
 
-    public Map<UUID, String> getHeadCache() {
-        return headCache;
-    }
+    //public Map<UUID, String> getHeadCache() {
+    //    return headCache;
+    //}
 }

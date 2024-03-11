@@ -26,7 +26,7 @@ public class PluginDisableListener implements Listener {
 
     @EventHandler
     public void onPluginDisable(PluginDisableEvent event) {
-        this.lateTimeClan.getHeadDatabase().getHeadCache().clear();
+        //this.lateTimeClan.getHeadDatabase().getHeadCache().clear();
     }
 
 }
