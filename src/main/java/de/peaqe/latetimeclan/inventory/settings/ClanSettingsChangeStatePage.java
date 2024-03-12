@@ -3,6 +3,7 @@ package de.peaqe.latetimeclan.inventory.settings;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanModel;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -59,13 +60,11 @@ public class ClanSettingsChangeStatePage {
                 .addLore(
                         "",
                         "§8• §7Hier kannst du dein Clan Status einstellen.",
-                        "§8• §7Aktueller Status: " + clanModel.getClanInvitationStatus().getStatus(),
+                        "§8• §7Aktueller Status: " + ClanUtil.getClanInvitationStatus(clanModel).getStatus(),
                         "",
-                        "§8• §aÖffentlich§8 » §7Sofern dein Clan nicht die maximale Anzahl an Mitgliedern erreicht " +
-                                "hast kann jeder den Clan betreten.",
-                        "§8• §eAuf Einladung §8» §7Hier müssen die Nutzer von Moderatoren eingeladen werden um den " +
-                                "Clan beitreten zu können!",
-                        "§8• §cGeschlossen §8» §7Keiner kann den Clan beitreten."
+                        "§8» §aÖffentlich§8 » §7Jeder kann den Clan beitreten.",
+                        "§8» §eAuf Einladung §8» §7Man kann den Clan nur mit Einladung beitreten.",
+                        "§8» §cGeschlossen §8» §7Keiner kann den Clan beitreten."
                 )
                 .build();
 
@@ -73,7 +72,8 @@ public class ClanSettingsChangeStatePage {
         final var clanStatusOpen = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE)
                 .setDisplayName("§8• " + ClanInvitationStatus.OPEN.getStatus())
                 .addLore(
-                        "§8• Looren kommen bald..."
+                        "",
+                        "§8• Setze den Clanstatus auf " + ClanInvitationStatus.OPEN.getStatus()
                 )
                 .glow(clanModel.getClanInvitationStatus().equals(ClanInvitationStatus.OPEN))
                 .build();
@@ -81,7 +81,8 @@ public class ClanSettingsChangeStatePage {
         final var clanStatusInvitation = new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE)
                 .setDisplayName("§8• " + ClanInvitationStatus.INVITATION.getStatus())
                 .addLore(
-                        "§8• Looren kommen bald..."
+                        "",
+                        "§8• Setze den Clanstatus auf " + ClanInvitationStatus.OPEN.getStatus()
                 )
                 .glow(clanModel.getClanInvitationStatus().equals(ClanInvitationStatus.INVITATION))
                 .build();
@@ -89,7 +90,8 @@ public class ClanSettingsChangeStatePage {
         final var clanStatusClosed = new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
                 .setDisplayName("§8• " + ClanInvitationStatus.CLOSED.getStatus())
                 .addLore(
-                        "§8• Looren kommen bald..."
+                        "",
+                        "§8• Setze den Clanstatus auf " + ClanInvitationStatus.OPEN.getStatus()
                 )
                 .glow(clanModel.getClanInvitationStatus().equals(ClanInvitationStatus.CLOSED))
                 .build();

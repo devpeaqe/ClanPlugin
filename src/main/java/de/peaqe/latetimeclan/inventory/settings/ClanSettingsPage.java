@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanModel;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -53,31 +54,36 @@ public class ClanSettingsPage {
 
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanModel.getClanFounderUUID()));
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
-                .setDisplayName(" §8• §e" + clanModel.getName())
+                .setDisplayName("§8• §e" + clanModel.getName())
                 .addLore(
-                        "§8» Looren kommen bald..."
+                        "",
+                        "§8• §7Hier kannst du Einstellungen für den Clan vornehmen."
                 )
                 .build();
 
 
         final var clanStatus = new ItemBuilder(Material.SPRUCE_DOOR)
-                .setDisplayName(" §8• §eClan Status")
+                .setDisplayName("§8• §eClan Status")
                 .addLore(
-                        "§8» Looren kommen bald..."
+                        "",
+                        "§8• §7Ändere den Clanstatus.",
+                        "§8• §7Clanstatus: §e" + ClanUtil.getClanInvitationStatus(clanModel).getStatus()
                 )
                 .build();
 
         final var moderator = new ItemBuilder(Material.PLAYER_HEAD)
-                .setDisplayName(" §8• §3Moderator")
+                .setDisplayName("§8• §eSoon...")
                 .addLore(
-                        "§8» Looren kommen bald..."
+                        "",
+                        "§8• §7Looren kommen bald..."
                 )
                 .build();
 
         final var leader = new ItemBuilder(Material.PLAYER_HEAD)
-                .setDisplayName(" §8• §cLeitung")
+                .setDisplayName("§8• §eSoon...")
                 .addLore(
-                        "§8» Looren kommen bald..."
+                        "",
+                        "§8• §7Looren kommen bald..."
                 )
                 .build();
 
