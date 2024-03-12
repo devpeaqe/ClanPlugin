@@ -1,6 +1,7 @@
 package de.peaqe.latetimeclan.inventory.navigation;
 
 import de.peaqe.latetimeclan.LateTimeClan;
+import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
@@ -64,6 +65,7 @@ public class ClanInfoPage {
                         " ",
                         "§8• §7Clan-Tag: §a" + clanModel.getTag(),
                         "§8• §7Mitglieder: §a" + clanModel.getMembers().size() + "§8/§c" + clanModel.getMaxSize(),
+                        "§8• §7Status: §a" + this.getClanInvitationStatus(clanModel).getStatus(),
                         "§8• §7Besitzer: §4" + clanOwnerName
                 )
                 .glow()
@@ -104,4 +106,10 @@ public class ClanInfoPage {
         this.initializeInventory(player);
         return inventory;
     }
+
+    private ClanInvitationStatus getClanInvitationStatus(ClanModel clanModel) {
+        if (clanModel.getMembers().size() >= clanModel.getMaxSize()) return ClanInvitationStatus.CLOSED;
+        return clanModel.getClanInvitationStatus();
+    }
+
 }

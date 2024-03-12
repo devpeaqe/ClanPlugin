@@ -1,7 +1,7 @@
 package de.peaqe.latetimeclan.listener.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.inventory.settings.ClanSettingsPage;
+import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanPlayer;
@@ -9,6 +9,7 @@ import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -65,21 +66,24 @@ public class ClanSettingsChangeStatePageListener implements Listener {
                 clan.setClanInvitationStatus(ClanInvitationStatus.OPEN);
                 clan.reload();
                 player.closeInventory();
-                player.openInventory(new ClanSettingsPage(this.lateTimeClan, clan).getInventory());
+                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+                player.openInventory(new ClanInfoPage(this.lateTimeClan, clan).getInventory(player));
             }
 
             case 31 -> {
                 clan.setClanInvitationStatus(ClanInvitationStatus.INVITATION);
                 clan.reload();
                 player.closeInventory();
-                player.openInventory(new ClanSettingsPage(this.lateTimeClan, clan).getInventory());
+                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+                player.openInventory(new ClanInfoPage(this.lateTimeClan, clan).getInventory(player));
             }
 
             case 33 -> {
                 clan.setClanInvitationStatus(ClanInvitationStatus.CLOSED);
                 clan.reload();
                 player.closeInventory();
-                player.openInventory(new ClanSettingsPage(this.lateTimeClan, clan).getInventory());
+                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+                player.openInventory(new ClanInfoPage(this.lateTimeClan, clan).getInventory(player));
             }
 
         }
