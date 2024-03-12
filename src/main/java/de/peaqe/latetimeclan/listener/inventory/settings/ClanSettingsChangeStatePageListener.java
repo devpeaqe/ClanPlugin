@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -61,31 +62,20 @@ public class ClanSettingsChangeStatePageListener implements Listener {
         if (!clanPlayer.hasPermission(ClanAction.CHANGE_STATE)) return;
 
         switch (event.getSlot()) {
+            case 29, 31, 33 -> {
 
-            case 29 -> {
-                clan.setClanInvitationStatus(ClanInvitationStatus.OPEN);
-                clan.reload();
+                var clanInvitationStatus = this.getClanInvitationStatusFromItemStack(event.getCurrentItem());
+                if (clanInvitationStatus == null) return;
+
+                if (!clan.getClanInvitationStatus().equals(clanInvitationStatus)) {
+                    clan.setClanInvitationStatus(clanInvitationStatus);
+                    clan.reload();
+                    player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+                }
+
                 player.closeInventory();
-                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
                 player.openInventory(new ClanInfoPage(this.lateTimeClan, clan).getInventory(player));
             }
-
-            case 31 -> {
-                clan.setClanInvitationStatus(ClanInvitationStatus.INVITATION);
-                clan.reload();
-                player.closeInventory();
-                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
-                player.openInventory(new ClanInfoPage(this.lateTimeClan, clan).getInventory(player));
-            }
-
-            case 33 -> {
-                clan.setClanInvitationStatus(ClanInvitationStatus.CLOSED);
-                clan.reload();
-                player.closeInventory();
-                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
-                player.openInventory(new ClanInfoPage(this.lateTimeClan, clan).getInventory(player));
-            }
-
         }
 
     }
@@ -108,4 +98,18 @@ public class ClanSettingsChangeStatePageListener implements Listener {
     public Map<UUID, ClanGroupModel> getCache() {
         return cache;
     }
+
+    @Nullable
+    private ClanInvitationStatus getClanInvitationStatusFromItemStack(ItemStack itemStack) {
+
+        if (itemStack == null) return null;
+        if (!itemStack.hasItemMeta()) return null;
+        if (!itemStack.getItemMeta().hasDisplayName()) return null;
+
+        var clanInvitationStatusName = itemStack.getItemMeta().getDisplayName().split("§8• ")[1];
+        if (clanInvitationStatusName == null) return null;
+
+        return ClanInvitationStatus.getFromStatus(clanInvitationStatusName);
+    }
+
 }

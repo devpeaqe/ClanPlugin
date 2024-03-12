@@ -1,10 +1,10 @@
 package de.peaqe.latetimeclan.listener.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.inventory.member.ClanMemberEditPage;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberPage;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -51,26 +51,26 @@ public class ClanMemberChangeGroupConfirmPageListener implements Listener {
                 // DECLINE
                 player.closeInventory();
 
+                var clanPlayer = ClanPlayer.fromPlayer(player);
+                if (clanPlayer == null) return;
+
                 var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
                 if (target == null) return;
 
                 this.lateTimeClan.getCache().remove(target.getUniqueId());
-
-                player.openInventory(new ClanMemberPage(this.lateTimeClan, ClanPlayer.fromPlayer(player)
-                        .getClan()).getInventory());
-
-                return;
+                player.openInventory(new ClanMemberPage(this.lateTimeClan, clanPlayer.getClan()).getInventory());
             }
 
             case 24 -> {
 
                 // CONFIRM
                 var clanPlayer = ClanPlayer.fromPlayer(player);
+                if (clanPlayer == null) return;
 
                 var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
                 if (target == null) return;
 
-                if (ClanMemberEditPage.isPermitted(clanPlayer, target, ClanAction.CHANGE_GROUP)) {
+                if (ClanUtil.isPermitted(clanPlayer, target, ClanAction.CHANGE_GROUP)) {
 
                     if (!this.lateTimeClan.getCache().containsKey(target.getUniqueId())) return;
                     var clanGroupModel = this.lateTimeClan.getCache().get(target.getUniqueId());

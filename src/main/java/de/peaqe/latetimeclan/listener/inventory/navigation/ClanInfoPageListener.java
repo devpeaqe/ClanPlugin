@@ -46,7 +46,6 @@ public class ClanInfoPageListener implements Listener {
         switch (slot) {
             case 20 -> {
                 // 20 » Statics
-
             }
 
             case 22 -> {

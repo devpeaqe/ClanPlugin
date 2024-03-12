@@ -5,6 +5,7 @@ import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -54,7 +55,7 @@ public class ClanMemberChangeGroupConfirmPage {
 
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(target.getUniqueId());
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
-                .setDisplayName(" §8• §e" + target.getName())
+                .setDisplayName("§8• §e" + target.getName())
                 .addLore(
                         " ",
                         "§8• §7Gruppe: " + target.getClanGroup().getColor() + target.getClanGroup().getName()
@@ -63,10 +64,10 @@ public class ClanMemberChangeGroupConfirmPage {
 
 
         final var decline = new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
-                .setDisplayName(" §8• §cAblehnen")
+                .setDisplayName("§8• §cAblehnen")
                 .addLore(
                         " ",
-                        "§8• §7Kehre zurück zur Mitgliederliste"
+                        "§8• §7Kehre zurück zur Mitgliederliste zurück"
                 )
                 .glow()
                 .build();
@@ -78,7 +79,7 @@ public class ClanMemberChangeGroupConfirmPage {
                         "§8• §7Ändere die Clan-Gruppe von §e" + target.getName() + "§7 zum " +
                                 clanGroupModel.getColor() + clanGroupModel.getName() + "§7."
                 )
-                .glow(isPermitted(sender, target, ClanAction.KICK))
+                .glow(ClanUtil.isPermitted(sender, target, ClanAction.KICK))
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
@@ -90,12 +91,6 @@ public class ClanMemberChangeGroupConfirmPage {
     public Inventory getInventory(ClanPlayer sender, ClanPlayer target, ClanGroupModel clanGroupModel) {
         this.initializeInventory(sender, target, clanGroupModel);
         return inventory;
-    }
-
-    public static boolean isPermitted(ClanPlayer sender, ClanPlayer target, ClanAction clanAction) {
-        return (sender.hasPermission(clanAction) &&
-                sender.getClanGroup().getPermissionLevel() > target.getClanGroup().getPermissionLevel());
-
     }
 
 }

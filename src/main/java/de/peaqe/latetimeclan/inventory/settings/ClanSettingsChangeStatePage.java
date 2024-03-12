@@ -41,7 +41,8 @@ public class ClanSettingsChangeStatePage {
 
     public void initializeInventory() {
 
-        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
+        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42,
+                43, 44};
 
         for (var borderItemSlot : borderItemSlots) {
             this.inventory.setItem(
@@ -54,33 +55,41 @@ public class ClanSettingsChangeStatePage {
 
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanModel.getClanFounderUUID()));
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
-                .setDisplayName(" §8• §e" + clanModel.getName())
+                .setDisplayName("§8• §e" + clanModel.getName())
                 .addLore(
-                        "§8» Looren kommen bald..."
+                        "",
+                        "§8• §7Hier kannst du dein Clan Status einstellen.",
+                        "§8• §7Aktueller Status: " + clanModel.getClanInvitationStatus().getStatus(),
+                        "",
+                        "§8• §aÖffentlich§8 » §7Sofern dein Clan nicht die maximale Anzahl an Mitgliedern erreicht " +
+                                "hast kann jeder den Clan betreten.",
+                        "§8• §eAuf Einladung §8» §7Hier müssen die Nutzer von Moderatoren eingeladen werden um den " +
+                                "Clan beitreten zu können!",
+                        "§8• §cGeschlossen §8» §7Keiner kann den Clan beitreten."
                 )
                 .build();
 
 
         final var clanStatusOpen = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE)
-                .setDisplayName(" §8• " + ClanInvitationStatus.OPEN.getStatus())
+                .setDisplayName("§8• " + ClanInvitationStatus.OPEN.getStatus())
                 .addLore(
-                        "§8» Looren kommen bald..."
+                        "§8• Looren kommen bald..."
                 )
                 .glow(clanModel.getClanInvitationStatus().equals(ClanInvitationStatus.OPEN))
                 .build();
 
         final var clanStatusInvitation = new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE)
-                .setDisplayName(" §8• " + ClanInvitationStatus.INVITATION.getStatus())
+                .setDisplayName("§8• " + ClanInvitationStatus.INVITATION.getStatus())
                 .addLore(
-                        "§8» Looren kommen bald..."
+                        "§8• Looren kommen bald..."
                 )
                 .glow(clanModel.getClanInvitationStatus().equals(ClanInvitationStatus.INVITATION))
                 .build();
 
         final var clanStatusClosed = new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
-                .setDisplayName(" §8• " + ClanInvitationStatus.CLOSED.getStatus())
+                .setDisplayName("§8• " + ClanInvitationStatus.CLOSED.getStatus())
                 .addLore(
-                        "§8» Looren kommen bald..."
+                        "§8• Looren kommen bald..."
                 )
                 .glow(clanModel.getClanInvitationStatus().equals(ClanInvitationStatus.CLOSED))
                 .build();

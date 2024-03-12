@@ -49,6 +49,7 @@ public class ClanMemberPageListener implements Listener {
         var currentClanPlayer = ClanPlayer.fromPlayer(UUIDFetcher.getUUID(currentItemPlayerName));
 
         var clanPlayer = ClanPlayer.fromPlayer(player);
+        if (clanPlayer == null) return;
 
         player.closeInventory();
         player.openInventory(new ClanMemberEditPage(this.lateTimeClan, clanPlayer.getClan())

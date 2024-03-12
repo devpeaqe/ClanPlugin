@@ -1,10 +1,10 @@
 package de.peaqe.latetimeclan.inventory.navigation;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -60,12 +60,12 @@ public class ClanInfoPage {
 
         var clanOwnerSkull = Base64Compiler.getPlayerHeadFromUUID(clanOwnerUUID);
         final var clanNameItem = new ItemBuilder(clanOwnerSkull)
-                .setDisplayName(" §8• §e" + clanModel.getName())
+                .setDisplayName("§8• §e" + clanModel.getName())
                 .addLore(
                         " ",
                         "§8• §7Clan-Tag: §a" + clanModel.getTag(),
                         "§8• §7Mitglieder: §a" + clanModel.getMembers().size() + "§8/§c" + clanModel.getMaxSize(),
-                        "§8• §7Status: §a" + this.getClanInvitationStatus(clanModel).getStatus(),
+                        "§8• §7Status: §a" + ClanUtil.getClanInvitationStatus(clanModel).getStatus(),
                         "§8• §7Besitzer: §4" + clanOwnerName
                 )
                 .glow()
@@ -73,7 +73,7 @@ public class ClanInfoPage {
 
 
         final var clanMemberItem = new ItemBuilder(Material.OAK_SIGN)
-                .setDisplayName(" §8• §eMitglieder")
+                .setDisplayName("§8• §eMitglieder")
                 .addLore(
                         " ",
                         "§8• §7Zeige dir die aktuellen Mitglieder des Clans an.",
@@ -90,26 +90,28 @@ public class ClanInfoPage {
                 .build();
 
         // TODO: Add founderDate to Database
-        final var clanStaticsItem = new ItemBuilder(Material.PAPER).build();
+        final var clanStaticsItem = new ItemBuilder(Material.EMERALD)
+                .setDisplayName("§8• §aStatistiken")
+                .addLore(
+                        "",
+                        "§8• §7Zeige dir die derzeitigen Statistiken deines Clans an."
+                )
+                .build();
 
         this.inventory.setItem(13, clanNameItem);
         this.inventory.setItem(20, clanStaticsItem);
         this.inventory.setItem(24, clanMemberItem);
 
-        if (ClanPlayer.fromPlayer(player).hasPermission(ClanAction.DELETE))
+        var clanPlayer = ClanPlayer.fromPlayer(player);
+        if (clanPlayer == null) return;
+
+        if (clanPlayer.hasPermission(ClanAction.DELETE))
             this.inventory.setItem(22, clanSettingsItem);
-
-
     }
 
     public Inventory getInventory(Player player) {
         this.initializeInventory(player);
         return inventory;
-    }
-
-    private ClanInvitationStatus getClanInvitationStatus(ClanModel clanModel) {
-        if (clanModel.getMembers().size() >= clanModel.getMaxSize()) return ClanInvitationStatus.CLOSED;
-        return clanModel.getClanInvitationStatus();
     }
 
 }

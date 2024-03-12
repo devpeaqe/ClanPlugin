@@ -1,6 +1,7 @@
 package de.peaqe.latetimeclan.listener.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
+import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsChangeStatePage;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
@@ -63,9 +64,10 @@ public class ClanSettingsPageListener implements Listener {
                         .getInventory());
             }
 
-            case 31 -> {}
-
-            case 33 -> {}
+            case 31, 33 -> {
+                player.closeInventory();
+                player.openInventory(new ClanInfoPage(this.lateTimeClan, clanPlayer.getClan()).getInventory(player));
+            }
 
         }
 

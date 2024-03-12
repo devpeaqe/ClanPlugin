@@ -4,6 +4,7 @@ import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -53,7 +54,7 @@ public class ClanMemberEditPage {
 
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(target.getUniqueId());
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
-                .setDisplayName(" §8• §e" + target.getName())
+                .setDisplayName("§8• §e" + target.getName())
                 .addLore(
                         " ",
                         "§8• §7Gruppe: " + target.getClanGroup().getColor() + target.getClanGroup().getName()
@@ -62,15 +63,15 @@ public class ClanMemberEditPage {
 
 
         final var clanKickItem = new ItemBuilder(Material.GRASS_BLOCK)
-                .setDisplayName(" §8• §cRausschmeißen")
+                .setDisplayName("§8• §cRausschmeißen")
                 .addLore(
                         " ",
                         "§8• §7Schmeiße §e" + target.getName() + "§7 aus dem Clan.",
                         " §8» §cVORSICHT! Dieser Vorgang kann §nnicht§r §crückgängig gemacht werden!",
                         " ",
-                        "§8• §7Berechtigt: " + (isPermitted(sender, target, ClanAction.KICK) ? "§aJa" : "§cNein")
+                        "§8• §7Berechtigt: " + (ClanUtil.isPermitted(sender, target, ClanAction.KICK) ? "§aJa" : "§cNein")
                 )
-                .glow(isPermitted(sender, target, ClanAction.KICK))
+                .glow(ClanUtil.isPermitted(sender, target, ClanAction.KICK))
                 .build();
 
         final var clanChangeGroupItem = new ItemBuilder(Material.GRASS_BLOCK)
@@ -78,9 +79,9 @@ public class ClanMemberEditPage {
                 .addLore(
                         " ",
                         "§8• §7Verwalte die Rollen von §e" + target.getName() + "§7.",
-                        "§8• §7Berechtigt: " + (isPermitted(sender, target, ClanAction.CHANGE_GROUP) ? "§aJa" : "§cNein")
+                        "§8• §7Berechtigt: " + (ClanUtil.isPermitted(sender, target, ClanAction.CHANGE_GROUP) ? "§aJa" : "§cNein")
                 )
-                .glow(isPermitted(sender, target, ClanAction.CHANGE_GROUP))
+                .glow(ClanUtil.isPermitted(sender, target, ClanAction.CHANGE_GROUP))
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
@@ -92,12 +93,6 @@ public class ClanMemberEditPage {
     public Inventory getInventory(ClanPlayer sender, ClanPlayer target) {
         this.initializeInventory(sender, target);
         return inventory;
-    }
-
-    public static boolean isPermitted(ClanPlayer sender, ClanPlayer target, ClanAction clanAction) {
-        return (sender.hasPermission(clanAction) &&
-                sender.getClanGroup().getPermissionLevel() > target.getClanGroup().getPermissionLevel());
-
     }
 
 }

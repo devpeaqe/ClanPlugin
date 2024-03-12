@@ -87,10 +87,42 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
+            if (clan.getClanInvitationStatus().equals(ClanInvitationStatus.OPEN) &&
+                    clan.getMembers().size() < clan.getMaxSize()) {
+
+                var clanPlayer = new ClanPlayer(
+                        player.getName(),
+                        player.getUniqueId(),
+                        clan,
+                        ClanGroupModel.MEMBER
+                );
+
+                if (ClanPlayer.fromPlayer(player) != null) clanPlayer =  ClanPlayer.fromPlayer(player);
+                if (clanPlayer == null) {
+                    player.sendMessage(this.messages.compileMessage(
+                            "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
+                    ));
+                    player.sendMessage(this.messages.compileMessage(
+                            "Discord » %s", "https://discord.gg/USHsrPjU8J"
+                    ));
+                    return true;
+                }
+
+                clan.addMember(clanPlayer);
+
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist dem Clan %s beigetreten!",
+                        clan.getName()
+                ));
+
+                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+                return true;
+            }
+
             if (!(this.invitationManager.isClanJoinable(clan) &&
                     this.invitationManager.isInvited(player.getUniqueId(), clan.getTag()))) {
                 player.sendMessage(this.messages.compileMessage(
-                        "Der Clan %s ist derzeit nicht berechtigt um neue Mitglieder aufnehmen zu können!",
+                        "Der Clan %s nimmt derzeit keine neuen Mitglieder auf!",
                         clan.getName()
                 ));
                 return true;

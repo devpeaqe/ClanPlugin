@@ -1,10 +1,10 @@
 package de.peaqe.latetimeclan.listener.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.inventory.member.ClanMemberEditPage;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberPage;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -58,11 +58,12 @@ public class ClanMemberKickConfirmPageListener implements Listener {
 
                 // CONFIRM
                 var clanPlayer = ClanPlayer.fromPlayer(player);
+                if (clanPlayer == null) return;
 
                 var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
                 if (target == null) return;
 
-                if (ClanMemberEditPage.isPermitted(clanPlayer, target, ClanAction.KICK)) {
+                if (ClanUtil.isPermitted(clanPlayer, target, ClanAction.KICK)) {
 
                     // Kick target from clan
                     clanPlayer.getClan().kick(target);

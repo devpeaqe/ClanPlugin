@@ -2,10 +2,10 @@ package de.peaqe.latetimeclan.listener.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberChangeGroupConfirmPage;
-import de.peaqe.latetimeclan.inventory.member.ClanMemberEditPage;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -60,7 +60,7 @@ public class ClanMemberChangeGroupPageListener implements Listener {
         var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
 
         if (target == null) return;
-        if (!ClanMemberEditPage.isPermitted(clanPlayer, target, ClanAction.CHANGE_GROUP)) return;
+        if (!ClanUtil.isPermitted(clanPlayer, target, ClanAction.CHANGE_GROUP)) return;
 
         switch (event.getSlot()) {
 

@@ -4,6 +4,7 @@ import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -53,7 +54,7 @@ public class ClanMemberKickConfirmPage {
 
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(target.getUniqueId());
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
-                .setDisplayName(" §8• §e" + target.getName())
+                .setDisplayName("§8• §e" + target.getName())
                 .addLore(
                         " ",
                         "§8• §7Gruppe: " + target.getClanGroup().getColor() + target.getClanGroup().getName()
@@ -62,7 +63,7 @@ public class ClanMemberKickConfirmPage {
 
 
         final var decline = new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
-                .setDisplayName(" §8• §cAblehnen")
+                .setDisplayName("§8• §cAblehnen")
                 .addLore(
                         " ",
                         "§8• §7Kehre zurück zur Mitgliederliste"
@@ -77,7 +78,7 @@ public class ClanMemberKickConfirmPage {
                         "§8• §7Schmeiße §e" + target.getName() + "§7 aus dem Clan.",
                         "§8• §c§lVORSICHT! §r§cDieser Vorgang kann §nnicht§r §crückgängig gemacht werden!"
                 )
-                .glow(isPermitted(sender, target, ClanAction.KICK))
+                .glow(ClanUtil.isPermitted(sender, target, ClanAction.KICK))
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
@@ -89,12 +90,6 @@ public class ClanMemberKickConfirmPage {
     public Inventory getInventory(ClanPlayer sender, ClanPlayer target) {
         this.initializeInventory(sender, target);
         return inventory;
-    }
-
-    public static boolean isPermitted(ClanPlayer sender, ClanPlayer target, ClanAction clanAction) {
-        return (sender.hasPermission(clanAction) &&
-                sender.getClanGroup().getPermissionLevel() > target.getClanGroup().getPermissionLevel());
-
     }
 
 }
