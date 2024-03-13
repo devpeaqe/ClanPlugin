@@ -1,6 +1,7 @@
 package de.peaqe.latetimeclan.models;
 
 import de.peaqe.latetimeclan.LateTimeClan;
+import org.bukkit.Bukkit;
 
 import java.util.Map;
 import java.util.UUID;
@@ -108,6 +109,28 @@ public class ClanModel {
         // TODO: Add cache
         LateTimeClan.getInstance().getClanDatabase().updateClan(this);
         clanPlayer.reload();
+
+    }
+
+    public void sendNotification(String message, String... highlights) {
+
+        this.getMembers().forEach((uuid, clanGroupModel) -> {
+
+            var bukkitOnlinePlayer = Bukkit.getPlayer(uuid);
+
+            if (bukkitOnlinePlayer != null) {
+                if (message.contains("%s") && highlights != null) {
+                    bukkitOnlinePlayer.sendMessage(LateTimeClan.getInstance().getMessages().compileMessage(
+                            message, highlights
+                    ));
+                    return;
+                }
+                bukkitOnlinePlayer.sendMessage(LateTimeClan.getInstance().getMessages().compileMessage(
+                        message
+                ));
+            }
+
+        });
 
     }
 

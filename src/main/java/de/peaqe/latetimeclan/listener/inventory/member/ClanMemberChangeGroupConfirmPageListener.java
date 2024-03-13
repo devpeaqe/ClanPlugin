@@ -74,6 +74,7 @@ public class ClanMemberChangeGroupConfirmPageListener implements Listener {
 
                     if (!this.lateTimeClan.getCache().containsKey(target.getUniqueId())) return;
                     var clanGroupModel = this.lateTimeClan.getCache().get(target.getUniqueId());
+                    var tmpClanGroupModel = target.getClanGroup();
 
                     if (target.getClanGroup().equals(clanGroupModel)) return;
 
@@ -83,6 +84,15 @@ public class ClanMemberChangeGroupConfirmPageListener implements Listener {
 
                     target.getClan().reload();
                     player.openInventory(new ClanMemberPage(this.lateTimeClan, clanPlayer.getClan()).getInventory());
+
+                    clanPlayer.getClan().sendNotification(
+                            "Das Mitglied %s wurde von %s zum %s " +
+                                    (tmpClanGroupModel.getPermissionLevel() > clanGroupModel.getPermissionLevel()
+                                            ? "degradiert" : "befördert") + ".",
+                            target.getName(),
+                            player.getName(),
+                            clanGroupModel.getColor() + clanGroupModel.getName()
+                    );
 
                     return;
                 }

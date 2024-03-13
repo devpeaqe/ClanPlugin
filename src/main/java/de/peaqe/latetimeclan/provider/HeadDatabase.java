@@ -129,7 +129,8 @@ public class HeadDatabase {
         //    return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
         //}
 
-        var query = "SELECT `" + headProperty.getValue() + "` FROM latetime.heads WHERE `" + headProperty.getValue() + "` = ?";
+        var query = "SELECT `" + headProperty.getValue() + "` FROM latetime.heads WHERE `" +
+                headProperty.getValue() + "` = ?";
 
         this.connect();
         try {
@@ -141,14 +142,7 @@ public class HeadDatabase {
             var resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-
-                if (headProperty.equals(HeadProperty.HEAD)) {
-                    var headBase64 = this.convertBlobToString(resultSet.getBlob(headProperty.getValue()));
-                    //this.headCache.put(UUID.fromString(string), headBase64);
-                    return Base64Compiler.fromBase64(headBase64);
-                }
-
-                var headBase64 = resultSet.getString(headProperty.getValue());
+                var headBase64 = this.convertBlobToString(resultSet.getBlob(headProperty.getValue()));
                 //this.headCache.put(UUID.fromString(string), headBase64);
                 return Base64Compiler.fromBase64(headBase64);
             }

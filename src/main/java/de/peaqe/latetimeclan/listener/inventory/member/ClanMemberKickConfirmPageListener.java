@@ -86,9 +86,13 @@ public class ClanMemberKickConfirmPageListener implements Listener {
                         ));
                     }
 
-                    // Clan notify
-                    // TODO: Global notify
+                    clanPlayer.getClan().sendNotification(
+                            "Das Mitglied %s wurde von %s aus dem Clan geworfen.",
+                            target.getName(),
+                            player.getName()
+                    );
 
+                    target.reload();
                     return;
                 }
 

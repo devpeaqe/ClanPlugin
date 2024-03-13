@@ -75,6 +75,12 @@ public class ClanSettingsChangeStatePageListener implements Listener {
 
                 player.closeInventory();
                 player.openInventory(new ClanInfoPage(this.lateTimeClan, clan).getInventory(player));
+
+                clan.sendNotification(
+                        "Der Clan-Status ist nun auf %s.",
+                        clan.getClanInvitationStatus().getStatus()
+                );
+
             }
         }
 

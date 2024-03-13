@@ -78,35 +78,30 @@ public class ClanPlayer {
         clan.reload();
     }
 
-    public void sendMessage(String message) {
-
-        var bukkitOnlinePlayer = Bukkit.getPlayer(this.uniqueId);
-
-        if (bukkitOnlinePlayer != null) {
-            bukkitOnlinePlayer.sendMessage(LateTimeClan.getInstance().getMessages().compileMessage(
-                    message.replace("%s",
-                            "§e«« §c" +
-                            "An dieser Stelle ist ein Fehler aufgetreten.".toUpperCase() +
-                            "§e »» §7")
-            ));
-        }
-    }
-
     public void sendMessage(String message, String... highlights) {
 
-        var bukkitOnlinePlayer = Bukkit.getPlayer(this.uniqueId);
+        this.getClan().getMembers().forEach((uuid, clanGroupModel) -> {
 
-        if (bukkitOnlinePlayer != null) {
-            bukkitOnlinePlayer.sendMessage(LateTimeClan.getInstance().getMessages().compileMessage(
-                    message, highlights
-            ));
-        }
+            var bukkitOnlinePlayer = Bukkit.getPlayer(uuid);
+
+            if (bukkitOnlinePlayer != null) {
+                if (highlights != null) {
+                    bukkitOnlinePlayer.sendMessage(LateTimeClan.getInstance().getMessages().sendClanMessage(
+                            this, message, highlights
+                    ));
+                    return;
+                }
+                bukkitOnlinePlayer.sendMessage(LateTimeClan.getInstance().getMessages().sendClanMessage(
+                        this, message
+                ));
+            }
+
+        });
     }
 
     public void reload() {
         if (!this.clan.getMembers().containsKey(this.uniqueId)) {
-            this.setClan(null);
-            this.setClanGroup(null);
+            this.setNull();
         }
     }
 
@@ -156,4 +151,10 @@ public class ClanPlayer {
 
     }
 
+    public void setNull() {
+        this.setClan(null);
+        this.setClanGroup(null);
+        this.setName(null);
+        this.setUniqueId(null);
+    }
 }
