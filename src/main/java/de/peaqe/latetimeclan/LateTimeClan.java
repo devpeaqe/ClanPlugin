@@ -1,5 +1,6 @@
 package de.peaqe.latetimeclan;
 
+import de.peaqe.latetimeclan.commands.ClanChatCommand;
 import de.peaqe.latetimeclan.commands.ClanCommand;
 import de.peaqe.latetimeclan.config.DatabaseConfig;
 import de.peaqe.latetimeclan.listener.connection.PlayerJoinListener;
@@ -65,6 +66,7 @@ public final class LateTimeClan extends JavaPlugin {
         // Command's
         new TestCommand(this);
         new ClanCommand(this);
+        new ClanChatCommand(this);
 
         // Listener's
         new ClanInfoPageListener(this);
