@@ -1,7 +1,6 @@
 package de.peaqe.latetimeclan.util.manager;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -51,7 +50,7 @@ public class HeadManager {
         var head = new ItemStack(Material.PLAYER_HEAD);
         var headMeta = (SkullMeta) head.getItemMeta();
 
-        var target = Bukkit.getOfflinePlayerIfCached(UUIDFetcher.getName(playerUniqueId));
+        var target = Bukkit.getOfflinePlayerIfCached(UniqueIdManager.getName(playerUniqueId));
         if (target == null) target = Bukkit.getOfflinePlayer(playerUniqueId);
         if (!target.hasPlayedBefore()) return null;
 

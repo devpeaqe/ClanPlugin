@@ -13,6 +13,7 @@ import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.provider.ClanDatabase;
 import de.peaqe.latetimeclan.provider.HeadDatabase;
+import de.peaqe.latetimeclan.provider.PlayerDatabase;
 import de.peaqe.latetimeclan.util.database.DatabaseConnection;
 import de.peaqe.latetimeclan.util.manager.HeadManager;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
@@ -28,17 +29,27 @@ public final class LateTimeClan extends JavaPlugin {
     private Messages messages;
     private ClanDatabase clanDatabase;
     private HeadDatabase headDatabase;
-    private DatabaseConfig databaseConfig;
     private InvitationManager invitationManager;
     private Map<UUID, ClanGroupModel> cache;
     private HeadManager headManager;
     private DatabaseConnection databaseConnection;
+    private PlayerDatabase playerDatabase;
     //private DatabaseCache databaseCache;
 
     @Override
     public void onEnable() {
 
         instance = this;
+
+        var databaseConfig = new DatabaseConfig(this);
+
+        this.databaseConnection = new DatabaseConnection(
+                databaseConfig.get("hostname"),
+                databaseConfig.get("username"),
+                databaseConfig.get("password"),
+                databaseConfig.get("database"),
+                databaseConfig.getInt("port")
+        );
 
         // Manager's
         this.registerManager();
@@ -54,17 +65,12 @@ public final class LateTimeClan extends JavaPlugin {
     private void registerManager() {
 
         this.messages = new Messages();
-        this.databaseConfig = new DatabaseConfig(this);
+
+        this.clanDatabase =new ClanDatabase();
+        this.headDatabase = new HeadDatabase();
+        this.playerDatabase = new PlayerDatabase();
         this.headManager = new HeadManager(this);
         this.invitationManager = new InvitationManager();
-
-        this.databaseConnection = new DatabaseConnection(
-                this.databaseConfig.get("hostname"),
-                this.databaseConfig.get("username"),
-                this.databaseConfig.get("password"),
-                this.databaseConfig.get("database"),
-                this.databaseConfig.getInt("port")
-        );
 
         //this.databaseCache = this.clanDatabase.getDatabaseCache();
     }
@@ -94,10 +100,6 @@ public final class LateTimeClan extends JavaPlugin {
         return instance;
     }
 
-    public DatabaseConfig getDatabaseConfig() {
-        return databaseConfig;
-    }
-
     public Messages getMessages() {
         return messages;
     }
@@ -106,9 +108,9 @@ public final class LateTimeClan extends JavaPlugin {
         return clanDatabase;
     }
 
-    //public DatabaseCache getDatabaseCache() {
-    //    return databaseCache;
-    //}
+    public HeadDatabase getHeadDatabase() {
+        return headDatabase;
+    }
 
     public InvitationManager getInvitationManager() {
         return invitationManager;
@@ -118,15 +120,15 @@ public final class LateTimeClan extends JavaPlugin {
         return cache;
     }
 
-    public HeadDatabase getHeadDatabase() {
-        return headDatabase;
-    }
-
     public HeadManager getHeadManager() {
         return headManager;
     }
 
     public DatabaseConnection getDatabaseConnection() {
         return databaseConnection;
+    }
+
+    public PlayerDatabase getPlayerDatabase() {
+        return playerDatabase;
     }
 }

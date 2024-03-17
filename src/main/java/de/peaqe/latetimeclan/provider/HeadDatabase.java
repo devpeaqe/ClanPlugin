@@ -12,8 +12,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Base64;
 import java.util.UUID;
@@ -27,31 +25,17 @@ import java.util.UUID;
  * *
  */
 
-public class HeadDatabase {
-
-    private final String hostname, username, password, database;
-    private final int port;
-    private Connection connection;
-    //private final Map<UUID, String> headCache;
+public class HeadDatabase extends DatabaseProvider {
 
     public HeadDatabase() {
-
-        final var lateTimeClan = LateTimeClan.getInstance();
-
-        this.hostname = lateTimeClan.getDatabaseConnection().hostname();
-        this.username = lateTimeClan.getDatabaseConnection().username();
-        this.password = lateTimeClan.getDatabaseConnection().password();
-        this.database = lateTimeClan.getDatabaseConnection().database();
-        this.port = lateTimeClan.getDatabaseConnection().port();
-
+        super(LateTimeClan.getInstance());
         this.createTableIfNotExists();
-        //this.headCache = new HashMap<>();
     }
 
     public void createTableIfNotExists() {
         this.connect();
         try {
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS latetime.heads (" +
+            this.getConnection().createStatement().execute("CREATE TABLE IF NOT EXISTS latetime.heads (" +
                     "  `" + HeadProperty.NAME.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + HeadProperty.UUID.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + HeadProperty.HEAD.getValue() + "` BLOB NOT NULL," +
@@ -61,28 +45,6 @@ public class HeadDatabase {
             throw new RuntimeException(e);
         } finally {
             this.close();
-        }
-    }
-
-    public void close() {
-        try {
-            Bukkit.getConsoleSender().sendMessage("§bHEADS §7»» §cConnection Closed");
-            connection.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void connect() {
-        try {
-            Bukkit.getConsoleSender().sendMessage("§bHEADS §7»» §aConnection Opened");
-            this.connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + hostname + ":" + port + "/" + database,
-                    username,
-                    password
-            );
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -100,16 +62,11 @@ public class HeadDatabase {
                 HeadProperty.NAME.getValue() + "` = VALUES(`" + HeadProperty.NAME.getValue() + "`);";
 
         this.connect();
-        try (var statement = this.connection.prepareStatement(query)) {
+        try (var statement = this.getConnection().prepareStatement(query)) {
 
             statement.setString(1, name.toLowerCase());
             statement.setString(2, uuid.toString());
             statement.setBytes(3, Base64.getDecoder().decode(headBase64));
-
-            int rowsAffected = statement.executeUpdate();
-            if (rowsAffected > 0) {
-                //this.headCache.put(uuid, headBase64);
-            }
 
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage("§cError executing SQL query: " + e.getMessage());
@@ -139,7 +96,7 @@ public class HeadDatabase {
         this.connect();
         try {
 
-            var statement = this.connection.prepareStatement(query);
+            var statement = this.getConnection().prepareStatement(query);
 
             statement.setString(1, string);
 
@@ -147,7 +104,6 @@ public class HeadDatabase {
 
             if (resultSet.next()) {
                 var headBase64 = this.convertBlobToString(resultSet.getBlob(HeadProperty.HEAD.getValue()));
-                //this.headCache.put(UUID.fromString(string), headBase64);
                 return Base64Compiler.fromBase64(headBase64);
             }
 
@@ -185,8 +141,4 @@ public class HeadDatabase {
             throw new RuntimeException(e);
         }
     }
-
-    //public Map<UUID, String> getHeadCache() {
-    //    return headCache;
-    //}
 }

@@ -2,11 +2,9 @@ package de.peaqe.latetimeclan.listener.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
-import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
-import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -17,9 +15,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * *
@@ -33,12 +28,10 @@ import java.util.UUID;
 public class ClanSettingsChangeStatePageListener implements Listener {
 
     private final LateTimeClan lateTimeClan;
-    private final Map<UUID, ClanGroupModel> cache;
 
     public ClanSettingsChangeStatePageListener(LateTimeClan lateTimeClan) {
         this.lateTimeClan = lateTimeClan;
         Bukkit.getPluginManager().registerEvents(this, this.lateTimeClan);
-        this.cache = new HashMap<>();
     }
 
     @EventHandler
@@ -92,25 +85,6 @@ public class ClanSettingsChangeStatePageListener implements Listener {
             }
         }
 
-    }
-
-    private ClanPlayer getClanPlayerFromItemStack(ItemStack itemStack) {
-
-        if (itemStack == null) return null;
-        if (!itemStack.hasItemMeta()) return null;
-        if (!itemStack.getItemMeta().hasDisplayName()) return null;
-
-        var targetName = itemStack.getItemMeta().getDisplayName().split("§8• §e")[1];
-        if (targetName == null) return null;
-
-        var targetUUID = UUIDFetcher.getUUID(targetName);
-        if (targetUUID == null) return null;
-
-        return ClanPlayer.fromPlayer(targetUUID);
-    }
-
-    public Map<UUID, ClanGroupModel> getCache() {
-        return cache;
     }
 
     @Nullable

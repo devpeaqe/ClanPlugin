@@ -91,8 +91,6 @@ public class ClanModel {
 
         this.reload();
         clanPlayer.reload();
-
-        // TODO: Add to cache
     }
 
     public void reload() {
@@ -106,7 +104,6 @@ public class ClanModel {
         currentMembers.remove(clanPlayer.getUniqueId());
         this.setMembers(currentMembers);
 
-        // TODO: Add cache
         LateTimeClan.getInstance().getClanDatabase().updateClan(this);
         clanPlayer.reload();
 

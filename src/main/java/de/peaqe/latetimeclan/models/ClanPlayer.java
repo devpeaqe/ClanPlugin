@@ -2,7 +2,7 @@ package de.peaqe.latetimeclan.models;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.util.ClanAction;
-import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
+import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -114,7 +114,7 @@ public class ClanPlayer {
 
     public static ClanPlayer fromPlayer(UUID uniqueId) {
         return new ClanPlayer(
-                UUIDFetcher.getName(uniqueId),
+                UniqueIdManager.getName(uniqueId),
                 uniqueId,
                 LateTimeClan.getInstance().getClanDatabase().getClanModelOfMember(uniqueId),
                 getClanGroupModel(uniqueId)

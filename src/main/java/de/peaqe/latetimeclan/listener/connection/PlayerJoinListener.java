@@ -1,12 +1,13 @@
 package de.peaqe.latetimeclan.listener.connection;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.provider.util.HeadProperty;
+import de.peaqe.latetimeclan.models.ClanPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -40,22 +41,29 @@ public class PlayerJoinListener implements Listener {
         playerSkull.setItemMeta(playerSkullMeta);
 
         this.lateTimeClan.getHeadDatabase().insertHead(player.getName(), player.getUniqueId(), playerSkull);
+        this.lateTimeClan.getPlayerDatabase().registerPlayer(player);
 
-        /**
-         * @TEST: HEAD
-         */
-        var headItem = this.lateTimeClan.getHeadDatabase().getHead(HeadProperty.UUID, player.getUniqueId().toString());
+        var clanPlayer = ClanPlayer.fromPlayer(player);
 
-        if (headItem == null) {
-            player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                    "§cEs ist ein Fehler aufgetreten!"
-            ));
-            return;
-        }
+        if (clanPlayer == null) return;
+        clanPlayer.getClan().sendNotification(
+                "§8[§a+§8] %s",
+                player.getName()
+        );
 
-        player.getInventory().addItem(headItem);
+    }
 
-        // TODO: Clan notify
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+
+        var player = event.getPlayer();
+        var clanPlayer = ClanPlayer.fromPlayer(player);
+
+        if (clanPlayer == null) return;
+        clanPlayer.getClan().sendNotification(
+                "§8[§c-§8] %s",
+                player.getName()
+        );
     }
 
 }

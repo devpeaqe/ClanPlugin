@@ -6,7 +6,7 @@ import de.peaqe.latetimeclan.inventory.member.ClanMemberKickConfirmPage;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
-import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
+import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -128,7 +128,7 @@ public class ClanMemberEditPageListener implements Listener {
         var targetName = itemStack.getItemMeta().getDisplayName().split("§8• §e")[1];
         if (targetName == null) return null;
 
-        var targetUUID = UUIDFetcher.getUUID(targetName);
+        var targetUUID = UniqueIdManager.getUUID(targetName);
         if (targetUUID == null) return null;
 
         return ClanPlayer.fromPlayer(targetUUID);
