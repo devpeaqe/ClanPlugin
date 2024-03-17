@@ -85,9 +85,7 @@ public class ClanPlayer {
             var bukkitOnlinePlayer = Bukkit.getPlayer(uuid);
 
             if (bukkitOnlinePlayer != null) {
-                bukkitOnlinePlayer.sendMessage(LateTimeClan.getInstance().getMessages().sendClanMessage(
-                        this, message
-                ));
+                bukkitOnlinePlayer.sendMessage(message);
             }
 
         });

@@ -78,9 +78,11 @@ public class ClanChatCommand implements CommandExecutor, TabExecutor {
             }
 
             clanPlayer.sendMessage(
-                    this.messages.sendClanMessage(
-                            clanPlayer, stringBuilder.toString().trim()
-                    )
+                    "§8» §9ClanChat §8┃ §7" +
+                    clanPlayer.getClanGroup().getColor() +
+                    clanPlayer.getClanGroup().getName() + " §8• " +
+                    clanPlayer.getName() + " §8» " +
+                    stringBuilder.toString().trim()
             );
 
         }
