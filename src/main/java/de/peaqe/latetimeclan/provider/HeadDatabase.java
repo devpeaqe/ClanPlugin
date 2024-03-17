@@ -129,7 +129,7 @@ public class HeadDatabase {
         //    return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
         //}
 
-        var query = "SELECT `" + headProperty.getValue() + "` FROM latetime.heads WHERE `" +
+        var query = "SELECT `" + HeadProperty.HEAD.getValue() + "` FROM latetime.heads WHERE `" +
                 headProperty.getValue() + "` = ?";
 
         this.connect();
@@ -142,7 +142,7 @@ public class HeadDatabase {
             var resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                var headBase64 = this.convertBlobToString(resultSet.getBlob(headProperty.getValue()));
+                var headBase64 = this.convertBlobToString(resultSet.getBlob(HeadProperty.HEAD.getValue()));
                 //this.headCache.put(UUID.fromString(string), headBase64);
                 return Base64Compiler.fromBase64(headBase64);
             }
