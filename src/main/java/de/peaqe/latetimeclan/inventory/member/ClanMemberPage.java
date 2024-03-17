@@ -28,7 +28,7 @@ import java.util.UUID;
 public class ClanMemberPage {
 
     private final LateTimeClan lateTimeClan;
-    private Inventory inventory;
+    private final Inventory inventory;
     private final ClanModel clanModel;
 
     public ClanMemberPage(LateTimeClan lateTimeClan, ClanModel clanModel) {

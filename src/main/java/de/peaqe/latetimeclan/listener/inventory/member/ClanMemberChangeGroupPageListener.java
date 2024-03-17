@@ -46,7 +46,7 @@ public class ClanMemberChangeGroupPageListener implements Listener {
         if (event.getClickedInventory() == null) return;
         if (!Component.text(event.getView().getOriginalTitle()).equals(
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Clan-Gruppe bearbeiten"
+                        "§8Gruppe bearbeiten"
                 ))
         )) return;
 

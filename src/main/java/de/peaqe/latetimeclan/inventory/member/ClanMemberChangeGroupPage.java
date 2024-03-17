@@ -22,18 +22,14 @@ import org.bukkit.inventory.Inventory;
 
 public class ClanMemberChangeGroupPage {
 
-    private final LateTimeClan lateTimeClan;
     private final Inventory inventory;
-    private final ClanModel clanModel;
 
     public ClanMemberChangeGroupPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
-        this.lateTimeClan = lateTimeClan;
-        this.clanModel = clanModel;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*5,
-                Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Clan-Gruppe bearbeiten"
+                Component.text(lateTimeClan.getMessages().compileMessage(
+                        "§8Gruppe bearbeiten"
                 ))
         );
     }

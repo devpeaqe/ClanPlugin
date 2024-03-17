@@ -24,17 +24,13 @@ import org.bukkit.inventory.Inventory;
 
 public class ClanMemberChangeGroupConfirmPage {
 
-    private final LateTimeClan lateTimeClan;
     private final Inventory inventory;
-    private final ClanModel clanModel;
 
     public ClanMemberChangeGroupConfirmPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
-        this.lateTimeClan = lateTimeClan;
-        this.clanModel = clanModel;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*4,
-                Component.text(this.lateTimeClan.getMessages().compileMessage(
+                Component.text(lateTimeClan.getMessages().compileMessage(
                         "§8Gruppenwechsel bestätigen"
                 ))
         );

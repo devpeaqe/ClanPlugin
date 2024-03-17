@@ -23,17 +23,13 @@ import org.bukkit.inventory.Inventory;
 
 public class ClanMemberKickConfirmPage {
 
-    private final LateTimeClan lateTimeClan;
     private final Inventory inventory;
-    private final ClanModel clanModel;
 
     public ClanMemberKickConfirmPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
-        this.lateTimeClan = lateTimeClan;
-        this.clanModel = clanModel;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*4,
-                Component.text(this.lateTimeClan.getMessages().compileMessage(
+                Component.text(lateTimeClan.getMessages().compileMessage(
                         "§8Mitglied rausschmeißen"
                 ))
         );

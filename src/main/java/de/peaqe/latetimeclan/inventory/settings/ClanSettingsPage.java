@@ -23,18 +23,16 @@ import java.util.UUID;
 
 public class ClanSettingsPage {
 
-    private final LateTimeClan lateTimeClan;
     private final Inventory inventory;
     private final ClanModel clanModel;
 
     public ClanSettingsPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
-        this.lateTimeClan = lateTimeClan;
         this.clanModel = clanModel;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*5,
-                Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Clan Einstellungen"
+                Component.text(lateTimeClan.getMessages().compileMessage(
+                        "§8Einstellungen"
                 ))
         );
     }

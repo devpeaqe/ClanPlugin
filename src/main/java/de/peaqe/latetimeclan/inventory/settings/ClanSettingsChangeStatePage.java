@@ -34,7 +34,7 @@ public class ClanSettingsChangeStatePage {
                 null,
                 9*5,
                 Component.text(lateTimeClan.getMessages().compileMessage(
-                        "§8Clan-Status ändern"
+                        "§8Status ändern"
                 ))
         );
     }

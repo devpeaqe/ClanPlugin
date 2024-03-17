@@ -48,7 +48,7 @@ public class ClanSettingsChangeStatePageListener implements Listener {
         if (event.getClickedInventory() == null) return;
         if (!Component.text(event.getView().getOriginalTitle()).equals(
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Clan-Status ändern"
+                        "§8Status ändern"
                 ))
         )) return;
 
