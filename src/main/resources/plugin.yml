@@ -4,7 +4,6 @@ main: de.peaqe.latetimeclan.LateTimeClan
 api-version: '1.20'
 
 commands:
-  test:
   clan:
   clanchat:
     aliases:
