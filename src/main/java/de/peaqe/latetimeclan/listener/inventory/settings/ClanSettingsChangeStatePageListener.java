@@ -59,7 +59,15 @@ public class ClanSettingsChangeStatePageListener implements Listener {
 
         var clan = clanPlayer.getClan();
         if (clan == null) return;
-        if (!clanPlayer.hasPermission(ClanAction.CHANGE_STATE)) return;
+
+        if (!clanPlayer.hasPermission(ClanAction.CHANGE_STATE)) {
+            player.closeInventory();
+            player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                    "Du bist derzeit nicht berechtigt um den %s zu ändern!",
+                    "Clan-Status"
+            ));
+            return;
+        }
 
         switch (event.getSlot()) {
             case 29, 31, 33 -> {

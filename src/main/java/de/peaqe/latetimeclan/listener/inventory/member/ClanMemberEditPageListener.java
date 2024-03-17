@@ -82,14 +82,14 @@ public class ClanMemberEditPageListener implements Listener {
                     }
                      */
 
-                } else {
-
-                    player.closeInventory();
-                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                            "Du hast nicht die benötigte Berechtigung um %s aus dem Clan zu werfen!",
-                            target.getName()
-                    ));
+                    return;
                 }
+
+                player.closeInventory();
+                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Du hast nicht die benötigte Berechtigung um %s aus dem Clan zu werfen!",
+                        target.getName()
+                ));
             }
 
             case 24 -> {
@@ -101,7 +101,7 @@ public class ClanMemberEditPageListener implements Listener {
                 var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
                 if (target == null) return;
 
-                if (clanPlayer.hasPermission(ClanAction.CHANGE_GROUP)) {
+                if (ClanUtil.isPermitted(clanPlayer, target, ClanAction.CHANGE_GROUP)) {
                     player.closeInventory();
                     player.openInventory(new ClanMemberChangeGroupPage(this.lateTimeClan, clanPlayer.getClan())
                             .getInventory(clanPlayer, target));
@@ -113,7 +113,6 @@ public class ClanMemberEditPageListener implements Listener {
                         "Du hast nicht die benötigte Berechtigung um die Gruppe von %s zu bearbeiten!",
                         target.getName()
                 ));
-
             }
 
         }

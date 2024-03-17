@@ -4,6 +4,7 @@ import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberPage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsPage;
 import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.models.util.ClanAction;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -59,7 +60,16 @@ public class ClanInfoPageListener implements Listener {
                 var clan = clanPlayer.getClan();
 
                 player.closeInventory();
-                player.openInventory(new ClanSettingsPage(this.lateTimeClan, clan).getInventory());
+
+                if (clanPlayer.hasPermission(ClanAction.OPEN_SETTINGS)) {
+                    player.openInventory(new ClanSettingsPage(this.lateTimeClan, clan).getInventory());
+                    return;
+                }
+
+                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Du hast nicht die benötigte Berechtigung um die %s zu öffnen!",
+                        "Einstellungen"
+                ));
 
             }
 

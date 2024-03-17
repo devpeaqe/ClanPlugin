@@ -5,6 +5,7 @@ import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsChangeStatePage;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.uuid.UUIDFetcher;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -60,6 +61,15 @@ public class ClanSettingsPageListener implements Listener {
             case 29 -> {
                 // Clan Status
                 player.closeInventory();
+
+                if (!clanPlayer.hasPermission(ClanAction.CHANGE_STATE)) {
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Du bist derzeit nicht berechtigt den %s zu ändern!",
+                            "Clan-Status"
+                    ));
+                    return;
+                }
+
                 player.openInventory(new ClanSettingsChangeStatePage(this.lateTimeClan, clanPlayer.getClan())
                         .getInventory());
             }

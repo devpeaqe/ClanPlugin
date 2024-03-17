@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -24,17 +25,15 @@ import java.util.UUID;
 
 public class ClanSettingsChangeStatePage {
 
-    private final LateTimeClan lateTimeClan;
     private final Inventory inventory;
     private final ClanModel clanModel;
 
     public ClanSettingsChangeStatePage(LateTimeClan lateTimeClan, ClanModel clanModel) {
-        this.lateTimeClan = lateTimeClan;
         this.clanModel = clanModel;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*5,
-                Component.text(this.lateTimeClan.getMessages().compileMessage(
+                Component.text(lateTimeClan.getMessages().compileMessage(
                         "§8Clan-Status ändern"
                 ))
         );
@@ -69,37 +68,26 @@ public class ClanSettingsChangeStatePage {
                 .build();
 
 
-        final var clanStatusOpen = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE)
-                .setDisplayName("§8• " + ClanInvitationStatus.OPEN.getStatus())
-                .addLore(
-                        "",
-                        "§8• Setze den Clanstatus auf " + ClanInvitationStatus.OPEN.getStatus()
-                )
-                .glow(clanModel.getClanInvitationStatus().equals(ClanInvitationStatus.OPEN))
-                .build();
+        var statusMaterials = Map.of(
+                ClanInvitationStatus.OPEN, Material.LIME_STAINED_GLASS_PANE,
+                ClanInvitationStatus.INVITATION, Material.ORANGE_STAINED_GLASS_PANE,
+                ClanInvitationStatus.CLOSED, Material.RED_STAINED_GLASS_PANE
+        );
 
-        final var clanStatusInvitation = new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE)
-                .setDisplayName("§8• " + ClanInvitationStatus.INVITATION.getStatus())
-                .addLore(
-                        "",
-                        "§8• Setze den Clanstatus auf " + ClanInvitationStatus.OPEN.getStatus()
-                )
-                .glow(clanModel.getClanInvitationStatus().equals(ClanInvitationStatus.INVITATION))
-                .build();
+        for (int i = 0; i < statusMaterials.size(); i++) {
+            var status = ClanInvitationStatus.values()[i];
+            var material = statusMaterials.get(status);
 
-        final var clanStatusClosed = new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
-                .setDisplayName("§8• " + ClanInvitationStatus.CLOSED.getStatus())
-                .addLore(
-                        "",
-                        "§8• Setze den Clanstatus auf " + ClanInvitationStatus.OPEN.getStatus()
-                )
-                .glow(clanModel.getClanInvitationStatus().equals(ClanInvitationStatus.CLOSED))
-                .build();
+            final var clanStatusItem = new ItemBuilder(material)
+                    .setDisplayName("§8• " + status.getStatus())
+                    .addLore("", "§8• §7Setze den Clanstatus auf " + status.getStatus())
+                    .glow(clanModel.getClanInvitationStatus().equals(status))
+                    .build();
+
+            this.inventory.setItem(29 + (i * 2), clanStatusItem);
+        }
 
         this.inventory.setItem(13, clanNameItem);
-        this.inventory.setItem(29, clanStatusOpen);
-        this.inventory.setItem(31, clanStatusInvitation);
-        this.inventory.setItem(33, clanStatusClosed);
 
     }
 
