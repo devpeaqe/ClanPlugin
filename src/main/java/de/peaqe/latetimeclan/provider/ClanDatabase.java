@@ -1,5 +1,6 @@
 package de.peaqe.latetimeclan.provider;
 
+import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanModel;
@@ -30,12 +31,15 @@ public class ClanDatabase {
     private Connection connection;
     //private final SimpleCache simpleCache;
 
-    public ClanDatabase(String hostname, String username, String password, String database, int port) {
-        this.hostname = hostname;
-        this.username = username;
-        this.password = password;
-        this.database = database;
-        this.port = port;
+    public ClanDatabase() {
+
+        final var lateTimeClan = LateTimeClan.getInstance();
+
+        this.hostname = lateTimeClan.getDatabaseConnection().hostname();
+        this.username = lateTimeClan.getDatabaseConnection().username();
+        this.password = lateTimeClan.getDatabaseConnection().password();
+        this.database = lateTimeClan.getDatabaseConnection().database();
+        this.port = lateTimeClan.getDatabaseConnection().port();
 
         this.createTableIfNotExists();
         //this.simpleCache = new SimpleCache();

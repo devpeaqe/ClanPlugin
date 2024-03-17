@@ -1,5 +1,6 @@
 package de.peaqe.latetimeclan.provider;
 
+import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.provider.util.HeadProperty;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import org.bukkit.Bukkit;
@@ -33,12 +34,15 @@ public class HeadDatabase {
     private Connection connection;
     //private final Map<UUID, String> headCache;
 
-    public HeadDatabase(String hostname, String username, String password, String database, int port) {
-        this.hostname = hostname;
-        this.username = username;
-        this.password = password;
-        this.database = database;
-        this.port = port;
+    public HeadDatabase() {
+
+        final var lateTimeClan = LateTimeClan.getInstance();
+
+        this.hostname = lateTimeClan.getDatabaseConnection().hostname();
+        this.username = lateTimeClan.getDatabaseConnection().username();
+        this.password = lateTimeClan.getDatabaseConnection().password();
+        this.database = lateTimeClan.getDatabaseConnection().database();
+        this.port = lateTimeClan.getDatabaseConnection().port();
 
         this.createTableIfNotExists();
         //this.headCache = new HashMap<>();
