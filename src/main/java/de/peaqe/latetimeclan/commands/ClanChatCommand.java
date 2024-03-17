@@ -3,6 +3,7 @@ package de.peaqe.latetimeclan.commands;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.models.util.ClanAction;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -60,10 +61,20 @@ public class ClanChatCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
+            if (!clanPlayer.hasPermission(ClanAction.CHAT)) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit nicht berechtigt im %s zu schreiben!",
+                        "Clan-Chat"
+                ));
+                return true;
+            }
+
             StringBuilder stringBuilder = new StringBuilder();
 
             for (var arg : args) {
-                stringBuilder.append(arg.replace('&', '§').replace("%s", ""));
+                stringBuilder
+                        .append(arg.replace('&', '§').replace("%s", ""))
+                        .append(" ");
             }
 
             clanPlayer.sendMessage(
@@ -79,10 +90,7 @@ public class ClanChatCommand implements CommandExecutor, TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-
-        ArrayList<String> matches = new ArrayList<>();
-
-        return matches;
+        return new ArrayList<>();
     }
 }
 
