@@ -43,34 +43,13 @@ public class Messages {
             }
         }
 
-        return this.prefix + result.toString();
+        return this.prefix + result;
     }
 
-    public String sendClanMessage(ClanPlayer clanPlayer, String message, String... highlights) {
-        if (message == null || highlights == null) {
-            throw new IllegalArgumentException("Message and highlights cannot be null.");
-        }
-
-        String[] parts = message.split("%s", -1);
-        StringBuilder result = new StringBuilder(parts[0]);
-
-        int minLen = Math.min(parts.length - 1, highlights.length);
-        for (int i = 0; i < minLen; i++) {
-            result.append(getColorHighlight(i))
-                    .append(highlights[i])
-                    .append(colorNormal)
-                    .append(parts[i + 1]);
-        }
-
-        if (highlights.length < parts.length - 1) {
-            for (int i = minLen; i < parts.length - 1; i++) {
-                result.append(parts[i + 1]);
-            }
-        }
-
-        return this.prefix + "§8(" +
-                clanPlayer.getClanGroup().getColor() + clanPlayer.getClanGroup().getName() +
-                clanPlayer.getName() + "§8)" + result.toString();
+    public String sendClanMessage(ClanPlayer clanPlayer, String message) {
+        return this.prefix.replace("Clan", "ClanChat") +
+                "§8( " + clanPlayer.getClanGroup().getColor() + clanPlayer.getName() + " §8) » " +
+                message;
     }
 
     private String getColorHighlight(int index) {

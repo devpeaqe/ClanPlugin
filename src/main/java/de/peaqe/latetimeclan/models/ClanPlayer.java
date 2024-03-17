@@ -78,19 +78,13 @@ public class ClanPlayer {
         clan.reload();
     }
 
-    public void sendMessage(String message, String... highlights) {
+    public void sendMessage(String message) {
 
         this.getClan().getMembers().forEach((uuid, clanGroupModel) -> {
 
             var bukkitOnlinePlayer = Bukkit.getPlayer(uuid);
 
             if (bukkitOnlinePlayer != null) {
-                if (highlights != null) {
-                    bukkitOnlinePlayer.sendMessage(LateTimeClan.getInstance().getMessages().sendClanMessage(
-                            this, message, highlights
-                    ));
-                    return;
-                }
                 bukkitOnlinePlayer.sendMessage(LateTimeClan.getInstance().getMessages().sendClanMessage(
                         this, message
                 ));
