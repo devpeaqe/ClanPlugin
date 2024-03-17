@@ -13,7 +13,7 @@ import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.provider.ClanDatabase;
 import de.peaqe.latetimeclan.provider.HeadDatabase;
-import de.peaqe.latetimeclan.test.TestCommand;
+import de.peaqe.latetimeclan.util.database.DatabaseConnection;
 import de.peaqe.latetimeclan.util.manager.HeadManager;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,50 +29,51 @@ public final class LateTimeClan extends JavaPlugin {
     private ClanDatabase clanDatabase;
     private HeadDatabase headDatabase;
     private DatabaseConfig databaseConfig;
-    //private DatabaseCache databaseCache;
     private InvitationManager invitationManager;
-    public Map<UUID, ClanGroupModel> cache;
-    public HeadManager headManager;
+    private Map<UUID, ClanGroupModel> cache;
+    private HeadManager headManager;
+    private DatabaseConnection databaseConnection;
+    //private DatabaseCache databaseCache;
 
     @Override
     public void onEnable() {
 
         instance = this;
-        this.messages = new Messages();
 
-        this.databaseConfig = new DatabaseConfig(this);
-
-        this.clanDatabase = new ClanDatabase(
-                this.databaseConfig.get("hostname"),
-                this.databaseConfig.get("username"),
-                this.databaseConfig.get("password"),
-                this.databaseConfig.get("database"),
-                this.databaseConfig.getInt("port")
-        );
-
-        this.headDatabase = new HeadDatabase(
-                this.databaseConfig.get("hostname"),
-                this.databaseConfig.get("username"),
-                this.databaseConfig.get("password"),
-                this.databaseConfig.get("database"),
-                this.databaseConfig.getInt("port")
-        );
-
-        this.headManager = new HeadManager(this);
-
-        //this.databaseCache = this.clanDatabase.getDatabaseCache();
-        this.invitationManager = new InvitationManager();
+        // Manager's
+        this.registerManager();
 
         // Command's
-        new TestCommand(this);
-        new ClanCommand(this);
-        new ClanChatCommand(this);
+        this.registerCommands();
 
         // Listener's
+        this.registerListener();
+
+    }
+
+    private void registerManager() {
+
+        this.messages = new Messages();
+        this.databaseConfig = new DatabaseConfig(this);
+        this.headManager = new HeadManager(this);
+        this.invitationManager = new InvitationManager();
+
+        this.databaseConnection = new DatabaseConnection(
+                this.databaseConfig.get("hostname"),
+                this.databaseConfig.get("username"),
+                this.databaseConfig.get("password"),
+                this.databaseConfig.get("database"),
+                this.databaseConfig.getInt("port")
+        );
+
+        //this.databaseCache = this.clanDatabase.getDatabaseCache();
+    }
+
+    private void registerListener() {
+
         new ClanInfoPageListener(this);
         new ClanMemberPageListener(this);
         new ClanMemberEditPageListener(this);
-        var clanMemberChangeGroupPageListener = new ClanMemberChangeGroupPageListener(this);
         new ClanMemberKickConfirmPageListener(this);
         new ClanMemberChangeGroupConfirmPageListener(this);
         new PlayerJoinListener(this);
@@ -80,13 +81,13 @@ public final class LateTimeClan extends JavaPlugin {
         new PluginDisableListener(this);
         new ClanSettingsChangeStatePageListener(this);
 
+        var clanMemberChangeGroupPageListener = new ClanMemberChangeGroupPageListener(this);
         cache = clanMemberChangeGroupPageListener.getCache();
-
     }
 
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
+    private void registerCommands() {
+        new ClanCommand(this);
+        new ClanChatCommand(this);
     }
 
     public static LateTimeClan getInstance() {
@@ -123,5 +124,9 @@ public final class LateTimeClan extends JavaPlugin {
 
     public HeadManager getHeadManager() {
         return headManager;
+    }
+
+    public DatabaseConnection getDatabaseConnection() {
+        return databaseConnection;
     }
 }
