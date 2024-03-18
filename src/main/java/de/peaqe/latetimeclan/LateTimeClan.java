@@ -17,9 +17,11 @@ import de.peaqe.latetimeclan.provider.PlayerDatabase;
 import de.peaqe.latetimeclan.util.database.DatabaseConnection;
 import de.peaqe.latetimeclan.util.manager.HeadManager;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
-import de.peaqe.latetimeclan.webhook.Webhook;
+import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.awt.*;
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -61,9 +63,35 @@ public final class LateTimeClan extends JavaPlugin {
         // Listener's
         this.registerListener();
 
-        var webhook = new Webhook();
-        webhook.sendMessage("Das Plugin wurde gestartet.");
 
+        try {
+            var embed = new DiscordWebhook.EmbedObject();
+            embed.setColor(Color.GREEN);
+            embed.addField("Status", "Das Clan-Plugin ist nun aktiviert!", true);
+
+            var webhook = new DiscordWebhook();
+            webhook.addEmbed(embed);
+            webhook.execute();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        try {
+            var embed = new DiscordWebhook.EmbedObject();
+            embed.setColor(Color.RED);
+            embed.addField("Status", "Das Clan-Plugin ist nun deaktiviert!", true);
+
+            var webhook = new DiscordWebhook();
+            webhook.addEmbed(embed);
+            webhook.execute();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void registerManager() {

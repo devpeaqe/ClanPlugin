@@ -5,6 +5,11 @@ import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
+
 /**
  * *
  *
@@ -25,6 +30,35 @@ public class ClanUtil {
         return (sender.hasPermission(clanAction) &&
                 sender.getClanGroup().getPermissionLevel() > target.getClanGroup().getPermissionLevel());
 
+    }
+
+    public static String getPlayerHeadUrl(String playerName) {
+        try {
+
+            var url = "https://crafatar.com/renders/head/" + playerName + "?overlay";
+            var connection = (HttpURLConnection) new URL(url).openConnection();
+
+            connection.setRequestMethod("GET");
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+
+                var scanner = new Scanner(connection.getInputStream());
+                var response = new StringBuilder();
+
+                while (scanner.hasNextLine()) {
+                    response.append(scanner.nextLine());
+                }
+
+                scanner.close();
+                return response.toString();
+            } else {
+                throw new IOException("Failed to fetch player head, response code: " + responseCode);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
