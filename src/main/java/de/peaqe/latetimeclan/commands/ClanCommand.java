@@ -264,25 +264,22 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                             clanName,
                             clanTag,
                             player.getUniqueId().toString(),
-                            ClanInvitationStatus.OPEN,
+                            ClanInvitationStatus.INVITATION,
                             10,
                             Map.of(
-                                    player.getUniqueId(), ClanGroupModel.OWNER,
-                            UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5"), ClanGroupModel.MANAGER,
-                            UUID.fromString("7dcb46db-d22c-4157-8df9-aa88587ffd17"), ClanGroupModel.MODERATOR,
-                            UUID.fromString("36eacca7-ac75-4115-8390-97affd4d77fd"), ClanGroupModel.MEMBER
-                    )
-            );
+                                    player.getUniqueId(), ClanGroupModel.OWNER
+                            )
+                    );
 
-            this.lateTimeClan.getClanDatabase().createClan(clan);
+                    this.lateTimeClan.getClanDatabase().createClan(clan);
 
-            player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
-            player.sendMessage(this.messages.compileMessage(
-                    "Du hast den Clan %s erfolgreich erstellt!",
-                    clanTag
-            ));
+                    player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+                    player.sendMessage(this.messages.compileMessage(
+                            "Du hast den Clan %s erfolgreich erstellt!",
+                            clanTag
+                    ));
 
-            return true;
+                    return true;
         }
 
         return false;
