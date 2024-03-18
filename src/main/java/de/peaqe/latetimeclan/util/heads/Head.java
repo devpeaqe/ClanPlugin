@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
  * *
  */
 
+@SuppressWarnings(value = "unused")
 public enum Head {
 
     RED_BUTTON("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGU1ZDcyNWRkOGJmZjI0MDczOGU4NWRiYWRhZWVjYTU0MmQ2ODAwYTc4MDIzOTM4ZjBmMjljY2JiZmNhOGQ2NiJ9fX0="),
