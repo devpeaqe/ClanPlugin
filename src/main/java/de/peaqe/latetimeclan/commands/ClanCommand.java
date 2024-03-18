@@ -44,242 +44,283 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
         this.invitationManager = lateTimeClan.getInvitationManager();
     }
 
-   @Override
-            public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
 
-                if (!(sender instanceof Player player)) return true;
+        if (!(sender instanceof Player player)) return true;
 
-                // /clan
-                if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("info"))) {
+        // /clan
+        if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("info"))) {
+            var clan = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
 
-                    var clan = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
+            if (clan == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit in keinem Clan!"
+                ));
+                return true;
+            }
 
-                    if (clan == null) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Du bist derzeit in keinem Clan!"
-                        ));
-                        return true;
-                    }
+            player.openInventory(new ClanInfoPage(this.lateTimeClan, clan).getInventory(player));
+            return true;
+        }
 
-                    player.openInventory(new ClanInfoPage(this.lateTimeClan, clan).getInventory(player));
-                    return true;
-                }
+        // /clan leave
+        if (args.length == 1 && args[0].equalsIgnoreCase("leave")) {
 
-                // /clan join <clanTag>
-                if (args.length == 2 && args[0].equalsIgnoreCase("join")) {
+            var clan = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
+            if (clan == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit in keinem Clan!"
+                ));
+                return true;
+            }
 
-                    if (this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId()) != null) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Du bist bereits in einem Clan. Diesen musst du vorher verlassen! %s",
-                                "/clan leave"
-                        ));
-                        return true;
-                    }
+            var clanPlayer = ClanPlayer.fromPlayer(player);
+            if (clanPlayer == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "§cEs ist ein Fehler aufgetreten! Bitte wende dich an einen Administrator."
+                ));
+                return true;
+            }
 
-                    var clanTag = args[1].toLowerCase();
-                    var clan = this.lateTimeClan.getClanDatabase().getClan(clanTag);
+            if (clanPlayer.getClanGroup().equals(ClanGroupModel.OWNER)) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du kannst dein eigenen %s nicht verlassen!",
+                        "Clan"
+                ));
+                return true;
+            }
 
-                    if (clan == null) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Der Clan %s existiert nicht!",
-                                clanTag
-                        ));
-                        return true;
-                    }
+            clan.kick(clanPlayer);
 
-                    if (clan.getClanInvitationStatus().equals(ClanInvitationStatus.OPEN) &&
-                            clan.getMembers().size() < clan.getMaxSize()) {
+            player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+            player.sendMessage(this.messages.compileMessage(
+                    "Du hast den Clan %s verlassen!",
+                    clan.getName()
+            ));
 
-                        var clanPlayer = new ClanPlayer(
-                                player.getName(),
-                                player.getUniqueId(),
-                                clan,
-                                ClanGroupModel.MEMBER
-                        );
+            clan.sendNotification(
+                    "Das Mitglied %s hat den Clan §cverlassen§7.",
+                    player.getName()
+            );
+            return true;
+        }
 
-                        if (ClanPlayer.fromPlayer(player) != null) clanPlayer =  ClanPlayer.fromPlayer(player);
-                        if (clanPlayer == null) {
-                            player.sendMessage(this.messages.compileMessage(
-                                    "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
-                            ));
-                            player.sendMessage(this.messages.compileMessage(
-                                    "Discord » %s", "https://discord.gg/USHsrPjU8J"
-                            ));
-                            return true;
-                        }
+        // /clan join <clanTag>
+        if (args.length == 2 && args[0].equalsIgnoreCase("join")) {
 
-                        clan.addMember(clanPlayer);
+            if (this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId()) != null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist bereits in einem Clan. Diesen musst du vorher verlassen! %s",
+                        "/clan leave"
+                ));
+                return true;
+            }
 
-                        player.sendMessage(this.messages.compileMessage(
-                                "Du bist dem Clan %s beigetreten!",
-                                clan.getName()
-                        ));
+            var clanTag = args[1].toLowerCase();
+            var clan = this.lateTimeClan.getClanDatabase().getClan(clanTag);
 
-                        player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
-                        return true;
-                    }
+            if (clan == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Der Clan %s existiert nicht!",
+                        clanTag
+                ));
+                return true;
+            }
 
-                    if (!(this.invitationManager.isClanJoinable(clan) &&
-                            this.invitationManager.isInvited(player.getUniqueId(), clan.getTag()))) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Der Clan %s nimmt derzeit keine neuen Mitglieder auf!",
-                                clan.getName()
-                        ));
-                        return true;
-                    }
+            if (clan.getClanInvitationStatus().equals(ClanInvitationStatus.OPEN) &&
+                    clan.getMembers().size() < clan.getMaxSize()) {
 
-                    this.invitationManager.unInvite(player.getUniqueId(), clan);
+                var clanPlayer = new ClanPlayer(
+                        player.getName(),
+                        player.getUniqueId(),
+                        clan,
+                        ClanGroupModel.MEMBER
+                );
 
-                    var clanPlayer = new ClanPlayer(
-                            player.getName(),
-                            player.getUniqueId(),
-                            clan,
-                            ClanGroupModel.MEMBER
-                    );
-
-                    if (ClanPlayer.fromPlayer(player) != null) clanPlayer =  ClanPlayer.fromPlayer(player);
-
-                    if (clanPlayer == null) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
-                        ));
-                        player.sendMessage(this.messages.compileMessage(
-                                "Discord » %s", "https://discord.gg/USHsrPjU8J"
-                        ));
-                        return true;
-                    }
-
-                    clan.addMember(clanPlayer);
-
+                if (ClanPlayer.fromPlayer(player) != null) clanPlayer =  ClanPlayer.fromPlayer(player);
+                if (clanPlayer == null) {
                     player.sendMessage(this.messages.compileMessage(
-                            "Du bist dem Clan %s beigetreten!",
-                            clan.getName()
+                            "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
                     ));
-                    player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
-
-                    return true;
-                }
-
-                // /clan invite <member>
-                if (args.length == 2 && args[0].equalsIgnoreCase("invite")) {
-
-                    var clanModel = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
-
-                    if (clanModel == null) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Du bist derzeit in keinem Clan!"
-                        ));
-                        return true;
-                    }
-
-                    var clanPlayerSender = ClanPlayer.fromPlayer(player);
-
-                    if (clanPlayerSender == null) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
-                        ));
-                        player.sendMessage(this.messages.compileMessage(
-                                "Discord » %s", "https://discord.gg/USHsrPjU8J"
-                        ));
-                        return true;
-                    }
-
-                    if (!clanPlayerSender.hasPermission(ClanAction.INVITE)) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Du bist derzeit nicht dazu berechtigt %s einladen zu können!",
-                                "Mitglieder"
-                        ));
-                        return true;
-                    }
-
-                    if (!this.invitationManager.isClanJoinable(clanModel)) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Dein Clan ist derzeit voll oder die Einladungen wurden pausiert!"
-                        ));
-                        return true;
-                    }
-
-                    var target = Bukkit.getPlayer(args[1]);
-                    if (target == null) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Der Spieler %s konnte nicht gefunden werden oder ist derzeit nicht online!",
-                                args[1]
-                        ));
-                        return true;
-                    }
-
-                    if (target.getName().equalsIgnoreCase(player.getName())) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Du kannst dich nicht selbst einladen!"
-                        ));
-                        return true;
-                    }
-
-                    if (this.lateTimeClan.getClanDatabase().getClanModelOfMember(target.getUniqueId()) != null) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Der Spieler %s ist bereits in einem Clan!",
-                                target.getName()
-                        ));
-                        return true;
-                    }
-
-                    if (this.invitationManager.isInvited(target.getUniqueId(), clanModel.getTag())) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Der Spieler %s hat bereits eine Einladung vom Clan erhalten!",
-                                target.getName()
-                        ));
-                        return true;
-                    }
-
-                    if (this.invitationManager.invite(target.getUniqueId(), clanModel)) {
-                        target.sendMessage(this.messages.compileMessage(
-                                "Du wurdest von dem Clan %s eingeladen.",
-                                clanModel.getName()
-                        ));
-
-                        player.sendMessage(this.messages.compileMessage(
-                                "Du hast den Spieler %s eingeladen.",
-                                target.getName()
-                        ));
-                    }
-
-                    return true;
-                }
-
-                // /clan create <name> <tag>
-                if (args.length == 3 && args[0].equalsIgnoreCase("create")) {
-
-                    var clanName = args[1];
-                    var clanTag = args[2].toLowerCase();
-
-                    if (this.lateTimeClan.getClanDatabase().clanExists(clanTag)) {
-                        player.sendMessage(this.messages.compileMessage(
-                                "Der Clan %s wurde bereits von einem anderen Spieler erstellt!",
-                                clanTag
-                        ));
-                        return true;
-                    }
-
-                    var clan = new ClanModel(
-                            clanName,
-                            clanTag,
-                            player.getUniqueId().toString(),
-                            ClanInvitationStatus.INVITATION,
-                            10,
-                            Map.of(
-                                    player.getUniqueId(), ClanGroupModel.OWNER
-                            )
-                    );
-
-                    this.lateTimeClan.getClanDatabase().createClan(clan);
-
-                    player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
                     player.sendMessage(this.messages.compileMessage(
-                            "Du hast den Clan %s erfolgreich erstellt!",
-                            clanTag
+                            "Discord » %s", "https://discord.gg/USHsrPjU8J"
                     ));
-
                     return true;
+                }
+
+                clan.addMember(clanPlayer);
+
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist dem Clan %s beigetreten!",
+                        clan.getName()
+                ));
+
+                player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+                return true;
+            }
+
+            if (!(this.invitationManager.isClanJoinable(clan) &&
+                    this.invitationManager.isInvited(player.getUniqueId(), clan.getTag()))) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Der Clan %s nimmt derzeit keine neuen Mitglieder auf!",
+                        clan.getName()
+                ));
+                return true;
+            }
+
+            this.invitationManager.unInvite(player.getUniqueId(), clan);
+
+            var clanPlayer = new ClanPlayer(
+                    player.getName(),
+                    player.getUniqueId(),
+                    clan,
+                    ClanGroupModel.MEMBER
+            );
+
+            if (ClanPlayer.fromPlayer(player) != null) clanPlayer =  ClanPlayer.fromPlayer(player);
+
+            if (clanPlayer == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
+                ));
+                player.sendMessage(this.messages.compileMessage(
+                        "Discord » %s", "https://discord.gg/USHsrPjU8J"
+                ));
+                return true;
+            }
+
+            clan.addMember(clanPlayer);
+
+            player.sendMessage(this.messages.compileMessage(
+                    "Du bist dem Clan %s beigetreten!",
+                    clan.getName()
+            ));
+            player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+
+            return true;
+        }
+
+        // /clan invite <member>
+        if (args.length == 2 && args[0].equalsIgnoreCase("invite")) {
+
+            var clanModel = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
+
+            if (clanModel == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit in keinem Clan!"
+                ));
+                return true;
+            }
+
+            var clanPlayerSender = ClanPlayer.fromPlayer(player);
+
+            if (clanPlayerSender == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
+                ));
+                player.sendMessage(this.messages.compileMessage(
+                        "Discord » %s", "https://discord.gg/USHsrPjU8J"
+                ));
+                return true;
+            }
+
+            if (!clanPlayerSender.hasPermission(ClanAction.INVITE)) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit nicht dazu berechtigt %s einladen zu können!",
+                        "Mitglieder"
+                ));
+                return true;
+            }
+
+            if (!this.invitationManager.isClanJoinable(clanModel)) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Dein Clan ist derzeit voll oder die Einladungen wurden pausiert!"
+                ));
+                return true;
+            }
+
+            var target = Bukkit.getPlayer(args[1]);
+            if (target == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Der Spieler %s konnte nicht gefunden werden oder ist derzeit nicht online!",
+                        args[1]
+                ));
+                return true;
+            }
+
+            if (target.getName().equalsIgnoreCase(player.getName())) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du kannst dich nicht selbst einladen!"
+                ));
+                return true;
+            }
+
+            if (this.lateTimeClan.getClanDatabase().getClanModelOfMember(target.getUniqueId()) != null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Der Spieler %s ist bereits in einem Clan!",
+                        target.getName()
+                ));
+                return true;
+            }
+
+            if (this.invitationManager.isInvited(target.getUniqueId(), clanModel.getTag())) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Der Spieler %s hat bereits eine Einladung vom Clan erhalten!",
+                        target.getName()
+                ));
+                return true;
+            }
+
+            if (this.invitationManager.invite(target.getUniqueId(), clanModel)) {
+                target.sendMessage(this.messages.compileMessage(
+                        "Du wurdest von dem Clan %s eingeladen.",
+                        clanModel.getName()
+                ));
+
+                player.sendMessage(this.messages.compileMessage(
+                        "Du hast den Spieler %s eingeladen.",
+                        target.getName()
+                ));
+            }
+
+            return true;
+        }
+
+        // /clan create <name> <tag>
+        if (args.length == 3 && args[0].equalsIgnoreCase("create")) {
+
+            var clanName = args[1];
+            var clanTag = args[2].toLowerCase();
+
+            if (this.lateTimeClan.getClanDatabase().clanExists(clanTag)) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Der Clan %s wurde bereits von einem anderen Spieler erstellt!",
+                        clanTag
+                ));
+                return true;
+            }
+
+            var clan = new ClanModel(
+                    clanName,
+                    clanTag,
+                    player.getUniqueId().toString(),
+                    ClanInvitationStatus.INVITATION,
+                    10,
+                    Map.of(
+                            player.getUniqueId(), ClanGroupModel.OWNER
+                    )
+            );
+
+            this.lateTimeClan.getClanDatabase().createClan(clan);
+
+            player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+            player.sendMessage(this.messages.compileMessage(
+                    "Du hast den Clan %s erfolgreich erstellt!",
+                    clanTag
+            ));
+
+            return true;
         }
 
         return false;
@@ -297,6 +338,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             if (clanPlayer != null) {
                 matches.add("info");
                 if (clanPlayer.hasPermission(ClanAction.INVITE)) matches.add("invite");
+                if (!clanPlayer.getClanGroup().equals(ClanGroupModel.OWNER)) matches.add("leave");
                 return matches;
             }
 
@@ -339,4 +381,3 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
     }
 
 }
-
