@@ -3,6 +3,7 @@ package de.peaqe.latetimeclan.provider;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.provider.util.PlayerProperty;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -38,14 +39,14 @@ public class PlayerDatabase extends DatabaseProvider {
         }
     }
 
-    public void registerPlayer(Player player) {
+    public void registerPlayer(@NotNull Player player) {
 
-        final var sql = "INSERT INTO latetime.player (`" + PlayerProperty.NAME.getValue() + "`, `" +
+        final var query = "INSERT INTO latetime.player (`" + PlayerProperty.NAME.getValue() + "`, `" +
                 PlayerProperty.UUID.getValue() + "`) VALUES (?, ?) " +
                 "ON DUPLICATE KEY UPDATE `" + PlayerProperty.NAME.getValue() + "` = ?";
 
-        try {
-            var statement = this.getConnection().prepareStatement(sql);
+        this.connect();
+        try (var statement = this.getConnection().prepareStatement(query)) {
 
             statement.setString(1, player.getName().toLowerCase());
             statement.setString(2, player.getUniqueId().toString());
@@ -55,17 +56,17 @@ public class PlayerDatabase extends DatabaseProvider {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            this.close();
         }
     }
 
-    public UUID getUniqueId(String playerName) {
+    public UUID getUniqueId(@NotNull String playerName) {
 
-        var sql = "SELECT * FROM latetime.player WHERE `" + PlayerProperty.NAME.getValue() + "` = ?";
+        var query = "SELECT * FROM latetime.player WHERE `" + PlayerProperty.NAME.getValue() + "` = ?";
+
         this.connect();
-
-        try {
-
-            var statement = this.getConnection().prepareStatement(sql);
+        try (var statement = this.getConnection().prepareStatement(query)) {
 
             statement.setString(1, playerName.toLowerCase());
             var resultSet = statement.executeQuery();
@@ -76,6 +77,8 @@ public class PlayerDatabase extends DatabaseProvider {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            this.close();
         }
 
         return null;
@@ -83,12 +86,10 @@ public class PlayerDatabase extends DatabaseProvider {
 
     public String getName(UUID playerUniqueId) {
 
-        var sql = "SELECT * FROM latetime.player WHERE `" + PlayerProperty.UUID.getValue() + "` = ?";
+        var query = "SELECT * FROM latetime.player WHERE `" + PlayerProperty.UUID.getValue() + "` = ?";
         this.connect();
 
-        try {
-
-            var statement = this.getConnection().prepareStatement(sql);
+        try (var statement = this.getConnection().prepareStatement(query)) {
 
             statement.setString(1, playerUniqueId.toString());
             var resultSet = statement.executeQuery();
@@ -99,6 +100,8 @@ public class PlayerDatabase extends DatabaseProvider {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            this.close();
         }
 
         return "Unknown";

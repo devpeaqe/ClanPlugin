@@ -33,6 +33,7 @@ public class PlayerJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
 
         var player = event.getPlayer();
+        this.lateTimeClan.getPlayerDatabase().registerPlayer(player);
 
         var playerSkull = new ItemStack(Material.PLAYER_HEAD);
         var playerSkullMeta = (SkullMeta) playerSkull.getItemMeta();
@@ -41,7 +42,6 @@ public class PlayerJoinListener implements Listener {
         playerSkull.setItemMeta(playerSkullMeta);
 
         this.lateTimeClan.getHeadDatabase().insertHead(player.getName(), player.getUniqueId(), playerSkull);
-        this.lateTimeClan.getPlayerDatabase().registerPlayer(player);
 
         var clanPlayer = ClanPlayer.fromPlayer(player);
 

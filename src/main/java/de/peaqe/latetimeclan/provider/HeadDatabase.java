@@ -2,8 +2,10 @@ package de.peaqe.latetimeclan.provider;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.provider.util.HeadProperty;
+import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,6 +70,8 @@ public class HeadDatabase extends DatabaseProvider {
             statement.setString(2, uuid.toString());
             statement.setBytes(3, Base64.getDecoder().decode(headBase64));
 
+            statement.executeUpdate();
+
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage("§cError executing SQL query: " + e.getMessage());
             throw new RuntimeException(e);
@@ -79,7 +83,8 @@ public class HeadDatabase extends DatabaseProvider {
     @Nullable
     public ItemStack getHead(@NotNull HeadProperty headProperty, @NotNull String string) {
 
-        if (string.isEmpty()) return null;
+        var placeHolder = new ItemBuilder(Material.PLAYER_HEAD).setDisplayName("§cUnable to load.").build();
+        if (string.isEmpty()) return placeHolder;
 
         if (headProperty.equals(HeadProperty.NAME)) string = string.toLowerCase();
         //if (headProperty.equals(HeadProperty.HEAD) && this.headCache.containsValue(string)) {
@@ -113,7 +118,7 @@ public class HeadDatabase extends DatabaseProvider {
             this.close();
         }
 
-        return null;
+        return placeHolder;
     }
 
     public boolean headExists(HeadProperty headProperty, String string) {
