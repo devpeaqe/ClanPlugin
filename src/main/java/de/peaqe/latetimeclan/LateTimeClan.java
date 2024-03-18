@@ -17,6 +17,7 @@ import de.peaqe.latetimeclan.provider.PlayerDatabase;
 import de.peaqe.latetimeclan.util.database.DatabaseConnection;
 import de.peaqe.latetimeclan.util.manager.HeadManager;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
+import de.peaqe.latetimeclan.webhook.Webhook;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Map;
@@ -59,6 +60,9 @@ public final class LateTimeClan extends JavaPlugin {
 
         // Listener's
         this.registerListener();
+
+        var webhook = new Webhook();
+        webhook.sendMessage("Das Plugin wurde gestartet.");
 
     }
 
