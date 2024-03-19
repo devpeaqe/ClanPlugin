@@ -164,6 +164,11 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     return true;
                 }
 
+                clan.sendNotification(
+                        "%s ist dem Clan beigetreten, heißen wir unser neues Mitglied willkommen!",
+                        player.getName()
+                );
+                
                 clan.addMember(clanPlayer);
 
                 player.sendMessage(this.messages.compileMessage(
@@ -214,6 +219,11 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 ));
                 return true;
             }
+
+            clan.sendNotification(
+                    "%s ist dem Clan beigetreten, heißen wir unser neues Mitglied willkommen!",
+                    player.getName()
+            );
 
             clan.addMember(clanPlayer);
 
@@ -274,6 +284,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
+            // TODO: Add offline support
             var target = Bukkit.getPlayer(args[1]);
             if (target == null) {
                 player.sendMessage(this.messages.compileMessage(
@@ -316,6 +327,12 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                         "Du hast den Spieler %s eingeladen.",
                         target.getName()
                 ));
+
+                clanModel.sendNotification(
+                        "Der Spieler %s wurde von %s eingeladen.",
+                        target.getName(),
+                        player.getName()
+                );
 
                 this.lateTimeClan.getWebhookSender().sendWebhook(
                         new DiscordWebhook.EmbedObject().setTitle("Clan Einladung")

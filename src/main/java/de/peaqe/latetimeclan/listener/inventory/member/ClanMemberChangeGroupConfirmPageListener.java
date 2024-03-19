@@ -88,6 +88,16 @@ public class ClanMemberChangeGroupConfirmPageListener implements Listener {
                     target.getClan().reload();
                     player.openInventory(new ClanMemberPage(this.lateTimeClan, clanPlayer.getClan()).getInventory());
 
+                    var targetOnlinePlayer = Bukkit.getPlayer(target.getUniqueId());
+                    if (targetOnlinePlayer != null) {
+                        targetOnlinePlayer.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                                "Du wurdest zum %s " +
+                                        (tmpClanGroupModel.getPermissionLevel() > clanGroupModel.getPermissionLevel()
+                                        ? "degradiert" : "befördert") + ".",
+                                clanGroupModel.getColor() + clanGroupModel.getName()
+                        ));
+                    }
+
                     clanPlayer.getClan().sendNotification(
                             "Das Mitglied %s wurde von %s zum %s " +
                                     (tmpClanGroupModel.getPermissionLevel() > clanGroupModel.getPermissionLevel()
