@@ -6,10 +6,9 @@ import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.util.ClanDecoder;
 import de.peaqe.latetimeclan.provider.util.ClanProperty;
-import org.bukkit.Bukkit;
 
 import javax.annotation.Nullable;
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -24,31 +23,17 @@ import java.util.UUID;
  * *
  */
 
-public class ClanDatabase {
-
-    private final String hostname, username, password, database;
-    private final int port;
-    private Connection connection;
-    //private final SimpleCache simpleCache;
+public class ClanDatabase extends DatabaseProvider {
 
     public ClanDatabase() {
-
-        final var lateTimeClan = LateTimeClan.getInstance();
-
-        this.hostname = lateTimeClan.getDatabaseConnection().hostname();
-        this.username = lateTimeClan.getDatabaseConnection().username();
-        this.password = lateTimeClan.getDatabaseConnection().password();
-        this.database = lateTimeClan.getDatabaseConnection().database();
-        this.port = lateTimeClan.getDatabaseConnection().port();
-
+        super(LateTimeClan.getInstance());
         this.createTableIfNotExists();
-        //this.simpleCache = new SimpleCache();
     }
 
     public void createTableIfNotExists() {
         this.connect();
         try {
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS latetime.clan (" +
+            this.getConnection().createStatement().execute("CREATE TABLE IF NOT EXISTS latetime.clan (" +
                     "  `" + ClanProperty.NAME.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + ClanProperty.TAG.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + ClanProperty.CLAN_FOUNDER_UUID.getValue() + "` VARCHAR(255) NOT NULL," +
@@ -61,28 +46,6 @@ public class ClanDatabase {
             throw new RuntimeException(e);
         } finally {
             this.close();
-        }
-    }
-
-    public void close() {
-        try {
-            Bukkit.getConsoleSender().sendMessage("§bSQL §7»» §cConnection Closed");
-            connection.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void connect() {
-        try {
-            Bukkit.getConsoleSender().sendMessage("§bSQL §7»» §aConnection Opened");
-            this.connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + hostname + ":" + port + "/" + database,
-                    username,
-                    password
-            );
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -108,7 +71,7 @@ public class ClanDatabase {
         this.connect();
         try {
 
-            var statement = this.connection.prepareStatement(query);
+            var statement = this.getConnection().prepareStatement(query);
 
             statement.setString(1, clanModel.getName());
             statement.setString(2, clanModel.getTag().toLowerCase());
@@ -135,7 +98,7 @@ public class ClanDatabase {
         this.connect();
         try {
             var query = "SELECT * FROM latetime.clan WHERE " + ClanProperty.TAG.getValue() + " = ?";
-            var statement = this.connection.prepareStatement(query);
+            var statement = this.getConnection().prepareStatement(query);
             statement.setString(1, clanTag.toLowerCase());
 
             var resultSet = statement.executeQuery();
@@ -172,7 +135,7 @@ public class ClanDatabase {
         this.connect();
         try {
             final var query = "SELECT * FROM latetime.clan WHERE " + ClanProperty.TAG.getValue() + " = ?";
-            var statement = this.connection.prepareStatement(query);
+            var statement = this.getConnection().prepareStatement(query);
             statement.setString(1, clanTag.toLowerCase());
 
             var resultSet = statement.executeQuery();
@@ -219,7 +182,7 @@ public class ClanDatabase {
         this.connect();
         try {
 
-            var statement = this.connection.prepareStatement(query);
+            var statement = this.getConnection().prepareStatement(query);
 
             statement.setString(1, clanModel.getName());
             statement.setString(2, clanModel.getTag().toLowerCase());
@@ -248,7 +211,7 @@ public class ClanDatabase {
 
         this.connect();
 
-        var preparedStatement = this.connection.prepareStatement(sql);
+        var preparedStatement = this.getConnection().prepareStatement(sql);
         preparedStatement.setObject(1, conditionItem);
 
         var resultSet = preparedStatement.executeQuery();
@@ -279,7 +242,7 @@ public class ClanDatabase {
 
         try {
             var query = "SELECT * FROM latetime.clan WHERE " + ClanProperty.TAG.getValue() + " = ?";
-            var statement = this.connection.prepareStatement(query);
+            var statement = this.getConnection().prepareStatement(query);
             statement.setString(1, clanTag.toLowerCase());
 
             var resultSet = statement.executeQuery();
@@ -305,7 +268,7 @@ public class ClanDatabase {
         try {
 
             var query = "SELECT * FROM latetime.clan WHERE " + ClanProperty.MEMBERS.getValue() + " LIKE ?";
-            var statement = this.connection.prepareStatement(query);
+            var statement = this.getConnection().prepareStatement(query);
 
             statement.setString(1, "%" + memberUUID.toString() + "%");
 
