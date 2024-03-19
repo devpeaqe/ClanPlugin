@@ -6,6 +6,7 @@ import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
+import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,6 +14,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.awt.*;
 
 /**
  * *
@@ -92,6 +95,18 @@ public class ClanMemberChangeGroupConfirmPageListener implements Listener {
                             target.getName(),
                             player.getName(),
                             clanGroupModel.getColor() + clanGroupModel.getName()
+                    );
+
+                    this.lateTimeClan.getWebhookSender().sendWebhook(
+                            new DiscordWebhook.EmbedObject().setTitle("Gruppenwechsel")
+                                    .addField("Mitglied", target.getName(), true)
+                                    .addField(clanPlayer.getClanGroup().getName(), player.getName(), true)
+                                    .addField("Neue Gruppe", clanGroupModel.getName(), true)
+                                    .addField("Vorherige Gruppe", tmpClanGroupModel.getName(), true)
+                                    .addField("Clan", clanPlayer.getClan().getName(), true)
+                                    .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
+                                    .setFooter("× LateTimeMC.DE » Clan-System", null)
+                                    .setColor(Color.ORANGE)
                     );
 
                     return;

@@ -9,6 +9,7 @@ import de.peaqe.latetimeclan.models.ClanModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
+import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -19,7 +20,11 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * *
@@ -103,6 +108,16 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     "Das Mitglied %s hat den Clan §cverlassen§7.",
                     player.getName()
             );
+
+            this.lateTimeClan.getWebhookSender().sendWebhook(
+                    new DiscordWebhook.EmbedObject().setTitle("Clan verlassen")
+                            .addField("Mitglied", player.getName(), true)
+                            .addField("Clan", clanPlayer.getClan().getName(), true)
+                            .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
+                            .setFooter("× LateTimeMC.DE » Clan-System", null)
+                            .setColor(Color.RED)
+            );
+
             return true;
         }
 
@@ -157,6 +172,16 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 ));
 
                 player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+
+                this.lateTimeClan.getWebhookSender().sendWebhook(
+                        new DiscordWebhook.EmbedObject().setTitle("Clan beigetreten")
+                                .addField("Mitglied", player.getName(), true)
+                                .addField("Clan", clanPlayer.getClan().getName(), true)
+                                .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
+                                .setFooter("× LateTimeMC.DE » Clan-System", null)
+                                .setColor(Color.GREEN)
+                );
+
                 return true;
             }
 
@@ -197,6 +222,15 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     clan.getName()
             ));
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+
+            this.lateTimeClan.getWebhookSender().sendWebhook(
+                    new DiscordWebhook.EmbedObject().setTitle("Clan beigetreten")
+                            .addField("Mitglied", player.getName(), true)
+                            .addField("Clan", clanPlayer.getClan().getName(), true)
+                            .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
+                            .setFooter("× LateTimeMC.DE » Clan-System", null)
+                            .setColor(Color.GREEN)
+            );
 
             return true;
         }
@@ -282,6 +316,17 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                         "Du hast den Spieler %s eingeladen.",
                         target.getName()
                 ));
+
+                this.lateTimeClan.getWebhookSender().sendWebhook(
+                        new DiscordWebhook.EmbedObject().setTitle("Clan Einladung")
+                                .addField("Mitglied", target.getName(), true)
+                                .addField("Eingeladen von", player.getName(), true)
+                                .addField("Clan", clanModel.getName(), true)
+                                .addField("Clan-Tag", clanModel.getTag(), true)
+                                .setFooter("× LateTimeMC.DE » Clan-System", null)
+                                .setColor(Color.YELLOW)
+                );
+
             }
 
             return true;
@@ -301,7 +346,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
-            var clan = new ClanModel(
+            var clanModel = new ClanModel(
                     clanName,
                     clanTag,
                     player.getUniqueId().toString(),
@@ -312,13 +357,22 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     )
             );
 
-            this.lateTimeClan.getClanDatabase().createClan(clan);
+            this.lateTimeClan.getClanDatabase().createClan(clanModel);
 
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
             player.sendMessage(this.messages.compileMessage(
                     "Du hast den Clan %s erfolgreich erstellt!",
                     clanTag
             ));
+
+            this.lateTimeClan.getWebhookSender().sendWebhook(
+                    new DiscordWebhook.EmbedObject().setTitle("Clan erstellt")
+                            .addField("Mitglied", player.getName(), true)
+                            .addField("Clan", clanModel.getName(), true)
+                            .addField("Clan-Tag", clanModel.getTag(), true)
+                            .setFooter("× LateTimeMC.DE » Clan-System", null)
+                            .setColor(Color.YELLOW)
+            );
 
             return true;
         }

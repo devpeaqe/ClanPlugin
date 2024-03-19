@@ -4,6 +4,7 @@ import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -83,6 +85,16 @@ public class ClanChatCommand implements CommandExecutor, TabExecutor {
                     //clanPlayer.getClanGroup().getName() + " §8• " +
                     clanPlayer.getName() + " §8» §7" +
                     stringBuilder.toString().trim()
+            );
+
+            this.lateTimeClan.getWebhookSender().sendWebhook(
+                    new DiscordWebhook.EmbedObject().setTitle("Clan Nachricht")
+                            .addField("Mitglied", player.getName(), true)
+                            .addField("Nachricht", stringBuilder.toString().trim(), true)
+                            .addField("Clan", clanPlayer.getClan().getName(), true)
+                            .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
+                            .setFooter("× LateTimeMC.DE » Clan-System", null)
+                            .setColor(Color.GREEN)
             );
 
         }

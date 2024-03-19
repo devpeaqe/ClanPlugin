@@ -17,7 +17,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.awt.*;
-import java.io.IOException;
 
 /**
  * *
@@ -96,24 +95,15 @@ public class ClanMemberKickConfirmPageListener implements Listener {
                             player.getName()
                     );
 
-                    try {
-                        var webhoook = new DiscordWebhook();
-                        var embed = new DiscordWebhook.EmbedObject();
-
-                        //embed.setImage(ClanUtil.getPlayerHeadUrl(target.getName()));
-                        embed.addField("Mitglied", target.getName(), true);
-                        embed.addField("Sender", player.getName(), true);
-                        embed.addField("Clan", clanPlayer.getClan().getName(), true);
-                        embed.setTitle("Ein Mitglied wurde gekickt.");
-                        embed.addField("Clan-Tag", clanPlayer.getClan().getTag(), true);
-                        embed.setFooter("× LateTimeMC.DE » Clan-System", null);
-                        embed.setColor(Color.RED);
-
-                        webhoook.addEmbed(embed);
-                        webhoook.execute();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    this.lateTimeClan.getWebhookSender().sendWebhook(
+                            new DiscordWebhook.EmbedObject().setTitle("Ein Mitglied wurde gekickt.")
+                                    .addField("Mitglied", target.getName(), true)
+                                    .addField(clanPlayer.getClanGroup().getName(), player.getName(), true)
+                                    .addField("Clan", clanPlayer.getClan().getName(), true)
+                                    .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
+                                    .setFooter("× LateTimeMC.DE » Clan-System", null)
+                                    .setColor(Color.RED)
+                    );
 
                     target.reload();
                     return;

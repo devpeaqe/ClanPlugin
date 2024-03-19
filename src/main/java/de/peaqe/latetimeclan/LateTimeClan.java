@@ -18,6 +18,7 @@ import de.peaqe.latetimeclan.util.database.DatabaseConnection;
 import de.peaqe.latetimeclan.util.manager.HeadManager;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
+import de.peaqe.latetimeclan.webhook.WebhookSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.awt.*;
@@ -38,6 +39,7 @@ public final class LateTimeClan extends JavaPlugin {
     private DatabaseConnection databaseConnection;
     private PlayerDatabase playerDatabase;
     //private DatabaseCache databaseCache;
+    private WebhookSender webhookSender;
 
     @Override
     public void onEnable() {
@@ -103,6 +105,7 @@ public final class LateTimeClan extends JavaPlugin {
         this.playerDatabase = new PlayerDatabase();
         this.headManager = new HeadManager(this);
         this.invitationManager = new InvitationManager();
+        this.webhookSender = new WebhookSender();
 
         //this.databaseCache = this.clanDatabase.getDatabaseCache();
     }
@@ -162,5 +165,9 @@ public final class LateTimeClan extends JavaPlugin {
 
     public PlayerDatabase getPlayerDatabase() {
         return playerDatabase;
+    }
+
+    public WebhookSender getWebhookSender() {
+        return webhookSender;
     }
 }

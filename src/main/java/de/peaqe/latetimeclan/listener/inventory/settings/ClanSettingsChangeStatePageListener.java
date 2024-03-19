@@ -5,6 +5,7 @@ import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.models.ClanInvitationStatus;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -15,6 +16,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 
 /**
  * *
@@ -68,6 +70,8 @@ public class ClanSettingsChangeStatePageListener implements Listener {
                 var clanInvitationStatus = this.getClanInvitationStatusFromItemStack(event.getCurrentItem());
                 if (clanInvitationStatus == null) return;
 
+                var tmpClanInvitationStatus = clan.getClanInvitationStatus();
+
                 if (!clan.getClanInvitationStatus().equals(clanInvitationStatus)) {
                     clan.setClanInvitationStatus(clanInvitationStatus);
                     clan.reload();
@@ -80,6 +84,26 @@ public class ClanSettingsChangeStatePageListener implements Listener {
                 clan.sendNotification(
                         "Der Clan-Status ist nun auf %s.",
                         clan.getClanInvitationStatus().getStatus()
+                );
+
+                var color = (clanInvitationStatus.equals(ClanInvitationStatus.CLOSED) ? Color.RED : (
+                        clanInvitationStatus.equals(ClanInvitationStatus.OPEN) ? Color.GREEN : Color.ORANGE));
+
+                var statusText = (clanInvitationStatus.equals(ClanInvitationStatus.CLOSED) ? "Geschlossen" : (
+                        clanInvitationStatus.equals(ClanInvitationStatus.OPEN) ? "Öffentlich" : "Auf Einladung"));
+
+                var statusText1 = (tmpClanInvitationStatus.equals(ClanInvitationStatus.CLOSED) ? "Geschlossen" : (
+                        tmpClanInvitationStatus.equals(ClanInvitationStatus.OPEN) ? "Öffentlich" : "Auf Einladung"));
+
+                this.lateTimeClan.getWebhookSender().sendWebhook(
+                        new DiscordWebhook.EmbedObject().setTitle("Status wechsel")
+                                .addField(clanPlayer.getClanGroup().getName(), player.getName(), true)
+                                .addField("Neuer Status", statusText, true)
+                                .addField("Vorherige Gruppe", statusText1, true)
+                                .addField("Clan", clanPlayer.getClan().getName(), true)
+                                .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
+                                .setFooter("× LateTimeMC.DE » Clan-System", null)
+                                .setColor(color)
                 );
 
             }
