@@ -75,7 +75,7 @@ public class ClanPlayer {
         }
 
         clan.setMembers(members);
-        clan.reload();
+        clan.update();
     }
 
     public void sendMessage(String message) {

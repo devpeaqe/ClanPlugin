@@ -71,6 +71,13 @@ public class ClanChatCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
+            if (!clanPlayer.getClan().getSettings().isClanChatToggled()) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Der Clan-Chat ist derzeit %s!", "§cdeaktiviert"
+                ));
+                return true;
+            }
+
             StringBuilder stringBuilder = new StringBuilder();
 
             for (var arg : args) {

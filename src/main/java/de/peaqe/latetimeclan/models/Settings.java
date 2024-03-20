@@ -20,4 +20,8 @@ public class Settings {
     public boolean isClanChatToggled() {
         return clanChatToggled;
     }
+
+    public void setClanChatToggled(boolean clanChatToggled) {
+        this.clanChatToggled = clanChatToggled;
+    }
 }

@@ -20,6 +20,7 @@ public enum ClanAction {
     OPEN_SETTINGS(2),
     INVITE(1),
     KICK(1),
+    SETTINGS_MODERATE_CHAT(1),
     CHAT(0);
 
     private final int permissionLevel;

@@ -2,7 +2,6 @@ package de.peaqe.latetimeclan.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.models.ClanModel;
-import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -21,25 +20,26 @@ import java.util.UUID;
  * *
  */
 
-public class ClanSettingsPage {
+public class ClanSettingsModerateChatPage {
 
     private final Inventory inventory;
     private final ClanModel clanModel;
 
-    public ClanSettingsPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
+    public ClanSettingsModerateChatPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
         this.clanModel = clanModel;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*5,
                 Component.text(lateTimeClan.getMessages().compileMessage(
-                        "§8Einstellungen"
+                        "§8Chat verwalten"
                 ))
         );
     }
 
     public void initializeInventory() {
 
-        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
+        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42,
+                43, 44};
 
         for (var borderItemSlot : borderItemSlots) {
             this.inventory.setItem(
@@ -55,42 +55,30 @@ public class ClanSettingsPage {
                 .setDisplayName("§8• §e" + clanModel.getName())
                 .addLore(
                         "",
-                        "§8• §7Hier kannst du Einstellungen für den Clan vornehmen."
+                        "§8• §7Hier kannst du einstellen, ob der Clan-Chat §cde§aaktiviert §7sein soll.",
+                        "§8• §7Aktuell aktiviert: " +
+                                (clanModel.getSettings().isClanChatToggled() ? "§aja" : "§cnein") + "§7.",
+                        "",
+                        "§8» §aAktiviert§8 » §7Jeder kann in den Clan-Chat schreiben.",
+                        "§8» §cDeaktivert §8» §7Keiner kann in den Clan-Chat schreiben."
                 )
                 .build();
 
-
-        final var clanStatus = new ItemBuilder(Material.SPRUCE_DOOR)
-                .setDisplayName("§8• §eClan Status")
-                .addLore(
-                        "",
-                        "§8• §7Ändere den Clanstatus.",
-                        "§8• §7Clanstatus: §e" + ClanUtil.getClanInvitationStatus(clanModel).getStatus()
-                )
+        var clanChatActivateItem = new ItemBuilder(Material.GREEN_DYE)
+                .setDisplayName("§8• §aAktivieren")
+                .addLore("", "§8• §aAktiviere §7den Clan-Chat sofern dieser deaktiviert ist.")
+                .glow(clanModel.getSettings().isClanChatToggled())
                 .build();
 
-        final var clanChat = new ItemBuilder(Material.PAPER)
-                .setDisplayName("§8• §eClan Chat")
-                .addLore(
-                        "",
-                        "§8• §7Hier kannst du den Clan-Chat §aein§8-/§causschalten§7.",
-                        "§8• §7Clan-Chat aktiv: §e" +
-                                (clanModel.getSettings().isClanChatToggled() ? "§aja" : "§cnein") + "§7."
-                )
-                .build();
-
-        final var leader = new ItemBuilder(Material.PLAYER_HEAD)
-                .setDisplayName("§8• §eSoon...")
-                .addLore(
-                        "",
-                        "§8• §7Looren kommen bald..."
-                )
+        var clanChatDeactivateItem = new ItemBuilder(Material.RED_DYE)
+                .setDisplayName("§8• §cDeaktivieren")
+                .addLore("", "§8• §cDeaktiviere §7den Clan-Chat sofern dieser aktiviert ist.")
+                .glow(!clanModel.getSettings().isClanChatToggled())
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
-        this.inventory.setItem(29, clanStatus);
-        this.inventory.setItem(31, clanChat);
-        this.inventory.setItem(33, leader);
+        this.inventory.setItem(20, clanChatActivateItem);
+        this.inventory.setItem(24, clanChatDeactivateItem);
 
     }
 

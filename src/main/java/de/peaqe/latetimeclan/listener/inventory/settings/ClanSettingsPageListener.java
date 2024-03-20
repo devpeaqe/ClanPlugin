@@ -74,7 +74,23 @@ public class ClanSettingsPageListener implements Listener {
                         .getInventory());
             }
 
-            case 31, 33 -> {
+            case 31 -> {
+
+                // Clan Chat
+                player.closeInventory();
+
+                if (!clanPlayer.hasPermission(ClanAction.SETTINGS_MODERATE_CHAT)) {
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Du bist derzeit nicht berechtigt den %s %s zu schalten!",
+                            "Clan-Status",
+                            "§aein§8-/§caus"
+                    ));
+                    return;
+                }
+
+            }
+
+            case 33 -> {
                 player.closeInventory();
                 player.openInventory(new ClanInfoPage(this.lateTimeClan, clanPlayer.getClan()).getInventory(player));
             }

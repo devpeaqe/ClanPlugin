@@ -85,7 +85,7 @@ public class ClanMemberChangeGroupConfirmPageListener implements Listener {
 
                     player.closeInventory();
 
-                    target.getClan().reload();
+                    target.getClan().update();
                     player.openInventory(new ClanMemberPage(this.lateTimeClan, clanPlayer.getClan()).getInventory());
 
                     var targetOnlinePlayer = Bukkit.getPlayer(target.getUniqueId());

@@ -74,7 +74,7 @@ public class ClanSettingsChangeStatePageListener implements Listener {
 
                 if (!clan.getClanInvitationStatus().equals(clanInvitationStatus)) {
                     clan.setClanInvitationStatus(clanInvitationStatus);
-                    clan.reload();
+                    clan.update();
                     player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
                 }
 

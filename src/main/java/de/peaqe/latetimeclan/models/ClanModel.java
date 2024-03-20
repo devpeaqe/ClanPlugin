@@ -96,11 +96,11 @@ public class ClanModel {
 
         this.setMembers(members);
 
-        this.reload();
+        this.update();
         clanPlayer.reload();
     }
 
-    public void reload() {
+    public void update() {
         LateTimeClan.getInstance().getClanDatabase().updateClan(this);
     }
 
