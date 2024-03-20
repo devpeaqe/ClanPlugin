@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan.provider;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.provider.util.PlayerProperty;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,6 +96,12 @@ public class PlayerDatabase extends DatabaseProvider {
             var resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
+
+                var name = resultSet.getString(PlayerProperty.NAME.getValue());
+                var player = Bukkit.getOfflinePlayerIfCached(name);
+
+                if (player != null) return player.getName();
+
                 return resultSet.getString(PlayerProperty.NAME.getValue());
             }
 
