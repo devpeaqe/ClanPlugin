@@ -58,24 +58,26 @@ public class ClanMemberEditPage {
                 .build();
 
 
-        final var clanKickItem = new ItemBuilder(Material.GRASS_BLOCK)
+        final var clanKickItem = new ItemBuilder(Material.TNT)
                 .setDisplayName("§8• §cRausschmeißen")
                 .addLore(
                         " ",
                         "§8• §7Schmeiße §e" + target.getName() + "§7 aus dem Clan.",
-                        " §8» §cVORSICHT! Dieser Vorgang kann §nnicht§r §crückgängig gemacht werden!",
+                        " §8» §cDieser Vorgang kann §nnicht§r §crückgängig gemacht werden!",
                         " ",
-                        "§8• §7Berechtigt: " + (ClanUtil.isPermitted(sender, target, ClanAction.KICK) ? "§aJa" : "§cNein")
+                        "§8• §7Berechtigt: " +
+                                (ClanUtil.isPermitted(sender, target, ClanAction.KICK) ? "§aJa" : "§cNein")
                 )
                 .glow(ClanUtil.isPermitted(sender, target, ClanAction.KICK))
                 .build();
 
-        final var clanChangeGroupItem = new ItemBuilder(Material.GRASS_BLOCK)
+        final var clanChangeGroupItem = new ItemBuilder(Material.ENCHANTED_BOOK)
                 .setDisplayName("§8• §aRang verwaltung")
                 .addLore(
                         " ",
                         "§8• §7Verwalte die Rollen von §e" + target.getName() + "§7.",
-                        "§8• §7Berechtigt: " + (ClanUtil.isPermitted(sender, target, ClanAction.CHANGE_GROUP) ? "§aJa" : "§cNein")
+                        "§8• §7Berechtigt: " +
+                                (ClanUtil.isPermitted(sender, target, ClanAction.CHANGE_GROUP) ? "§aJa" : "§cNein")
                 )
                 .glow(ClanUtil.isPermitted(sender, target, ClanAction.CHANGE_GROUP))
                 .build();
