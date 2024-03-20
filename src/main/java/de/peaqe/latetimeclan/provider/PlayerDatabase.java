@@ -19,8 +19,8 @@ import java.util.UUID;
 
 public class PlayerDatabase extends DatabaseProvider {
 
-    public PlayerDatabase() {
-        super(LateTimeClan.getInstance());
+    public PlayerDatabase(LateTimeClan lateTimeClan) {
+        super(lateTimeClan);
         this.createTableIfNotExists();
     }
 

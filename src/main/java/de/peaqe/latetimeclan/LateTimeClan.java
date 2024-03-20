@@ -12,6 +12,7 @@ import de.peaqe.latetimeclan.listener.plugin.PluginDisableListener;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.provider.ClanDatabase;
+import de.peaqe.latetimeclan.provider.ClanSettingsDatabase;
 import de.peaqe.latetimeclan.provider.HeadDatabase;
 import de.peaqe.latetimeclan.provider.PlayerDatabase;
 import de.peaqe.latetimeclan.util.database.DatabaseConnection;
@@ -40,6 +41,7 @@ public final class LateTimeClan extends JavaPlugin {
     private PlayerDatabase playerDatabase;
     //private DatabaseCache databaseCache;
     private WebhookSender webhookSender;
+    private ClanSettingsDatabase clanSettingsDatabase;
 
     @Override
     public void onEnable() {
@@ -100,9 +102,10 @@ public final class LateTimeClan extends JavaPlugin {
 
         this.messages = new Messages();
 
-        this.clanDatabase =new ClanDatabase();
-        this.headDatabase = new HeadDatabase();
-        this.playerDatabase = new PlayerDatabase();
+        this.clanDatabase =new ClanDatabase(this);
+        this.clanSettingsDatabase = new ClanSettingsDatabase(this);
+        this.headDatabase = new HeadDatabase(this);
+        this.playerDatabase = new PlayerDatabase(this);
         this.headManager = new HeadManager(this);
         this.invitationManager = new InvitationManager();
         this.webhookSender = new WebhookSender();
@@ -169,5 +172,9 @@ public final class LateTimeClan extends JavaPlugin {
 
     public WebhookSender getWebhookSender() {
         return webhookSender;
+    }
+
+    public ClanSettingsDatabase getClanSettingsDatabase() {
+        return clanSettingsDatabase;
     }
 }

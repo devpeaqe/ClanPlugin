@@ -29,8 +29,8 @@ import java.util.UUID;
 
 public class HeadDatabase extends DatabaseProvider {
 
-    public HeadDatabase() {
-        super(LateTimeClan.getInstance());
+    public HeadDatabase(LateTimeClan lateTimeClan) {
+        super(lateTimeClan);
         this.createTableIfNotExists();
     }
 
