@@ -3,10 +3,7 @@ package de.peaqe.latetimeclan.commands;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.messages.Messages;
-import de.peaqe.latetimeclan.models.ClanGroupModel;
-import de.peaqe.latetimeclan.models.ClanInvitationStatus;
-import de.peaqe.latetimeclan.models.ClanModel;
-import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.models.*;
 import de.peaqe.latetimeclan.models.util.ClanAction;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
@@ -371,7 +368,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     10,
                     Map.of(
                             player.getUniqueId(), ClanGroupModel.OWNER
-                    )
+                    ),
+                    new Settings(true)
             );
 
             this.lateTimeClan.getClanDatabase().createClan(clanModel);
