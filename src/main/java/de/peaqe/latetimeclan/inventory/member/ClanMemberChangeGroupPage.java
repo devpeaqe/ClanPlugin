@@ -36,7 +36,8 @@ public class ClanMemberChangeGroupPage {
 
     public void initializeInventory(ClanPlayer sender, ClanPlayer target) {
 
-        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
+        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27,
+                35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
 
         for (var borderItemSlot : borderItemSlots) {
             this.inventory.setItem(

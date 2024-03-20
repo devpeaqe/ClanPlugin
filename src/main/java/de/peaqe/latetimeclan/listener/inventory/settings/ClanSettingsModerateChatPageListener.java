@@ -65,7 +65,6 @@ public class ClanSettingsModerateChatPageListener implements Listener {
                 player.closeInventory();
                 if (event.getCurrentItem() == null) return;
 
-
                 var clanChatToggled = this.getClanChatToggledFromItemStack(event.getCurrentItem());
                 if (!clanPlayer.hasPermission(ClanAction.SETTINGS_MODERATE_CHAT)) {
                     player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
@@ -75,20 +74,20 @@ public class ClanSettingsModerateChatPageListener implements Listener {
                     return;
                 }
 
-                if (!clanPlayer.getClan().getSettings().isClanChatToggled()) {
-                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                            "Der Clan-Chat ist bereits %s!",
-                            (clanChatToggled ? "§aaktiviert" : "§cdeaktiviert")
-                    ));
-                    return;
-                }
+                //if (clanPlayer.getClan().getSettings().isClanChatToggled() == clanChatToggled) {
+                //    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                //            "Der Clan-Chat ist bereits %s!",
+                //            (clanPlayer.getClan().getSettings().isClanChatToggled() ? "§aaktiviert" : "§cdeaktiviert")
+                //    ));
+                //    return;
+                //}
 
-                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                        "Der Clan-Chat wurde %s!",
-                        (clanChatToggled ? "§aaktiviert" : "§cdeaktiviert")
-                ));
+                //player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                //        "Der Clan-Chat wurde %s!",
+                //        (clanChatToggled ? "§aaktiviert" : "§cdeaktiviert")
+                //));
 
-                clanPlayer.getClan().getSettings().setClanChatToggled(false);
+                clanPlayer.getClan().getSettings().setClanChatToggled(clanChatToggled);
                 clanPlayer.getClan().update();
 
                 clanPlayer.getClan().sendNotification(

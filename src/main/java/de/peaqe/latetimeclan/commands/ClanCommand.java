@@ -320,10 +320,10 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                         clanModel.getName()
                 ));
 
-                player.sendMessage(this.messages.compileMessage(
-                        "Du hast den Spieler %s eingeladen.",
-                        target.getName()
-                ));
+                //player.sendMessage(this.messages.compileMessage(
+                //        "Du hast den Spieler %s eingeladen.",
+                //        target.getName()
+                //));
 
                 clanModel.sendNotification(
                         "Der Spieler %s wurde von %s eingeladen.",

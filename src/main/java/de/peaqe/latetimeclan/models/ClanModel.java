@@ -31,7 +31,7 @@ public class ClanModel {
         this.clanInvitationStatus = clanInvitationStatus;
         this.maxSize = maxSize;
         this.members = members;
-        this.settings = new Settings(true);
+        this.settings = settings;
     }
 
     public ClanModel() {}
@@ -78,6 +78,10 @@ public class ClanModel {
 
     public Settings getSettings() {
         return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 
     public Map<UUID, ClanGroupModel> getMembers() {

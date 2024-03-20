@@ -3,6 +3,7 @@ package de.peaqe.latetimeclan.listener.inventory.settings;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsChangeStatePage;
+import de.peaqe.latetimeclan.inventory.settings.ClanSettingsModerateChatPage;
 import de.peaqe.latetimeclan.models.ClanGroupModel;
 import de.peaqe.latetimeclan.models.ClanPlayer;
 import de.peaqe.latetimeclan.models.util.ClanAction;
@@ -87,6 +88,9 @@ public class ClanSettingsPageListener implements Listener {
                     ));
                     return;
                 }
+
+                player.openInventory(new ClanSettingsModerateChatPage(this.lateTimeClan, clanPlayer.getClan())
+                        .getInventory());
 
             }
 

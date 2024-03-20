@@ -27,7 +27,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
     private void createTableIfNotExists() {
         this.connect();
         try {
-            this.getConnection().createStatement().execute("CREATE TABLE IF NOT EXISTS latetime.clan.settings (" +
+            this.getConnection().createStatement().execute("CREATE TABLE IF NOT EXISTS latetime.clan_settings (" +
                     "  `" + ClanSettingsProperty.CLAN_TAG.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue() + "` BOOLEAN NOT NULL," +
                     "  PRIMARY KEY (`" + ClanSettingsProperty.CLAN_TAG.getValue() + "`)" +
@@ -43,7 +43,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
         var settings = clanModel.getSettings();
         if (settings == null) return;
 
-        var query = "INSERT INTO latetime.clan.settings VALUES (?, ?) " +
+        var query = "INSERT INTO latetime.clan_settings VALUES (?, ?) " +
                 "ON DUPLICATE KEY UPDATE `" + ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue() + "` = ?";
 
         this.connect();
@@ -53,6 +53,8 @@ public class ClanSettingsDatabase extends DatabaseProvider {
             statement.setBoolean(2, clanModel.getSettings().isClanChatToggled());
             statement.setBoolean(3, clanModel.getSettings().isClanChatToggled());
 
+            statement.executeUpdate();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -61,7 +63,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
     }
 
     Settings getClanSettings(String clanTag) {
-        var query = "SELECT `" + ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue() + "` FROM latetime.clan.settings " +
+        var query = "SELECT `" + ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue() + "` FROM latetime.clan_settings " +
                 "WHERE `" + ClanSettingsProperty.CLAN_TAG.getValue() + "` = ?";
 
         this.connect();
@@ -70,7 +72,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
             statement.setString(1, clanTag);
             var resultSet = statement.executeQuery();
 
-            if (!resultSet.next()) return new Settings(true);
+            if (!resultSet.next()) return null;
             return new Settings(resultSet.getBoolean(ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue()));
 
         } catch (SQLException e) {

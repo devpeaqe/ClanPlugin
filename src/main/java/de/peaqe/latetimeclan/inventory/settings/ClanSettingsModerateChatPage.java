@@ -29,7 +29,7 @@ public class ClanSettingsModerateChatPage {
         this.clanModel = clanModel;
         this.inventory = Bukkit.createInventory(
                 null,
-                9*5,
+                9*4,
                 Component.text(lateTimeClan.getMessages().compileMessage(
                         "§8Chat verwalten"
                 ))
@@ -38,8 +38,7 @@ public class ClanSettingsModerateChatPage {
 
     public void initializeInventory() {
 
-        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42,
-                43, 44};
+        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
 
         for (var borderItemSlot : borderItemSlots) {
             this.inventory.setItem(
