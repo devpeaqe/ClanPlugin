@@ -1,9 +1,9 @@
 package de.peaqe.latetimeclan.listener.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsChangeStatePage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsModerateChatPage;
+import de.peaqe.latetimeclan.inventory.settings.ClanSettingsToggleBankPage;
 import de.peaqe.latetimeclan.objects.ClanGroup;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.objects.util.ClanAction;
@@ -96,7 +96,18 @@ public class ClanSettingsPageListener implements Listener {
 
             case 33 -> {
                 player.closeInventory();
-                player.openInventory(new ClanInfoPage(this.lateTimeClan, clanPlayer.getClan()).getInventory(player));
+
+                if (!clanPlayer.hasPermission(ClanAction.SETTINGS_BANK_VIEW)) {
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Du bist derzeit nicht berechtigt die %s %s zu stellen.!",
+                            "Clan-Bank",
+                            "§aein§8-/§caus"
+                    ));
+                    return;
+                }
+
+                player.openInventory(new ClanSettingsToggleBankPage(this.lateTimeClan, clanPlayer.getClan())
+                        .getInventory());
             }
 
         }

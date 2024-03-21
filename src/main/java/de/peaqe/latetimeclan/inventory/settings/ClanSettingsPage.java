@@ -60,16 +60,16 @@ public class ClanSettingsPage {
                 .build();
 
 
-        final var clanStatus = new ItemBuilder(Material.SPRUCE_DOOR)
+        final var clanStatusItem = new ItemBuilder(Material.SPRUCE_DOOR)
                 .setDisplayName("§8• §eClan Status")
                 .addLore(
                         "",
-                        "§8• §7Ändere den Clanstatus.",
+                        "§8• §7Hier kannst du den Clanstatus einstellen.",
                         "§8• §7Clanstatus: §e" + ClanUtil.getClanInvitationStatus(clanObject).getStatus()
                 )
                 .build();
 
-        final var clanChat = new ItemBuilder(Material.PAPER)
+        final var clanChatItem = new ItemBuilder(Material.PAPER)
                 .setDisplayName("§8• §eClan Chat")
                 .addLore(
                         "",
@@ -79,21 +79,20 @@ public class ClanSettingsPage {
                 )
                 .build();
 
-        final var leader = new ItemBuilder(Material.PLAYER_HEAD)
+        final var clanBankItem = new ItemBuilder(Material.BOOK)
                 .setDisplayName("§8• §eClan Bank")
                 .addLore(
                         "",
-                        "§8• §7Hier kannst du einstellen, ob die Clan-Bank für §ajeden §7oder nur für §c" +
-                                "Clan-Mitglieder §7sichtbar ist.",
+                        "§8• §7Hier kannst du die Sichtbarkeit der Clan-Bank einstellen.",
                         "§8• §7Clan-Bank sichtbar für: §e" +
                                 (clanObject.getSettings().isClanBankToggled() ? "§ajeden" : "§cClan-Mitglieder") + "§7."
                 )
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
-        this.inventory.setItem(29, clanStatus);
-        this.inventory.setItem(31, clanChat);
-        this.inventory.setItem(33, leader);
+        this.inventory.setItem(29, clanStatusItem);
+        this.inventory.setItem(31, clanChatItem);
+        this.inventory.setItem(33, clanBankItem);
 
     }
 
