@@ -61,7 +61,7 @@ public class ClanDatabase extends DatabaseProvider {
                 ClanProperty.CLAN_FOUNDER_UUID.getValue() + ", " +
                 ClanProperty.CLAN_INVITATION_STATUS.getValue() + ", " +
                 ClanProperty.MAX_SIZE.getValue() + ", " +
-                ClanProperty.MEMBERS.getValue() +
+                ClanProperty.MEMBERS.getValue() + ", " +
                 ClanProperty.CLAN_BANK.getValue() +
                 ") VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -105,7 +105,7 @@ public class ClanDatabase extends DatabaseProvider {
                 ClanProperty.CLAN_FOUNDER_UUID.getValue() + " = ?, " +
                 ClanProperty.CLAN_INVITATION_STATUS.getValue() + " = ?, " +
                 ClanProperty.MAX_SIZE.getValue() + " = ?, " +
-                ClanProperty.MEMBERS.getValue() + " = ? " +
+                ClanProperty.MEMBERS.getValue() + " = ?, " +
                 ClanProperty.CLAN_BANK.getValue() + " = ? " +
                 "WHERE " + ClanProperty.TAG.getValue() + " = ?";
 

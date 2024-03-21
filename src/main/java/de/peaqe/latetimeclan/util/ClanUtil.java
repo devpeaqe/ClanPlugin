@@ -63,17 +63,16 @@ public class ClanUtil {
     }
 
     public static String compressInt(int number) {
-        var formatter = new DecimalFormat("#.###");
-        return "§b" + formatter.format(number).replace(".", "§8.§b");
+        var formatter = new DecimalFormat("#,###");
+        return "§b" + formatter.format(number).replace(",", "§7.§b");
     }
 
     public static int decompressString(String compressedNumber) {
         try {
-            return Integer.parseInt(compressedNumber.replaceAll("\\.", ""));
+            return Integer.parseInt(compressedNumber.replaceAll("[^\\d.]", ""));
         } catch (NumberFormatException e) {
             throw new RuntimeException(e);
         }
     }
-
 
 }

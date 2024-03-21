@@ -19,9 +19,10 @@ public enum ClanAction {
     DEMOTE(2),
     CHANGE_STATE(2),
     OPEN_SETTINGS(2),
+    SETTINGS_MODERATE_CHAT(2),
+    SETTINGS_BANK_VIEW(2),
     INVITE(1),
     KICK(1),
-    SETTINGS_MODERATE_CHAT(1),
     BANK_ADD(0),
     CHAT(0);
 

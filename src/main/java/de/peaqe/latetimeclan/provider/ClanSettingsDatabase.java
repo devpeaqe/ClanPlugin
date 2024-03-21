@@ -30,6 +30,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
             this.getConnection().createStatement().execute("CREATE TABLE IF NOT EXISTS latetime.clan_settings (" +
                     "  `" + ClanSettingsProperty.CLAN_TAG.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue() + "` BOOLEAN NOT NULL," +
+                    "  `" + ClanSettingsProperty.CLAN_BANK_TOGGLED.getValue() + "` BOOLEAN NOT NULL," +
                     "  PRIMARY KEY (`" + ClanSettingsProperty.CLAN_TAG.getValue() + "`)" +
                     ")");
         } catch (SQLException e) {
@@ -45,7 +46,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
 
         var query = "INSERT INTO latetime.clan_settings VALUES (?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE `" + ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue() + "` = ?," +
-                "``" + ClanSettingsProperty.CLAN_BANK_TOGGLED.getValue() + "` = ?";
+                "`" + ClanSettingsProperty.CLAN_BANK_TOGGLED.getValue() + "` = ?";
 
         this.connect();
         try (var statement = this.getConnection().prepareStatement(query)) {
@@ -67,7 +68,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
     }
 
     SettingsObject getClanSettings(String clanTag) {
-        var query = "SELECT `" + ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue() + "` FROM latetime.clan_settings " +
+        var query = "SELECT * FROM latetime.clan_settings " +
                 "WHERE `" + ClanSettingsProperty.CLAN_TAG.getValue() + "` = ?";
 
         this.connect();
