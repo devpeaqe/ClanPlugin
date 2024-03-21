@@ -67,6 +67,11 @@ public class ClanUtil {
         return "§b" + formatter.format(number).replace(",", "§7.§b");
     }
 
+    public static String compressIntWithoutColor(int number) {
+        var formatter = new DecimalFormat("#,###");
+        return formatter.format(number).replace(",", ".");
+    }
+
     public static int decompressString(String compressedNumber) {
         try {
             return Integer.parseInt(compressedNumber.replaceAll("[^\\d.]", ""));

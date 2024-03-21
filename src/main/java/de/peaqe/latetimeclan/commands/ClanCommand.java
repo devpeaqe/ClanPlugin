@@ -436,7 +436,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 this.lateTimeClan.getWebhookSender().sendWebhook(
                         new DiscordWebhook.EmbedObject().setTitle("Geld eingezahlt")
                                 .addField("Mitglied", player.getName(), true)
-                                .addField("Anzahl", amount + "€", true)
+                                .addField("Anzahl",
+                                        ClanUtil.compressIntWithoutColor(amount) + "€", true)
                                 .addField("Clan", clanPlayer.getClan().getName(), true)
                                 .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
                                 .setFooter("× LateTimeMC.DE » Clan-System", null)
@@ -478,7 +479,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 this.lateTimeClan.getWebhookSender().sendWebhook(
                         new DiscordWebhook.EmbedObject().setTitle("Geld abgehoben")
                                 .addField("Mitglied", player.getName(), true)
-                                .addField("Anzahl", amount + "€", true)
+                                .addField("Anzahl",
+                                        ClanUtil.compressIntWithoutColor(amount) + "€", true)
                                 .addField("Clan", clanPlayer.getClan().getName(), true)
                                 .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
                                 .setFooter("× LateTimeMC.DE » Clan-System", null)
