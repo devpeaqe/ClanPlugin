@@ -64,6 +64,7 @@ public class ClanInfoPage {
                         "§8• §7Clan-Tag: §a" + clanModel.getTag(),
                         "§8• §7Mitglieder: §a" + clanModel.getMembers().size() + "§8/§c" + clanModel.getMaxSize(),
                         "§8• §7Status: §a" + ClanUtil.getClanInvitationStatus(clanModel).getStatus(),
+                        "§8• §7Bank: " + ClanUtil.compressInt(clanModel.getClanBankAmount()) + "§7€",
                         "§8• §7Besitzer: §4" + clanOwnerName
                 )
                 .glow()

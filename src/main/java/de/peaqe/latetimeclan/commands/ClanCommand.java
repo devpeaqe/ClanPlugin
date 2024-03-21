@@ -347,6 +347,31 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
+        if (args.length == 2 && args[0].equalsIgnoreCase("bank")) {
+            
+            var clanModel = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
+            if (clanModel == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit in keinem Clan!"
+                ));
+                return true;
+            }
+
+            var clanPlayer = ClanPlayer.fromPlayer(player);
+            if (clanPlayer == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
+                ));
+                return true;
+            }
+            
+            player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                    "Der Clan besitzt derzeit %s auf der Bank.",
+                    ClanUtil.compressInt(clanModel.getClanBankAmount()) + "§7€"
+            ));
+            
+        }
+        
         // /clan bank action <amount>
         if (args.length == 3 && args[0].equalsIgnoreCase("bank")) {
 
@@ -402,11 +427,43 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 clanModel.sendNotification(
                         "Der Spieler %s hat %s in die %s eingezahlt.",
                         player.getName(),
-                        ClanUtil.compressInt(amount) + "€",
+                        ClanUtil.compressInt(amount) + "§7€",
                         "Clan-Bank"
                 );
 
                 // TODO: Add money system and remove them from the player
+
+            }
+
+            // /clan bank add <amount>
+            if (args[1].equalsIgnoreCase("remove")) {
+
+                if (!clanPlayer.hasPermission(ClanAction.BANK_REMOVE)) {
+                    player.sendMessage(this.messages.compileMessage(
+                            "Du bist derzeit nicht berechtigt in die %s einzuzahlen!",
+                            "Clan-Bank"
+                    ));
+                    return true;
+                }
+
+                if (clanModel.getClanBankAmount() < amount) {
+                    player.sendMessage(this.messages.compileMessage(
+                            "Die %s besitzt derzeit nicht genug Geld.", "Clan-Bank"
+                    ));
+                    return true;
+                }
+
+                clanModel.setClanBankAmount(clanModel.getClanBankAmount() - amount);
+                this.lateTimeClan.getClanDatabase().updateClan(clanModel);
+
+                clanModel.sendNotification(
+                        "Der Spieler %s hat %s aus der %s abgehoben.",
+                        player.getName(),
+                        ClanUtil.compressInt(amount) + "§7€",
+                        "Clan-Bank"
+                );
+
+                // TODO: Add money system and add them to the player
 
             }
 
@@ -473,6 +530,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
             if (clanPlayer != null) {
                 matches.add("info");
+                matches.add("bank");
                 if (clanPlayer.hasPermission(ClanAction.INVITE)) matches.add("invite");
                 if (!clanPlayer.getClanGroup().equals(ClanGroupModel.OWNER)) matches.add("leave");
                 return matches;
@@ -501,7 +559,14 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return matches;
             }
         }
-
+        
+        if (args.length == 2 && args[0].equalsIgnoreCase("bank")) {
+            if (clanPlayer != null) {
+                if (clanPlayer.hasPermission(ClanAction.BANK_REMOVE)) matches.add("remove");
+                if (clanPlayer.hasPermission(ClanAction.BANK_ADD)) matches.add("add"); 
+            }
+        }
+            
         if (args.length == 2 && args[0].equalsIgnoreCase("join")) {
             if (this.invitationManager.getInvitations(player.getUniqueId()) != null &&
                     !this.invitationManager.getInvitations(player.getUniqueId()).isEmpty()) {
