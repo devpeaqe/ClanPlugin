@@ -421,6 +421,30 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     return true;
                 }
 
+                if (clanModel.getClanBankAmount() > 5000000) {
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Die %s ist derzeit voll.", "Clan-Bank"
+                    ));
+                    return true;
+                }
+
+                if (clanModel.getClanBankAmount() + amount > 5000000) {
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Die %s kann nicht mehr als %s€ betragen.",
+                            "Clan-Bank",
+                            "5.000.000"
+                    ));
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Aktueller Kontostand: %s€.",
+                            ClanUtil.compressInt(clanModel.getClanBankAmount())
+                    ));
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Maximaler Betrag zum einzahlen: %s€.",
+                            ClanUtil.compressInt((clanModel.getClanBankAmount() + amount) - 5000000)
+                    ));
+                    return true;
+                }
+
                 clanModel.setClanBankAmount(clanModel.getClanBankAmount() + amount);
                 this.lateTimeClan.getClanDatabase().updateClan(clanModel);
 
