@@ -433,6 +433,16 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
                 // TODO: Add money system and remove them from the player
 
+                this.lateTimeClan.getWebhookSender().sendWebhook(
+                        new DiscordWebhook.EmbedObject().setTitle("Geld eingezahlt")
+                                .addField("Mitglied", player.getName(), true)
+                                .addField("Anzahl", amount + "€", true)
+                                .addField("Clan", clanPlayer.getClan().getName(), true)
+                                .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
+                                .setFooter("× LateTimeMC.DE » Clan-System", null)
+                                .setColor(Color.GREEN)
+                );
+
             }
 
             // /clan bank add <amount>
@@ -464,6 +474,17 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 );
 
                 // TODO: Add money system and add them to the player
+
+                this.lateTimeClan.getWebhookSender().sendWebhook(
+                        new DiscordWebhook.EmbedObject().setTitle("Geld abgehoben")
+                                .addField("Mitglied", player.getName(), true)
+                                .addField("Anzahl", amount + "€", true)
+                                .addField("Clan", clanPlayer.getClan().getName(), true)
+                                .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
+                                .setFooter("× LateTimeMC.DE » Clan-System", null)
+                                .setColor(Color.RED)
+                );
+
 
             }
 
