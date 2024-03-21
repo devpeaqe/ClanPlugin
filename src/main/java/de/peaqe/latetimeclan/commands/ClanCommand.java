@@ -347,7 +347,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        if (args.length == 2 && args[0].equalsIgnoreCase("bank")) {
+        // /clan bank
+        if (args.length == 1 && args[0].equalsIgnoreCase("bank")) {
             
             var clanModel = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
             if (clanModel == null) {
@@ -366,8 +367,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             }
             
             player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                    "Der Clan besitzt derzeit %s auf der Bank.",
-                    ClanUtil.compressInt(clanModel.getClanBankAmount()) + "§7€"
+                    "Der Clan besitzt derzeit %s€ auf der Bank.",
+                    ClanUtil.compressInt(clanModel.getClanBankAmount())
             ));
             
         }
@@ -421,7 +422,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     return true;
                 }
 
-                if (clanModel.getClanBankAmount() > 5000000) {
+                if (clanModel.getClanBankAmount() >= 5000000) {
                     player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
                             "Die %s ist derzeit voll.", "Clan-Bank"
                     ));
@@ -432,7 +433,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
                             "Die %s kann nicht mehr als %s€ betragen.",
                             "Clan-Bank",
-                            "5.000.000"
+                            ClanUtil.compressInt(5000000)
                     ));
                     player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
                             "Aktueller Kontostand: %s€.",
@@ -440,7 +441,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     ));
                     player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
                             "Maximaler Betrag zum einzahlen: %s€.",
-                            ClanUtil.compressInt((clanModel.getClanBankAmount() + amount) - 5000000)
+                            ClanUtil.compressInt((clanModel.getClanBankAmount() - 5000000) * -1)
                     ));
                     return true;
                 }
