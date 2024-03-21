@@ -12,7 +12,8 @@ package de.peaqe.latetimeclan.provider.util;
 public enum ClanSettingsProperty {
 
     CLAN_TAG("clan-tag"),
-    CLAN_CHAT_TOGGLED("clan-chat-toggled");
+    CLAN_CHAT_TOGGLED("clan-chat-toggled"),
+    CLAN_BANK_TOGGLED("clan-bank-toggled");
 
     private final String value;
 

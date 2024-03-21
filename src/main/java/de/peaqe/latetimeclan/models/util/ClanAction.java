@@ -13,6 +13,7 @@ public enum ClanAction {
 
     DELETE(3),
     CHANGE_COLOR(3),
+    BANK_REMOVE(3),
     CHANGE_GROUP(2),
     PROMOTE(2),
     DEMOTE(2),
@@ -21,7 +22,7 @@ public enum ClanAction {
     INVITE(1),
     KICK(1),
     SETTINGS_MODERATE_CHAT(1),
-    CHAT(0);
+    BANK_ADD(0);
 
     private final int permissionLevel;
 

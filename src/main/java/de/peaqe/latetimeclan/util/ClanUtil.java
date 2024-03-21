@@ -8,6 +8,7 @@ import de.peaqe.latetimeclan.models.util.ClanAction;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.Scanner;
 
 /**
@@ -60,5 +61,19 @@ public class ClanUtil {
             throw new RuntimeException(e);
         }
     }
+
+    public static String compressInt(int number) {
+        var formatter = new DecimalFormat("#.###");
+        return "§b" + formatter.format(number).replace(".", "§8.§b");
+    }
+
+    public static int decompressString(String compressedNumber) {
+        try {
+            return Integer.parseInt(compressedNumber.replaceAll("\\.", ""));
+        } catch (NumberFormatException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

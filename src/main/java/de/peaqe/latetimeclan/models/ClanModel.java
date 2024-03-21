@@ -22,9 +22,10 @@ public class ClanModel {
     private int maxSize;
     private Map<UUID, ClanGroupModel> members;
     private Settings settings;
+    private int clanBankAmount;
 
     public ClanModel(String name, String tag, String clanFounderUuid, ClanInvitationStatus clanInvitationStatus,
-                     int maxSize, Map<UUID, ClanGroupModel> members, Settings settings) {
+                     int maxSize, Map<UUID, ClanGroupModel> members, Settings settings, int clanBankAmount) {
         this.name = name;
         this.tag = tag;
         this.clanFounderUuid = clanFounderUuid;
@@ -32,6 +33,7 @@ public class ClanModel {
         this.maxSize = maxSize;
         this.members = members;
         this.settings = settings;
+        this.clanBankAmount = clanBankAmount;
     }
 
     public ClanModel() {}
@@ -82,6 +84,18 @@ public class ClanModel {
 
     public void setSettings(Settings settings) {
         this.settings = settings;
+    }
+
+    public String getClanFounderUuid() {
+        return clanFounderUuid;
+    }
+
+    public int getClanBankAmount() {
+        return clanBankAmount;
+    }
+
+    public void setClanBankAmount(int clanBankAmount) {
+        this.clanBankAmount = clanBankAmount;
     }
 
     public Map<UUID, ClanGroupModel> getMembers() {

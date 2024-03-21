@@ -16,7 +16,8 @@ public enum ClanProperty {
     CLAN_INVITATION_STATUS("clan_invitation_status"),
     CLAN_FOUNDER_UUID("clan_founder_uuid"),
     MAX_SIZE("max_size"),
-    MEMBERS("members");
+    MEMBERS("members"),
+    CLAN_BANK("clan_bank");
 
     private final String value;
 

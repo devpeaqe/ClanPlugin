@@ -12,9 +12,11 @@ package de.peaqe.latetimeclan.models;
 public class Settings {
 
     private boolean clanChatToggled;
+    private boolean clanBankToggled;
 
-    public Settings(boolean clanChatToggled) {
+    public Settings(boolean clanChatToggled, boolean clanBankToggled) {
         this.clanChatToggled = clanChatToggled;
+        this.clanBankToggled = clanBankToggled;
     }
 
     public boolean isClanChatToggled() {
@@ -23,5 +25,13 @@ public class Settings {
 
     public void setClanChatToggled(boolean clanChatToggled) {
         this.clanChatToggled = clanChatToggled;
+    }
+
+    public boolean isClanBankToggled() {
+        return clanBankToggled;
+    }
+
+    public void setClanBankToggled(boolean clanBankToggled) {
+        this.clanBankToggled = clanBankToggled;
     }
 }

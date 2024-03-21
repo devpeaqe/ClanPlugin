@@ -5,6 +5,7 @@ import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.models.*;
 import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import org.bukkit.Bukkit;
@@ -346,6 +347,71 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
+        // /clan bank action <amount>
+        if (args.length == 3 && args[0].equalsIgnoreCase("bank")) {
+
+            var amount = (int) 0;
+
+            try {
+                amount = Integer.parseInt(args[2]);
+            } catch (NumberFormatException e) {
+                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Die von dir angegebene %s ist ungültig!", "Zahl"
+                ));
+                return true;
+            }
+
+            if (amount <= 0) {
+                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Die von dir angegebene %s muss im positivem Bereich liegen und größer als 0 sein!",
+                        "Zahl"
+                ));
+                return true;
+            }
+
+            var clanModel = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
+            if (clanModel == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit in keinem Clan!"
+                ));
+                return true;
+            }
+
+            var clanPlayer = ClanPlayer.fromPlayer(player);
+            if (clanPlayer == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
+                ));
+                return true;
+            }
+
+            // /clan bank add <amount>
+            if (args[1].equalsIgnoreCase("add")) {
+
+                if (!clanPlayer.hasPermission(ClanAction.BANK_ADD)) {
+                    player.sendMessage(this.messages.compileMessage(
+                            "Du bist derzeit nicht berechtigt in die %s einzuzahlen!",
+                            "Clan-Bank"
+                    ));
+                    return true;
+                }
+
+                clanModel.setClanBankAmount(clanModel.getClanBankAmount() + amount);
+                this.lateTimeClan.getClanDatabase().updateClan(clanModel);
+
+                clanModel.sendNotification(
+                        "Der Spieler %s hat %s in die %s eingezahlt.",
+                        player.getName(),
+                        ClanUtil.compressInt(amount) + "€",
+                        "Clan-Bank"
+                );
+
+                // TODO: Add money system and remove them from the player
+
+            }
+
+        }
+
         // /clan create <name> <tag>
         if (args.length == 3 && args[0].equalsIgnoreCase("create")) {
 
@@ -369,7 +435,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     Map.of(
                             player.getUniqueId(), ClanGroupModel.OWNER
                     ),
-                    new Settings(true)
+                    new Settings(true, false),
+                    0
             );
 
             this.lateTimeClan.getClanDatabase().createClan(clanModel);

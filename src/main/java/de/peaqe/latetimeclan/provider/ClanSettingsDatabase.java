@@ -43,15 +43,19 @@ public class ClanSettingsDatabase extends DatabaseProvider {
         var settings = clanModel.getSettings();
         if (settings == null) return;
 
-        var query = "INSERT INTO latetime.clan_settings VALUES (?, ?) " +
-                "ON DUPLICATE KEY UPDATE `" + ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue() + "` = ?";
+        var query = "INSERT INTO latetime.clan_settings VALUES (?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE `" + ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue() + "` = ?," +
+                "``" + ClanSettingsProperty.CLAN_BANK_TOGGLED.getValue() + "` = ?";
 
         this.connect();
         try (var statement = this.getConnection().prepareStatement(query)) {
 
             statement.setString(1, clanModel.getTag());
             statement.setBoolean(2, clanModel.getSettings().isClanChatToggled());
-            statement.setBoolean(3, clanModel.getSettings().isClanChatToggled());
+            statement.setBoolean(3, clanModel.getSettings().isClanBankToggled());
+
+            statement.setBoolean(4, clanModel.getSettings().isClanChatToggled());
+            statement.setBoolean(5, clanModel.getSettings().isClanBankToggled());
 
             statement.executeUpdate();
 
@@ -73,7 +77,10 @@ public class ClanSettingsDatabase extends DatabaseProvider {
             var resultSet = statement.executeQuery();
 
             if (!resultSet.next()) return null;
-            return new Settings(resultSet.getBoolean(ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue()));
+            return new Settings(
+                    resultSet.getBoolean(ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue()),
+                    resultSet.getBoolean(ClanSettingsProperty.CLAN_BANK_TOGGLED.getValue())
+            );
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

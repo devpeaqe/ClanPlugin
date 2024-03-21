@@ -43,6 +43,7 @@ public class ClanDatabase extends DatabaseProvider {
                     "  `" + ClanProperty.CLAN_INVITATION_STATUS.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + ClanProperty.MAX_SIZE.getValue() + "` INT NOT NULL," +
                     "  `" + ClanProperty.MEMBERS.getValue() + "` VARCHAR(255) NOT NULL," +
+                    "  `" + ClanProperty.CLAN_BANK.getValue() + "` INT NOT NULL," +
                     "  PRIMARY KEY (`tag`)" +
                     ")");
         } catch (SQLException e) {
@@ -61,7 +62,8 @@ public class ClanDatabase extends DatabaseProvider {
                 ClanProperty.CLAN_INVITATION_STATUS.getValue() + ", " +
                 ClanProperty.MAX_SIZE.getValue() + ", " +
                 ClanProperty.MEMBERS.getValue() +
-                ") VALUES (?, ?, ?, ?, ?, ?)";
+                ClanProperty.CLAN_BANK.getValue() +
+                ") VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         if (clanModel == null || clanModel.getTag() == null) return;
 
@@ -82,6 +84,7 @@ public class ClanDatabase extends DatabaseProvider {
             statement.setString(4, clanModel.getClanInvitationStatus().getStatus());
             statement.setInt(5, clanModel.getMaxSize());
             statement.setString(6, ClanDecoder.mapToString(clanModel.getMembers()));
+            statement.setInt(7, clanModel.getClanBankAmount());
             this.lateTimeClan.getClanSettingsDatabase().insertClan(clanModel);
 
             //this.simpleCache.cache(clanModel);
@@ -103,6 +106,7 @@ public class ClanDatabase extends DatabaseProvider {
                 ClanProperty.CLAN_INVITATION_STATUS.getValue() + " = ?, " +
                 ClanProperty.MAX_SIZE.getValue() + " = ?, " +
                 ClanProperty.MEMBERS.getValue() + " = ? " +
+                ClanProperty.CLAN_BANK.getValue() + " = ? " +
                 "WHERE " + ClanProperty.TAG.getValue() + " = ?";
 
         if (this.getClan(clanModel.getTag()) == null) {
@@ -121,7 +125,8 @@ public class ClanDatabase extends DatabaseProvider {
             statement.setString(4, clanModel.getClanInvitationStatus().getStatus());
             statement.setInt(5, clanModel.getMaxSize());
             statement.setString(6, ClanDecoder.mapToString(clanModel.getMembers()));
-            statement.setString(7, clanModel.getTag());
+            statement.setInt(7, clanModel.getClanBankAmount());
+            statement.setString(8, clanModel.getTag());
             this.lateTimeClan.getClanSettingsDatabase().insertClan(clanModel);
 
             //this.simpleCache.remove(clanModel.getTag());
@@ -197,7 +202,8 @@ public class ClanDatabase extends DatabaseProvider {
                                 .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                         resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
                         ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
-                        this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag1)
+                        this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag1),
+                        resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
                 );
 
                 //this.simpleCache.cache(clanModel);
@@ -236,7 +242,8 @@ public class ClanDatabase extends DatabaseProvider {
                             .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                     resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
                     ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
-                    this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag)
+                    this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag),
+                    resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
             );
 
             //this.simpleCache.cache(clanModel);
@@ -298,7 +305,8 @@ public class ClanDatabase extends DatabaseProvider {
                                 .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                         resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
                         ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
-                        this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag)
+                        this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag),
+                        resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
                 );
 
             }
