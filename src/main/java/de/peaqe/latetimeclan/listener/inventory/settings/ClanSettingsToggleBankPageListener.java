@@ -48,7 +48,7 @@ public class ClanSettingsToggleBankPageListener implements Listener {
         if (event.getClickedInventory() == null) return;
         if (!Component.text(event.getView().getOriginalTitle()).equals(
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
-                        "§8Bank Sichtbarkeit verwalten"
+                        "§8Bank verwalten"
                 ))
         )) return;
 

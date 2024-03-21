@@ -31,7 +31,7 @@ public class ClanSettingsToggleBankPage {
                 null,
                 9*4,
                 Component.text(lateTimeClan.getMessages().compileMessage(
-                        "§8Bank Sichtbarkeit verwalten"
+                        "§8Bank verwalten"
                 ))
         );
     }
