@@ -3,8 +3,8 @@ package de.peaqe.latetimeclan.listener.inventory.member;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberChangeGroupPage;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberKickConfirmPage;
-import de.peaqe.latetimeclan.models.ClanPlayer;
-import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
+import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import net.kyori.adventure.text.Component;
@@ -51,7 +51,7 @@ public class ClanMemberEditPageListener implements Listener {
             case 20 -> {
 
                 // KICK
-                var clanPlayer = ClanPlayer.fromPlayer(player);
+                var clanPlayer = ClanPlayerObject.fromPlayer(player);
                 if (clanPlayer == null) return;
 
                 var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
@@ -95,7 +95,7 @@ public class ClanMemberEditPageListener implements Listener {
             case 24 -> {
 
                 // CHANGE GROUP
-                var clanPlayer = ClanPlayer.fromPlayer(player);
+                var clanPlayer = ClanPlayerObject.fromPlayer(player);
                 if (clanPlayer == null) return;
 
                 var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
@@ -119,7 +119,7 @@ public class ClanMemberEditPageListener implements Listener {
 
     }
 
-    private ClanPlayer getClanPlayerFromItemStack(ItemStack itemStack) {
+    private ClanPlayerObject getClanPlayerFromItemStack(ItemStack itemStack) {
 
         if (itemStack == null) return null;
         if (!itemStack.hasItemMeta()) return null;
@@ -131,7 +131,7 @@ public class ClanMemberEditPageListener implements Listener {
         var targetUUID = UniqueIdManager.getUUID(targetName);
         if (targetUUID == null) return null;
 
-        return ClanPlayer.fromPlayer(targetUUID);
+        return ClanPlayerObject.fromPlayer(targetUUID);
     }
 
 

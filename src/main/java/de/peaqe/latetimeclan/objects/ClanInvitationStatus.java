@@ -1,4 +1,4 @@
-package de.peaqe.latetimeclan.models;
+package de.peaqe.latetimeclan.objects;
 
 /**
  * *

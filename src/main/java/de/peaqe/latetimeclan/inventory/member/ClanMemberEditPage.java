@@ -1,9 +1,9 @@
 package de.peaqe.latetimeclan.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanModel;
-import de.peaqe.latetimeclan.models.ClanPlayer;
-import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.objects.ClanObject;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
+import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
@@ -25,7 +25,7 @@ public class ClanMemberEditPage {
 
     private final Inventory inventory;
 
-    public ClanMemberEditPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
+    public ClanMemberEditPage(LateTimeClan lateTimeClan, ClanObject clanObject) {
         this.inventory = Bukkit.createInventory(
                 null,
                 9*4,
@@ -35,7 +35,7 @@ public class ClanMemberEditPage {
         );
     }
 
-    public void initializeInventory(ClanPlayer sender, ClanPlayer target) {
+    public void initializeInventory(ClanPlayerObject sender, ClanPlayerObject target) {
 
         var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
 
@@ -88,7 +88,7 @@ public class ClanMemberEditPage {
 
     }
 
-    public Inventory getInventory(ClanPlayer sender, ClanPlayer target) {
+    public Inventory getInventory(ClanPlayerObject sender, ClanPlayerObject target) {
         this.initializeInventory(sender, target);
         return inventory;
     }

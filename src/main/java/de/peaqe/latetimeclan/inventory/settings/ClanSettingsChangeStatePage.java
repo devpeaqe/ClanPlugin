@@ -1,8 +1,8 @@
 package de.peaqe.latetimeclan.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanInvitationStatus;
-import de.peaqe.latetimeclan.models.ClanModel;
+import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
+import de.peaqe.latetimeclan.objects.ClanObject;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
@@ -26,10 +26,10 @@ import java.util.UUID;
 public class ClanSettingsChangeStatePage {
 
     private final Inventory inventory;
-    private final ClanModel clanModel;
+    private final ClanObject clanObject;
 
-    public ClanSettingsChangeStatePage(LateTimeClan lateTimeClan, ClanModel clanModel) {
-        this.clanModel = clanModel;
+    public ClanSettingsChangeStatePage(LateTimeClan lateTimeClan, ClanObject clanObject) {
+        this.clanObject = clanObject;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*5,
@@ -53,13 +53,13 @@ public class ClanSettingsChangeStatePage {
             );
         }
 
-        var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanModel.getClanFounderUUID()));
+        var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanObject.getClanFounderUUID()));
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
-                .setDisplayName("§8• §e" + clanModel.getName())
+                .setDisplayName("§8• §e" + clanObject.getName())
                 .addLore(
                         "",
                         "§8• §7Hier kannst du dein Clan Status einstellen.",
-                        "§8• §7Aktueller Status: " + ClanUtil.getClanInvitationStatus(clanModel).getStatus(),
+                        "§8• §7Aktueller Status: " + ClanUtil.getClanInvitationStatus(clanObject).getStatus(),
                         "",
                         "§8» §aÖffentlich§8 » §7Jeder kann den Clan beitreten.",
                         "§8» §eAuf Einladung §8» §7Man kann den Clan nur mit Einladung beitreten.",
@@ -81,7 +81,7 @@ public class ClanSettingsChangeStatePage {
             final var clanStatusItem = new ItemBuilder(material)
                     .setDisplayName("§8• " + status.getStatus())
                     .addLore("", "§8• §7Setze den Clanstatus auf " + status.getStatus())
-                    .glow(clanModel.getClanInvitationStatus().equals(status))
+                    .glow(clanObject.getClanInvitationStatus().equals(status))
                     .build();
 
             this.inventory.setItem(29 + (i * 2), clanStatusItem);

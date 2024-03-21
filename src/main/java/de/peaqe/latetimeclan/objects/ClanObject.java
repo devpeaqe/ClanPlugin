@@ -1,4 +1,4 @@
-package de.peaqe.latetimeclan.models;
+package de.peaqe.latetimeclan.objects;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import org.bukkit.Bukkit;
@@ -15,28 +15,28 @@ import java.util.UUID;
  * *
  */
 
-public class ClanModel {
+public class ClanObject {
 
     private String name, tag, clanFounderUuid;
     private ClanInvitationStatus clanInvitationStatus;
     private int maxSize;
-    private Map<UUID, ClanGroupModel> members;
-    private Settings settings;
+    private Map<UUID, ClanGroup> members;
+    private SettingsObject settingsObject;
     private int clanBankAmount;
 
-    public ClanModel(String name, String tag, String clanFounderUuid, ClanInvitationStatus clanInvitationStatus,
-                     int maxSize, Map<UUID, ClanGroupModel> members, Settings settings, int clanBankAmount) {
+    public ClanObject(String name, String tag, String clanFounderUuid, ClanInvitationStatus clanInvitationStatus,
+                      int maxSize, Map<UUID, ClanGroup> members, SettingsObject settingsObject, int clanBankAmount) {
         this.name = name;
         this.tag = tag;
         this.clanFounderUuid = clanFounderUuid;
         this.clanInvitationStatus = clanInvitationStatus;
         this.maxSize = maxSize;
         this.members = members;
-        this.settings = settings;
+        this.settingsObject = settingsObject;
         this.clanBankAmount = clanBankAmount;
     }
 
-    public ClanModel() {}
+    public ClanObject() {}
 
     public String getName() {
         return name;
@@ -78,12 +78,12 @@ public class ClanModel {
         this.maxSize = maxSize;
     }
 
-    public Settings getSettings() {
-        return settings;
+    public SettingsObject getSettings() {
+        return settingsObject;
     }
 
-    public void setSettings(Settings settings) {
-        this.settings = settings;
+    public void setSettings(SettingsObject settingsObject) {
+        this.settingsObject = settingsObject;
     }
 
     public String getClanFounderUuid() {
@@ -98,39 +98,39 @@ public class ClanModel {
         this.clanBankAmount = clanBankAmount;
     }
 
-    public Map<UUID, ClanGroupModel> getMembers() {
+    public Map<UUID, ClanGroup> getMembers() {
         return members;
     }
 
-    public void setMembers(Map<UUID, ClanGroupModel> members) {
+    public void setMembers(Map<UUID, ClanGroup> members) {
         this.members = members;
     }
 
-    public void addMember(ClanPlayer clanPlayer) {
-        clanPlayer.setClan(this);
+    public void addMember(ClanPlayerObject clanPlayerObject) {
+        clanPlayerObject.setClan(this);
 
         var members = this.getMembers();
-        members.put(clanPlayer.getUniqueId(), clanPlayer.getClanGroup());
+        members.put(clanPlayerObject.getUniqueId(), clanPlayerObject.getClanGroup());
 
         this.setMembers(members);
 
         this.update();
-        clanPlayer.reload();
+        clanPlayerObject.reload();
     }
 
     public void update() {
         LateTimeClan.getInstance().getClanDatabase().updateClan(this);
     }
 
-    public void kick(ClanPlayer clanPlayer) {
+    public void kick(ClanPlayerObject clanPlayerObject) {
 
         var currentMembers = this.getMembers();
 
-        currentMembers.remove(clanPlayer.getUniqueId());
+        currentMembers.remove(clanPlayerObject.getUniqueId());
         this.setMembers(currentMembers);
 
         LateTimeClan.getInstance().getClanDatabase().updateClan(this);
-        clanPlayer.reload();
+        clanPlayerObject.reload();
 
     }
 

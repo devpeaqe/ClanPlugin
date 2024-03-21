@@ -1,9 +1,9 @@
 package de.peaqe.latetimeclan.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanGroupModel;
-import de.peaqe.latetimeclan.models.ClanModel;
-import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.objects.ClanGroup;
+import de.peaqe.latetimeclan.objects.ClanObject;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.provider.util.HeadProperty;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import net.kyori.adventure.text.Component;
@@ -29,17 +29,17 @@ public class ClanMemberPage {
 
     private final LateTimeClan lateTimeClan;
     private final Inventory inventory;
-    private final ClanModel clanModel;
+    private final ClanObject clanObject;
 
-    public ClanMemberPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
+    public ClanMemberPage(LateTimeClan lateTimeClan, ClanObject clanObject) {
         this.lateTimeClan = lateTimeClan;
-        this.clanModel = clanModel;
+        this.clanObject = clanObject;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*5,
                 Component.text(this.lateTimeClan.getMessages().compileMessage(
                         "§8Mitglieder",
-                        this.clanModel.getName()
+                        this.clanObject.getName()
                 ))
         );
     }
@@ -57,17 +57,17 @@ public class ClanMemberPage {
             );
         }
 
-        var sortedMembers = new TreeMap<>(Comparator.comparingInt((UUID uuid) -> clanModel.getMembers().get(uuid).getPermissionLevel())
+        var sortedMembers = new TreeMap<>(Comparator.comparingInt((UUID uuid) -> clanObject.getMembers().get(uuid).getPermissionLevel())
                 .thenComparing(UUID::toString).reversed());
 
-        sortedMembers.putAll(clanModel.getMembers());
+        sortedMembers.putAll(clanObject.getMembers());
 
 
         sortedMembers.forEach((uuid, clanGroupModel) -> {
 
-            var tempClanGroupModel = (ClanGroupModel) clanGroupModel;
+            var tempClanGroupModel = (ClanGroup) clanGroupModel;
 
-            var clanPlayer = ClanPlayer.fromPlayer(uuid);
+            var clanPlayer = ClanPlayerObject.fromPlayer(uuid);
 
             var clanPlayerHead = this.lateTimeClan.getHeadDatabase().getHead(HeadProperty.UUID, uuid.toString());
             if (clanPlayerHead == null) clanPlayerHead = this.lateTimeClan.getHeadManager().registerHead(uuid);

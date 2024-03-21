@@ -1,4 +1,4 @@
-package de.peaqe.latetimeclan.models;
+package de.peaqe.latetimeclan.objects;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * *
  */
 
-public enum ClanGroupModel {
+public enum ClanGroup {
 
     MEMBER(0, "Mitglied", "§7"),
     MODERATOR(1, "Moderator", "§3"),
@@ -22,7 +22,7 @@ public enum ClanGroupModel {
     private final String name;
     private final String color;
 
-    ClanGroupModel(int permissionLevel, String name, String color) {
+    ClanGroup(int permissionLevel, String name, String color) {
         this.permissionLevel = permissionLevel;
         this.name = name;
         this.color = color;
@@ -40,7 +40,7 @@ public enum ClanGroupModel {
         return color;
     }
 
-    public static List<ClanGroupModel> getGroups() {
+    public static List<ClanGroup> getGroups() {
         return List.of(MEMBER, MODERATOR, MANAGER, OWNER);
     }
 

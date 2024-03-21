@@ -1,6 +1,6 @@
 package de.peaqe.latetimeclan.provider.cache;
 
-import de.peaqe.latetimeclan.models.ClanModel;
+import de.peaqe.latetimeclan.objects.ClanObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,17 +16,17 @@ import java.util.Map;
 
 public class DatabaseCache {
 
-    private final Map<String, ClanModel> clanCache;
+    private final Map<String, ClanObject> clanCache;
 
     public DatabaseCache() {
         this.clanCache = new HashMap<>();
     }
 
-    public void addEntry(String key, ClanModel clanModel) {
-        this.clanCache.put(key, clanModel);
+    public void addEntry(String key, ClanObject clanObject) {
+        this.clanCache.put(key, clanObject);
     }
 
-    public ClanModel getEntry(String key) {
+    public ClanObject getEntry(String key) {
         return this.clanCache.get(key);
     }
 
@@ -46,11 +46,11 @@ public class DatabaseCache {
         return this.clanCache.containsKey(key);
     }
 
-    public boolean containsValue(ClanModel clanModel) {
-        return this.clanCache.containsValue(clanModel);
+    public boolean containsValue(ClanObject clanObject) {
+        return this.clanCache.containsValue(clanObject);
     }
 
-    public Map<String, ClanModel> getClanCache() {
+    public Map<String, ClanObject> getClanCache() {
         return this.clanCache;
     }
 

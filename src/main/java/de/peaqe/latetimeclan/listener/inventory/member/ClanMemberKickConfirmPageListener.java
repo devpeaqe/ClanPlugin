@@ -2,8 +2,8 @@ package de.peaqe.latetimeclan.listener.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberPage;
-import de.peaqe.latetimeclan.models.ClanPlayer;
-import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
+import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
@@ -54,13 +54,13 @@ public class ClanMemberKickConfirmPageListener implements Listener {
             case 20 -> {
                 // DECLINE
                 player.closeInventory();
-                player.openInventory(new ClanMemberPage(this.lateTimeClan, ClanPlayer.fromPlayer(player).getClan()).getInventory());
+                player.openInventory(new ClanMemberPage(this.lateTimeClan, ClanPlayerObject.fromPlayer(player).getClan()).getInventory());
             }
 
             case 24 -> {
 
                 // CONFIRM
-                var clanPlayer = ClanPlayer.fromPlayer(player);
+                var clanPlayer = ClanPlayerObject.fromPlayer(player);
                 if (clanPlayer == null) return;
 
                 var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
@@ -122,7 +122,7 @@ public class ClanMemberKickConfirmPageListener implements Listener {
 
     }
 
-    private ClanPlayer getClanPlayerFromItemStack(ItemStack itemStack) {
+    private ClanPlayerObject getClanPlayerFromItemStack(ItemStack itemStack) {
 
         if (itemStack == null) return null;
         if (!itemStack.hasItemMeta()) return null;
@@ -134,7 +134,7 @@ public class ClanMemberKickConfirmPageListener implements Listener {
         var targetUUID = UniqueIdManager.getUUID(targetName);
         if (targetUUID == null) return null;
 
-        return ClanPlayer.fromPlayer(targetUUID);
+        return ClanPlayerObject.fromPlayer(targetUUID);
     }
 
 

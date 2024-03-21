@@ -1,7 +1,7 @@
 package de.peaqe.latetimeclan.util.manager;
 
-import de.peaqe.latetimeclan.models.ClanInvitationStatus;
-import de.peaqe.latetimeclan.models.ClanModel;
+import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
+import de.peaqe.latetimeclan.objects.ClanObject;
 
 import java.util.*;
 
@@ -22,20 +22,20 @@ public class InvitationManager {
         this.invitationCache = new InvitationCache();
     }
 
-    public boolean invite(UUID uuid, ClanModel clanModel) {
-        return this.invitationCache.invite(uuid, clanModel);
+    public boolean invite(UUID uuid, ClanObject clanObject) {
+        return this.invitationCache.invite(uuid, clanObject);
     }
 
-    public void unInvite(UUID uuid, ClanModel clanModel) {
-        this.invitationCache.unInvite(uuid, clanModel);
+    public void unInvite(UUID uuid, ClanObject clanObject) {
+        this.invitationCache.unInvite(uuid, clanObject);
     }
 
     public boolean isInvited(UUID uuid, String clanTag) {
         return this.invitationCache.isInvited(uuid, clanTag);
     }
 
-    public boolean isClanJoinable(ClanModel clanModel) {
-        return this.invitationCache.isClanJoinable(clanModel);
+    public boolean isClanJoinable(ClanObject clanObject) {
+        return this.invitationCache.isClanJoinable(clanObject);
     }
 
     public List<String> getInvitations(UUID uuid) {
@@ -56,26 +56,26 @@ class InvitationCache {
         this.invitations = invitations;
     }
 
-    public boolean invite(UUID uuid, ClanModel clanModel) {
+    public boolean invite(UUID uuid, ClanObject clanObject) {
 
         var clanInvitations = this.invitations.get(uuid);
         if (clanInvitations == null) clanInvitations = new ArrayList<>();
 
-        if (!this.isClanJoinable(clanModel)) return false;
-        if (this.isInvited(uuid, clanModel.getTag())) return false;
-        clanInvitations.add(clanModel.getTag());
+        if (!this.isClanJoinable(clanObject)) return false;
+        if (this.isInvited(uuid, clanObject.getTag())) return false;
+        clanInvitations.add(clanObject.getTag());
 
         this.invitations.put(uuid, clanInvitations);
         return true;
     }
 
-    public void unInvite(UUID uuid, ClanModel clanModel) {
+    public void unInvite(UUID uuid, ClanObject clanObject) {
 
         var clanInvitations = this.invitations.get(uuid);
         if (clanInvitations == null) clanInvitations = new ArrayList<>();
 
-        if (!this.isInvited(uuid, clanModel.getTag())) return;
-        clanInvitations.remove(clanModel.getTag());
+        if (!this.isInvited(uuid, clanObject.getTag())) return;
+        clanInvitations.remove(clanObject.getTag());
 
         this.invitations.put(uuid, clanInvitations);
     }
@@ -86,9 +86,9 @@ class InvitationCache {
         return this.invitations.get(uuid).contains(clanTag);
     }
 
-    public boolean isClanJoinable(ClanModel clanModel) {
-        if (clanModel.getMaxSize() <= clanModel.getMembers().size()) return false;
-        return (!clanModel.getClanInvitationStatus().equals(ClanInvitationStatus.CLOSED));
+    public boolean isClanJoinable(ClanObject clanObject) {
+        if (clanObject.getMaxSize() <= clanObject.getMembers().size()) return false;
+        return (!clanObject.getClanInvitationStatus().equals(ClanInvitationStatus.CLOSED));
     }
 
     public Map<UUID, List<String>> getInvitations() {

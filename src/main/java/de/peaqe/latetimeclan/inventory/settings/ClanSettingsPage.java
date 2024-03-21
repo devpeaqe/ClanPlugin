@@ -1,7 +1,7 @@
 package de.peaqe.latetimeclan.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanModel;
+import de.peaqe.latetimeclan.objects.ClanObject;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
@@ -24,10 +24,10 @@ import java.util.UUID;
 public class ClanSettingsPage {
 
     private final Inventory inventory;
-    private final ClanModel clanModel;
+    private final ClanObject clanObject;
 
-    public ClanSettingsPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
-        this.clanModel = clanModel;
+    public ClanSettingsPage(LateTimeClan lateTimeClan, ClanObject clanObject) {
+        this.clanObject = clanObject;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*5,
@@ -50,9 +50,9 @@ public class ClanSettingsPage {
             );
         }
 
-        var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanModel.getClanFounderUUID()));
+        var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanObject.getClanFounderUUID()));
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
-                .setDisplayName("§8• §e" + clanModel.getName())
+                .setDisplayName("§8• §e" + clanObject.getName())
                 .addLore(
                         "",
                         "§8• §7Hier kannst du Einstellungen für den Clan vornehmen."
@@ -65,7 +65,7 @@ public class ClanSettingsPage {
                 .addLore(
                         "",
                         "§8• §7Ändere den Clanstatus.",
-                        "§8• §7Clanstatus: §e" + ClanUtil.getClanInvitationStatus(clanModel).getStatus()
+                        "§8• §7Clanstatus: §e" + ClanUtil.getClanInvitationStatus(clanObject).getStatus()
                 )
                 .build();
 
@@ -75,7 +75,7 @@ public class ClanSettingsPage {
                         "",
                         "§8• §7Hier kannst du den Clan-Chat §aein§8-/§causschalten§7.",
                         "§8• §7Clan-Chat aktiv: §e" +
-                                (clanModel.getSettings().isClanChatToggled() ? "§aja" : "§cnein") + "§7."
+                                (clanObject.getSettings().isClanChatToggled() ? "§aja" : "§cnein") + "§7."
                 )
                 .build();
 

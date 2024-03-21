@@ -1,9 +1,9 @@
 package de.peaqe.latetimeclan.util;
 
-import de.peaqe.latetimeclan.models.ClanInvitationStatus;
-import de.peaqe.latetimeclan.models.ClanModel;
-import de.peaqe.latetimeclan.models.ClanPlayer;
-import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
+import de.peaqe.latetimeclan.objects.ClanObject;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
+import de.peaqe.latetimeclan.objects.util.ClanAction;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -22,12 +22,12 @@ import java.util.Scanner;
 
 public class ClanUtil {
 
-    public static ClanInvitationStatus getClanInvitationStatus(ClanModel clanModel) {
-        if (clanModel.getMembers().size() >= clanModel.getMaxSize()) return ClanInvitationStatus.CLOSED;
-        return clanModel.getClanInvitationStatus();
+    public static ClanInvitationStatus getClanInvitationStatus(ClanObject clanObject) {
+        if (clanObject.getMembers().size() >= clanObject.getMaxSize()) return ClanInvitationStatus.CLOSED;
+        return clanObject.getClanInvitationStatus();
     }
 
-    public static boolean isPermitted(ClanPlayer sender, ClanPlayer target, ClanAction clanAction) {
+    public static boolean isPermitted(ClanPlayerObject sender, ClanPlayerObject target, ClanAction clanAction) {
         return (sender.hasPermission(clanAction) &&
                 sender.getClanGroup().getPermissionLevel() > target.getClanGroup().getPermissionLevel());
 

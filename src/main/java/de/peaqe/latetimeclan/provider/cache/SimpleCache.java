@@ -1,7 +1,7 @@
 package de.peaqe.latetimeclan.provider.cache;
 
-import de.peaqe.latetimeclan.models.ClanModel;
-import de.peaqe.latetimeclan.models.util.ClanDecoder;
+import de.peaqe.latetimeclan.objects.ClanObject;
+import de.peaqe.latetimeclan.objects.util.ClanDecoder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,11 +23,11 @@ public class SimpleCache {
         this.cache = new HashMap<>();
     }
 
-    public void cache(ClanModel clanModel) {
-        this.cache.put(clanModel.getTag(), ClanDecoder.toString(clanModel));
+    public void cache(ClanObject clanObject) {
+        this.cache.put(clanObject.getTag(), ClanDecoder.toString(clanObject));
     }
 
-    public ClanModel get(String clanTag) {
+    public ClanObject get(String clanTag) {
         return ClanDecoder.getClanModel(this.cache.get(clanTag));
     }
 
@@ -47,8 +47,8 @@ public class SimpleCache {
         return this.cache.containsKey(clanTag);
     }
 
-    public boolean containsValue(ClanModel clanModel) {
-        return this.cache.containsValue(ClanDecoder.toString(clanModel));
+    public boolean containsValue(ClanObject clanObject) {
+        return this.cache.containsValue(ClanDecoder.toString(clanObject));
     }
 
     public Map<String, String> getCache() {

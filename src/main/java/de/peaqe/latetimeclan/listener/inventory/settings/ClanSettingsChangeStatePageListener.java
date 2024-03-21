@@ -2,9 +2,9 @@ package de.peaqe.latetimeclan.listener.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
-import de.peaqe.latetimeclan.models.ClanInvitationStatus;
-import de.peaqe.latetimeclan.models.ClanPlayer;
-import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
+import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -49,7 +49,7 @@ public class ClanSettingsChangeStatePageListener implements Listener {
 
         event.setCancelled(true);
 
-        var clanPlayer = ClanPlayer.fromPlayer(player);
+        var clanPlayer = ClanPlayerObject.fromPlayer(player);
         if (clanPlayer == null) return;
 
         var clan = clanPlayer.getClan();

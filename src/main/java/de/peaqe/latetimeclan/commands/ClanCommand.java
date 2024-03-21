@@ -3,8 +3,8 @@ package de.peaqe.latetimeclan.commands;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.messages.Messages;
-import de.peaqe.latetimeclan.models.*;
-import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.objects.*;
+import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
@@ -78,7 +78,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
-            var clanPlayer = ClanPlayer.fromPlayer(player);
+            var clanPlayer = ClanPlayerObject.fromPlayer(player);
             if (clanPlayer == null) {
                 player.sendMessage(this.messages.compileMessage(
                         "§cEs ist ein Fehler aufgetreten! Bitte wende dich an einen Administrator."
@@ -86,7 +86,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
-            if (clanPlayer.getClanGroup().equals(ClanGroupModel.OWNER)) {
+            if (clanPlayer.getClanGroup().equals(ClanGroup.OWNER)) {
                 player.sendMessage(this.messages.compileMessage(
                         "Du kannst dein eigenen %s nicht verlassen!",
                         "Clan"
@@ -144,14 +144,14 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             if (clan.getClanInvitationStatus().equals(ClanInvitationStatus.OPEN) &&
                     clan.getMembers().size() < clan.getMaxSize()) {
 
-                var clanPlayer = new ClanPlayer(
+                var clanPlayer = new ClanPlayerObject(
                         player.getName(),
                         player.getUniqueId(),
                         clan,
-                        ClanGroupModel.MEMBER
+                        ClanGroup.MEMBER
                 );
 
-                if (ClanPlayer.fromPlayer(player) != null) clanPlayer =  ClanPlayer.fromPlayer(player);
+                if (ClanPlayerObject.fromPlayer(player) != null) clanPlayer =  ClanPlayerObject.fromPlayer(player);
                 if (clanPlayer == null) {
                     player.sendMessage(this.messages.compileMessage(
                             "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
@@ -199,14 +199,14 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
             this.invitationManager.unInvite(player.getUniqueId(), clan);
 
-            var clanPlayer = new ClanPlayer(
+            var clanPlayer = new ClanPlayerObject(
                     player.getName(),
                     player.getUniqueId(),
                     clan,
-                    ClanGroupModel.MEMBER
+                    ClanGroup.MEMBER
             );
 
-            if (ClanPlayer.fromPlayer(player) != null) clanPlayer =  ClanPlayer.fromPlayer(player);
+            if (ClanPlayerObject.fromPlayer(player) != null) clanPlayer =  ClanPlayerObject.fromPlayer(player);
 
             if (clanPlayer == null) {
                 player.sendMessage(this.messages.compileMessage(
@@ -255,7 +255,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
-            var clanPlayerSender = ClanPlayer.fromPlayer(player);
+            var clanPlayerSender = ClanPlayerObject.fromPlayer(player);
 
             if (clanPlayerSender == null) {
                 player.sendMessage(this.messages.compileMessage(
@@ -357,7 +357,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
-            var clanPlayer = ClanPlayer.fromPlayer(player);
+            var clanPlayer = ClanPlayerObject.fromPlayer(player);
             if (clanPlayer == null) {
                 player.sendMessage(this.messages.compileMessage(
                         "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
@@ -402,7 +402,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
-            var clanPlayer = ClanPlayer.fromPlayer(player);
+            var clanPlayer = ClanPlayerObject.fromPlayer(player);
             if (clanPlayer == null) {
                 player.sendMessage(this.messages.compileMessage(
                         "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
@@ -483,16 +483,16 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
-            var clanModel = new ClanModel(
+            var clanModel = new ClanObject(
                     clanName,
                     clanTag,
                     player.getUniqueId().toString(),
                     ClanInvitationStatus.INVITATION,
                     10,
                     Map.of(
-                            player.getUniqueId(), ClanGroupModel.OWNER
+                            player.getUniqueId(), ClanGroup.OWNER
                     ),
-                    new Settings(true, false),
+                    new SettingsObject(true, false),
                     0
             );
 
@@ -524,7 +524,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
         ArrayList<String> matches = new ArrayList<>();
         if (!(sender instanceof Player player)) return matches;
-        var clanPlayer = ClanPlayer.fromPlayer(player);
+        var clanPlayer = ClanPlayerObject.fromPlayer(player);
 
         if (args.length == 1) {
 
@@ -532,7 +532,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 matches.add("info");
                 matches.add("bank");
                 if (clanPlayer.hasPermission(ClanAction.INVITE)) matches.add("invite");
-                if (!clanPlayer.getClanGroup().equals(ClanGroupModel.OWNER)) matches.add("leave");
+                if (!clanPlayer.getClanGroup().equals(ClanGroup.OWNER)) matches.add("leave");
                 return matches;
             }
 
@@ -545,7 +545,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             if (clanPlayer != null && clanPlayer.hasPermission(ClanAction.INVITE)) {
                 Bukkit.getOnlinePlayers().forEach(target -> {
 
-                    var clanPlayerTarget = ClanPlayer.fromPlayer(target);
+                    var clanPlayerTarget = ClanPlayerObject.fromPlayer(target);
                     if (clanPlayerTarget != null) return;
 
                     var input = args[1];

@@ -4,9 +4,9 @@ import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsChangeStatePage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsModerateChatPage;
-import de.peaqe.latetimeclan.models.ClanGroupModel;
-import de.peaqe.latetimeclan.models.ClanPlayer;
-import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.objects.ClanGroup;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
+import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -32,7 +32,7 @@ import java.util.UUID;
 public class ClanSettingsPageListener implements Listener {
 
     private final LateTimeClan lateTimeClan;
-    private final Map<UUID, ClanGroupModel> cache;
+    private final Map<UUID, ClanGroup> cache;
 
     public ClanSettingsPageListener(LateTimeClan lateTimeClan) {
         this.lateTimeClan = lateTimeClan;
@@ -53,7 +53,7 @@ public class ClanSettingsPageListener implements Listener {
 
         event.setCancelled(true);
 
-        var clanPlayer = ClanPlayer.fromPlayer(player);
+        var clanPlayer = ClanPlayerObject.fromPlayer(player);
 
         if (clanPlayer == null) return;
 
@@ -103,7 +103,7 @@ public class ClanSettingsPageListener implements Listener {
 
     }
 
-    private ClanPlayer getClanPlayerFromItemStack(ItemStack itemStack) {
+    private ClanPlayerObject getClanPlayerFromItemStack(ItemStack itemStack) {
 
         if (itemStack == null) return null;
         if (!itemStack.hasItemMeta()) return null;
@@ -115,10 +115,10 @@ public class ClanSettingsPageListener implements Listener {
         var targetUUID = UniqueIdManager.getUUID(targetName);
         if (targetUUID == null) return null;
 
-        return ClanPlayer.fromPlayer(targetUUID);
+        return ClanPlayerObject.fromPlayer(targetUUID);
     }
 
-    public Map<UUID, ClanGroupModel> getCache() {
+    public Map<UUID, ClanGroup> getCache() {
         return cache;
     }
 }

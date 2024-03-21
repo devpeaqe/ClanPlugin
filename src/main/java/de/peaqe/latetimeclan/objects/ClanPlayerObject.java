@@ -1,7 +1,7 @@
-package de.peaqe.latetimeclan.models;
+package de.peaqe.latetimeclan.objects;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,21 +18,21 @@ import java.util.concurrent.atomic.AtomicReference;
  * *
  */
 
-public class ClanPlayer {
+public class ClanPlayerObject {
 
     private String name;
     private UUID uniqueId;
-    private ClanModel clan;
-    private ClanGroupModel clanGroup;
+    private ClanObject clan;
+    private ClanGroup clanGroup;
 
-    public ClanPlayer(String name, UUID uniqueId, ClanModel clan, ClanGroupModel clanGroup) {
+    public ClanPlayerObject(String name, UUID uniqueId, ClanObject clan, ClanGroup clanGroup) {
         this.name = name;
         this.uniqueId = uniqueId;
         this.clan = clan;
         this.clanGroup = clanGroup;
     }
 
-    public ClanPlayer() {}
+    public ClanPlayerObject() {}
 
     public String getName() {
         return name;
@@ -50,19 +50,19 @@ public class ClanPlayer {
         this.uniqueId = uniqueId;
     }
 
-    public ClanModel getClan() {
+    public ClanObject getClan() {
         return clan;
     }
 
-    public void setClan(ClanModel clan) {
+    public void setClan(ClanObject clan) {
         this.clan = clan;
     }
 
-    public ClanGroupModel getClanGroup() {
+    public ClanGroup getClanGroup() {
         return clanGroup;
     }
 
-    public void setClanGroup(ClanGroupModel clanGroup) {
+    public void setClanGroup(ClanGroup clanGroup) {
 
         this.clanGroup = clanGroup;
 
@@ -97,14 +97,14 @@ public class ClanPlayer {
         }
     }
 
-    public static ClanPlayer fromPlayer(Player player) {
+    public static ClanPlayerObject fromPlayer(Player player) {
 
         var clan = LateTimeClan.getInstance().getClanDatabase().getClanModelOfMember(player.getUniqueId());
         var clanGroupModel = getClanGroupModel(player.getUniqueId());
 
         if (clan == null || clanGroupModel == null) return null;
 
-        return new ClanPlayer(
+        return new ClanPlayerObject(
                 player.getName(),
                 player.getUniqueId(),
                 LateTimeClan.getInstance().getClanDatabase().getClanModelOfMember(player.getUniqueId()),
@@ -112,8 +112,8 @@ public class ClanPlayer {
         );
     }
 
-    public static ClanPlayer fromPlayer(UUID uniqueId) {
-        return new ClanPlayer(
+    public static ClanPlayerObject fromPlayer(UUID uniqueId) {
+        return new ClanPlayerObject(
                 UniqueIdManager.getName(uniqueId),
                 uniqueId,
                 LateTimeClan.getInstance().getClanDatabase().getClanModelOfMember(uniqueId),
@@ -125,13 +125,13 @@ public class ClanPlayer {
         return clanGroup.getPermissionLevel() >= clanAction.getPermissionLevel();
     }
 
-    public static ClanGroupModel getClanGroupModel(UUID uniqueId) {
+    public static ClanGroup getClanGroupModel(UUID uniqueId) {
 
         var clan = LateTimeClan.getInstance().getClanDatabase().getClanModelOfMember(uniqueId);
         if (clan == null) return null;
         if (!clan.getMembers().containsKey(uniqueId)) return null;
 
-        var atomicClanGroupModel = new AtomicReference<ClanGroupModel>();
+        var atomicClanGroupModel = new AtomicReference<ClanGroup>();
 
         clan.getMembers().forEach((uuid, clanGroupModel) -> {
             if (uuid.equals(uniqueId)) {

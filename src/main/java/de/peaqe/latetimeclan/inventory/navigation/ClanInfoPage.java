@@ -1,9 +1,9 @@
 package de.peaqe.latetimeclan.inventory.navigation;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanModel;
-import de.peaqe.latetimeclan.models.ClanPlayer;
-import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.objects.ClanObject;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
+import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
@@ -27,10 +27,10 @@ import java.util.UUID;
 public class ClanInfoPage {
 
     private final Inventory inventory;
-    private final ClanModel clanModel;
+    private final ClanObject clanObject;
 
-    public ClanInfoPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
-        this.clanModel = clanModel;
+    public ClanInfoPage(LateTimeClan lateTimeClan, ClanObject clanObject) {
+        this.clanObject = clanObject;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*4,
@@ -53,18 +53,18 @@ public class ClanInfoPage {
             );
         }
 
-        var clanOwnerUUID = UUID.fromString(clanModel.getClanFounderUUID());
-        var clanOwnerName = ClanPlayer.fromPlayer(clanOwnerUUID).getName();
+        var clanOwnerUUID = UUID.fromString(clanObject.getClanFounderUUID());
+        var clanOwnerName = ClanPlayerObject.fromPlayer(clanOwnerUUID).getName();
 
         var clanOwnerSkull = Base64Compiler.getPlayerHeadFromUUID(clanOwnerUUID);
         final var clanNameItem = new ItemBuilder(clanOwnerSkull)
-                .setDisplayName("§8• §e" + clanModel.getName())
+                .setDisplayName("§8• §e" + clanObject.getName())
                 .addLore(
                         " ",
-                        "§8• §7Clan-Tag: §a" + clanModel.getTag(),
-                        "§8• §7Mitglieder: §a" + clanModel.getMembers().size() + "§8/§c" + clanModel.getMaxSize(),
-                        "§8• §7Status: §a" + ClanUtil.getClanInvitationStatus(clanModel).getStatus(),
-                        "§8• §7Bank: " + ClanUtil.compressInt(clanModel.getClanBankAmount()) + "§7€",
+                        "§8• §7Clan-Tag: §a" + clanObject.getTag(),
+                        "§8• §7Mitglieder: §a" + clanObject.getMembers().size() + "§8/§c" + clanObject.getMaxSize(),
+                        "§8• §7Status: §a" + ClanUtil.getClanInvitationStatus(clanObject).getStatus(),
+                        "§8• §7Bank: " + ClanUtil.compressInt(clanObject.getClanBankAmount()) + "§7€",
                         "§8• §7Besitzer: §4" + clanOwnerName
                 )
                 .glow()
@@ -76,7 +76,7 @@ public class ClanInfoPage {
                 .addLore(
                         " ",
                         "§8• §7Zeige dir die aktuellen Mitglieder des Clans an.",
-                        "§8• §7Mitglieder: §a" + clanModel.getMembers().size() + "§8/§c" + clanModel.getMaxSize()
+                        "§8• §7Mitglieder: §a" + clanObject.getMembers().size() + "§8/§c" + clanObject.getMaxSize()
                 )
                 .build();
 
@@ -101,7 +101,7 @@ public class ClanInfoPage {
         this.inventory.setItem(20, clanStaticsItem);
         this.inventory.setItem(24, clanMemberItem);
 
-        var clanPlayer = ClanPlayer.fromPlayer(player);
+        var clanPlayer = ClanPlayerObject.fromPlayer(player);
         if (clanPlayer == null) return;
 
         if (clanPlayer.hasPermission(ClanAction.DELETE))

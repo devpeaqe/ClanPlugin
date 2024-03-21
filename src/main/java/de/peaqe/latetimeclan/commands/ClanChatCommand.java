@@ -2,8 +2,8 @@ package de.peaqe.latetimeclan.commands;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.messages.Messages;
-import de.peaqe.latetimeclan.models.ClanPlayer;
-import de.peaqe.latetimeclan.models.util.ClanAction;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
+import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -55,7 +55,7 @@ public class ClanChatCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
-            var clanPlayer = ClanPlayer.fromPlayer(player);
+            var clanPlayer = ClanPlayerObject.fromPlayer(player);
             if (clanPlayer == null) {
                 player.sendMessage(this.messages.compileMessage(
                         "§cEs ist ein Fehler aufgetreten! Bitte wende dich an einen Administrator."

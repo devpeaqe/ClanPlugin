@@ -2,7 +2,7 @@ package de.peaqe.latetimeclan.listener.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberEditPage;
-import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -46,9 +46,9 @@ public class ClanMemberPageListener implements Listener {
         if (currentItem == null || !currentItem.hasItemMeta() || !currentItem.getItemMeta().hasDisplayName()) return;
 
         var currentItemPlayerName = currentItem.getItemMeta().getDisplayName().split("§8• §a")[1];
-        var currentClanPlayer = ClanPlayer.fromPlayer(UniqueIdManager.getUUID(currentItemPlayerName));
+        var currentClanPlayer = ClanPlayerObject.fromPlayer(UniqueIdManager.getUUID(currentItemPlayerName));
 
-        var clanPlayer = ClanPlayer.fromPlayer(player);
+        var clanPlayer = ClanPlayerObject.fromPlayer(player);
         if (clanPlayer == null) return;
 
         player.closeInventory();

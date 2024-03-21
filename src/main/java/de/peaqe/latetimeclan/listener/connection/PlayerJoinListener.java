@@ -1,7 +1,7 @@
 package de.peaqe.latetimeclan.listener.connection;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -43,7 +43,7 @@ public class PlayerJoinListener implements Listener {
 
         this.lateTimeClan.getHeadDatabase().insertHead(player.getName(), player.getUniqueId(), playerSkull);
 
-        var clanPlayer = ClanPlayer.fromPlayer(player);
+        var clanPlayer = ClanPlayerObject.fromPlayer(player);
 
         if (clanPlayer == null) return;
         clanPlayer.getClan().sendNotification(
@@ -57,7 +57,7 @@ public class PlayerJoinListener implements Listener {
     public void onQuit(PlayerQuitEvent event) {
 
         var player = event.getPlayer();
-        var clanPlayer = ClanPlayer.fromPlayer(player);
+        var clanPlayer = ClanPlayerObject.fromPlayer(player);
 
         if (clanPlayer == null) return;
         clanPlayer.getClan().sendNotification(

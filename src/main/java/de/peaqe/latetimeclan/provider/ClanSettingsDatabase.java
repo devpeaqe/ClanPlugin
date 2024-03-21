@@ -1,8 +1,8 @@
 package de.peaqe.latetimeclan.provider;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanModel;
-import de.peaqe.latetimeclan.models.Settings;
+import de.peaqe.latetimeclan.objects.ClanObject;
+import de.peaqe.latetimeclan.objects.SettingsObject;
 import de.peaqe.latetimeclan.provider.util.ClanSettingsProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,8 +39,8 @@ public class ClanSettingsDatabase extends DatabaseProvider {
         }
     }
 
-    void insertClan(@NotNull ClanModel clanModel) {
-        var settings = clanModel.getSettings();
+    void insertClan(@NotNull ClanObject clanObject) {
+        var settings = clanObject.getSettings();
         if (settings == null) return;
 
         var query = "INSERT INTO latetime.clan_settings VALUES (?, ?, ?) " +
@@ -50,12 +50,12 @@ public class ClanSettingsDatabase extends DatabaseProvider {
         this.connect();
         try (var statement = this.getConnection().prepareStatement(query)) {
 
-            statement.setString(1, clanModel.getTag());
-            statement.setBoolean(2, clanModel.getSettings().isClanChatToggled());
-            statement.setBoolean(3, clanModel.getSettings().isClanBankToggled());
+            statement.setString(1, clanObject.getTag());
+            statement.setBoolean(2, clanObject.getSettings().isClanChatToggled());
+            statement.setBoolean(3, clanObject.getSettings().isClanBankToggled());
 
-            statement.setBoolean(4, clanModel.getSettings().isClanChatToggled());
-            statement.setBoolean(5, clanModel.getSettings().isClanBankToggled());
+            statement.setBoolean(4, clanObject.getSettings().isClanChatToggled());
+            statement.setBoolean(5, clanObject.getSettings().isClanBankToggled());
 
             statement.executeUpdate();
 
@@ -66,7 +66,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
         }
     }
 
-    Settings getClanSettings(String clanTag) {
+    SettingsObject getClanSettings(String clanTag) {
         var query = "SELECT `" + ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue() + "` FROM latetime.clan_settings " +
                 "WHERE `" + ClanSettingsProperty.CLAN_TAG.getValue() + "` = ?";
 
@@ -77,7 +77,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
             var resultSet = statement.executeQuery();
 
             if (!resultSet.next()) return null;
-            return new Settings(
+            return new SettingsObject(
                     resultSet.getBoolean(ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue()),
                     resultSet.getBoolean(ClanSettingsProperty.CLAN_BANK_TOGGLED.getValue())
             );

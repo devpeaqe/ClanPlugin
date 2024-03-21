@@ -11,7 +11,7 @@ import de.peaqe.latetimeclan.listener.inventory.settings.ClanSettingsModerateCha
 import de.peaqe.latetimeclan.listener.inventory.settings.ClanSettingsPageListener;
 import de.peaqe.latetimeclan.listener.plugin.PluginDisableListener;
 import de.peaqe.latetimeclan.messages.Messages;
-import de.peaqe.latetimeclan.models.ClanGroupModel;
+import de.peaqe.latetimeclan.objects.ClanGroup;
 import de.peaqe.latetimeclan.provider.ClanDatabase;
 import de.peaqe.latetimeclan.provider.ClanSettingsDatabase;
 import de.peaqe.latetimeclan.provider.HeadDatabase;
@@ -36,7 +36,7 @@ public final class LateTimeClan extends JavaPlugin {
     private ClanDatabase clanDatabase;
     private HeadDatabase headDatabase;
     private InvitationManager invitationManager;
-    private Map<UUID, ClanGroupModel> cache;
+    private Map<UUID, ClanGroup> cache;
     private HeadManager headManager;
     private DatabaseConnection databaseConnection;
     private PlayerDatabase playerDatabase;
@@ -156,7 +156,7 @@ public final class LateTimeClan extends JavaPlugin {
         return invitationManager;
     }
 
-    public Map<UUID, ClanGroupModel> getCache() {
+    public Map<UUID, ClanGroup> getCache() {
         return cache;
     }
 

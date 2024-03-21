@@ -1,4 +1,4 @@
-package de.peaqe.latetimeclan.models;
+package de.peaqe.latetimeclan.objects;
 
 /**
  * *
@@ -9,12 +9,12 @@ package de.peaqe.latetimeclan.models;
  * *
  */
 
-public class Settings {
+public class SettingsObject {
 
     private boolean clanChatToggled;
     private boolean clanBankToggled;
 
-    public Settings(boolean clanChatToggled, boolean clanBankToggled) {
+    public SettingsObject(boolean clanChatToggled, boolean clanBankToggled) {
         this.clanChatToggled = clanChatToggled;
         this.clanBankToggled = clanBankToggled;
     }

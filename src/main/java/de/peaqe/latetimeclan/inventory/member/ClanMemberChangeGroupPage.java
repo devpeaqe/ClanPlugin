@@ -1,9 +1,9 @@
 package de.peaqe.latetimeclan.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanGroupModel;
-import de.peaqe.latetimeclan.models.ClanModel;
-import de.peaqe.latetimeclan.models.ClanPlayer;
+import de.peaqe.latetimeclan.objects.ClanGroup;
+import de.peaqe.latetimeclan.objects.ClanObject;
+import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -24,7 +24,7 @@ public class ClanMemberChangeGroupPage {
 
     private final Inventory inventory;
 
-    public ClanMemberChangeGroupPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
+    public ClanMemberChangeGroupPage(LateTimeClan lateTimeClan, ClanObject clanObject) {
         this.inventory = Bukkit.createInventory(
                 null,
                 9*5,
@@ -34,7 +34,7 @@ public class ClanMemberChangeGroupPage {
         );
     }
 
-    public void initializeInventory(ClanPlayer sender, ClanPlayer target) {
+    public void initializeInventory(ClanPlayerObject sender, ClanPlayerObject target) {
 
         var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27,
                 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
@@ -64,7 +64,7 @@ public class ClanMemberChangeGroupPage {
                         " ",
                         "§8• §7Ändere den Rang des Mitglieds zum §7Mitglied"
                 )
-                .glow(target.getClanGroup().equals(ClanGroupModel.MEMBER))
+                .glow(target.getClanGroup().equals(ClanGroup.MEMBER))
                 .build();
 
         final var moderator = new ItemBuilder(Material.PLAYER_HEAD)
@@ -73,7 +73,7 @@ public class ClanMemberChangeGroupPage {
                         " ",
                         "§8• §7Ändere den Rang des Mitglieds zum §3Moderator"
                 )
-                .glow(target.getClanGroup().equals(ClanGroupModel.MODERATOR))
+                .glow(target.getClanGroup().equals(ClanGroup.MODERATOR))
                 .build();
 
         final var leader = new ItemBuilder(Material.PLAYER_HEAD)
@@ -82,7 +82,7 @@ public class ClanMemberChangeGroupPage {
                         " ",
                         "§8• §7Ändere den Rang des Mitglieds zum §cManager"
                 )
-                .glow(target.getClanGroup().equals(ClanGroupModel.MANAGER))
+                .glow(target.getClanGroup().equals(ClanGroup.MANAGER))
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
@@ -92,7 +92,7 @@ public class ClanMemberChangeGroupPage {
 
     }
 
-    public Inventory getInventory(ClanPlayer sender, ClanPlayer target) {
+    public Inventory getInventory(ClanPlayerObject sender, ClanPlayerObject target) {
         this.initializeInventory(sender, target);
         return inventory;
     }

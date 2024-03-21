@@ -1,7 +1,7 @@
 package de.peaqe.latetimeclan.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.models.ClanModel;
+import de.peaqe.latetimeclan.objects.ClanObject;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -23,10 +23,10 @@ import java.util.UUID;
 public class ClanSettingsModerateChatPage {
 
     private final Inventory inventory;
-    private final ClanModel clanModel;
+    private final ClanObject clanObject;
 
-    public ClanSettingsModerateChatPage(LateTimeClan lateTimeClan, ClanModel clanModel) {
-        this.clanModel = clanModel;
+    public ClanSettingsModerateChatPage(LateTimeClan lateTimeClan, ClanObject clanObject) {
+        this.clanObject = clanObject;
         this.inventory = Bukkit.createInventory(
                 null,
                 9*4,
@@ -49,14 +49,14 @@ public class ClanSettingsModerateChatPage {
             );
         }
 
-        var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanModel.getClanFounderUUID()));
+        var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanObject.getClanFounderUUID()));
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
-                .setDisplayName("§8• §e" + clanModel.getName())
+                .setDisplayName("§8• §e" + clanObject.getName())
                 .addLore(
                         "",
                         "§8• §7Hier kannst du einstellen, ob der Clan-Chat §cde§aaktiviert §7sein soll.",
                         "§8• §7Aktuell aktiviert: " +
-                                (clanModel.getSettings().isClanChatToggled() ? "§aja" : "§cnein") + "§7.",
+                                (clanObject.getSettings().isClanChatToggled() ? "§aja" : "§cnein") + "§7.",
                         "",
                         "§8» §aAktiviert§8 » §7Jeder kann in den Clan-Chat schreiben.",
                         "§8» §cDeaktivert §8» §7Keiner kann in den Clan-Chat schreiben."
@@ -66,13 +66,13 @@ public class ClanSettingsModerateChatPage {
         var clanChatActivateItem = new ItemBuilder(Material.GREEN_DYE)
                 .setDisplayName("§8• §aAktivieren")
                 .addLore("", "§8• §aAktiviere §7den Clan-Chat sofern dieser deaktiviert ist.")
-                .glow(clanModel.getSettings().isClanChatToggled())
+                .glow(clanObject.getSettings().isClanChatToggled())
                 .build();
 
         var clanChatDeactivateItem = new ItemBuilder(Material.RED_DYE)
                 .setDisplayName("§8• §cDeaktivieren")
                 .addLore("", "§8• §cDeaktiviere §7den Clan-Chat sofern dieser aktiviert ist.")
-                .glow(!clanModel.getSettings().isClanChatToggled())
+                .glow(!clanObject.getSettings().isClanChatToggled())
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
