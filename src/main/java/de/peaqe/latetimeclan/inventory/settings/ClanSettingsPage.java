@@ -80,10 +80,13 @@ public class ClanSettingsPage {
                 .build();
 
         final var leader = new ItemBuilder(Material.PLAYER_HEAD)
-                .setDisplayName("§8• §eSoon...")
+                .setDisplayName("§8• §eClan Bank")
                 .addLore(
                         "",
-                        "§8• §7Looren kommen bald..."
+                        "§8• §7Hier kannst du einstellen, ob die Clan-Bank für §ajeden §7oder nur für §c" +
+                                "Clan-Mitglieder §7sichtbar ist.",
+                        "§8• §7Clan-Bank sichtbar für: §e" +
+                                (clanObject.getSettings().isClanBankToggled() ? "§ajeden" : "§cClan-Mitglieder") + "§7."
                 )
                 .build();
 
