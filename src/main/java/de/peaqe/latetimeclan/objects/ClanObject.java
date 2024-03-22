@@ -105,6 +105,10 @@ public class ClanObject {
     public void setMembers(Map<UUID, ClanGroup> members) {
         this.members = members;
     }
+    public void delete() {
+        LateTimeClan.getInstance().getClanSettingsDatabase().deleteClan(this);
+        LateTimeClan.getInstance().getClanDatabase().deleteClan(this);
+    }
 
     public void addMember(ClanPlayerObject clanPlayerObject) {
         clanPlayerObject.setClan(this);

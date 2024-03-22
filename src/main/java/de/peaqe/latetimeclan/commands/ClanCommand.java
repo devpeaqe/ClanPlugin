@@ -1,6 +1,7 @@
 package de.peaqe.latetimeclan.commands;
 
 import de.peaqe.latetimeclan.LateTimeClan;
+import de.peaqe.latetimeclan.inventory.deletion.ClanDeleteConfirmPage;
 import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.objects.*;
@@ -117,6 +118,37 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             ));
 
             return true;
+        }
+
+        // /clan delete
+        if (args.length == 1 && args[0].equalsIgnoreCase("delete")) {
+
+            var clan = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
+            if (clan == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit in keinem Clan!"
+                ));
+                return true;
+            }
+
+            var clanPlayer = ClanPlayerObject.fromPlayer(player);
+            if (clanPlayer == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "§cEs ist ein Fehler aufgetreten! Bitte wende dich an einen Administrator."
+                ));
+                return true;
+            }
+
+            if (!clanPlayer.hasPermission(ClanAction.DELETE)) {
+                player.sendMessage(this.messages.compileMessage(
+                        "§cDu hast keine Berechtigung diesen Clan zu löschen!"
+                ));
+                return true;
+            }
+
+            player.openInventory(new ClanDeleteConfirmPage(this.lateTimeClan, clan).getInventory());
+            return true;
+
         }
 
         // /clan join <clanTag>
