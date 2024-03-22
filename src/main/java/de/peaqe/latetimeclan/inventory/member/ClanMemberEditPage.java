@@ -51,7 +51,7 @@ public class ClanMemberEditPage {
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(target.getUniqueId());
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
                 .setDisplayName("§8• §e" + target.getName())
-                .addLore(
+                .setLore(
                         " ",
                         "§8• §7Gruppe: " + target.getClanGroup().getColor() + target.getClanGroup().getName()
                 )
@@ -60,7 +60,7 @@ public class ClanMemberEditPage {
 
         final var clanKickItem = new ItemBuilder(Material.TNT)
                 .setDisplayName("§8• §cRausschmeißen")
-                .addLore(
+                .setLore(
                         " ",
                         "§8• §7Schmeiße §e" + target.getName() + "§7 aus dem Clan.",
                         " §8» §cDieser Vorgang kann §nnicht§r §crückgängig gemacht werden!",
@@ -72,7 +72,7 @@ public class ClanMemberEditPage {
 
         final var clanChangeGroupItem = new ItemBuilder(Material.ENCHANTED_BOOK)
                 .setDisplayName("§8• §aRang Verwaltung")
-                .addLore(
+                .setLore(
                         " ",
                         "§8• §7Verwalte die Rollen von §e" + target.getName() + "§7.",
                         "§8• §7Berechtigt: " +

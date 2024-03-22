@@ -12,7 +12,8 @@ package de.peaqe.latetimeclan.provider.util;
 public enum PlayerProperty {
 
     NAME("name"),
-    UUID("uniqueId");
+    UUID("uniqueId"),
+    LAST_SEEN("lastSeen");
 
     private final String value;
 

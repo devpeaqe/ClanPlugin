@@ -54,7 +54,7 @@ public class ClanSettingsPage {
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanObject.getClanFounderUUID()));
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
                 .setDisplayName("§8• §e" + clanObject.getName())
-                .addLore(
+                .setLore(
                         "",
                         "§8• §7Hier kannst du Einstellungen für den Clan vornehmen."
                 )
@@ -63,7 +63,7 @@ public class ClanSettingsPage {
 
         final var clanStatusItem = new ItemBuilder(Head.compile(Head.BATTERY))
                 .setDisplayName("§8• §eClan Status")
-                .addLore(
+                .setLore(
                         "",
                         "§8• §7Hier kannst du den Clanstatus einstellen.",
                         "§8• §7Clanstatus: §e" + ClanUtil.getClanInvitationStatus(clanObject).getStatus()
@@ -72,7 +72,7 @@ public class ClanSettingsPage {
 
         final var clanChatItem = new ItemBuilder(Head.compile(Head.PAPER_PEN))
                 .setDisplayName("§8• §eClan Chat")
-                .addLore(
+                .setLore(
                         "",
                         "§8• §7Hier kannst du den Clan-Chat §aein§8-/§causschalten§7.",
                         "§8• §7Clan-Chat aktiv: §e" +
@@ -82,7 +82,7 @@ public class ClanSettingsPage {
 
         final var clanBankItem = new ItemBuilder(Head.compile(Head.PIGGY_BANK))
                 .setDisplayName("§8• §eClan Bank")
-                .addLore(
+                .setLore(
                         "",
                         "§8• §7Hier kannst du die Sichtbarkeit der Clan-Bank einstellen.",
                         "§8• §7Clan-Bank sichtbar für: §e" +

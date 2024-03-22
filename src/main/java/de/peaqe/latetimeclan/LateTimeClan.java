@@ -4,6 +4,8 @@ import de.peaqe.latetimeclan.commands.ClanChatCommand;
 import de.peaqe.latetimeclan.commands.ClanCommand;
 import de.peaqe.latetimeclan.config.DatabaseConfig;
 import de.peaqe.latetimeclan.listener.connection.PlayerJoinListener;
+import de.peaqe.latetimeclan.listener.connection.PlayerQuitListener;
+import de.peaqe.latetimeclan.listener.inventory.ClanPageListener;
 import de.peaqe.latetimeclan.listener.inventory.deletion.ClanDeleteConfirmPageListener;
 import de.peaqe.latetimeclan.listener.inventory.member.*;
 import de.peaqe.latetimeclan.listener.inventory.navigation.ClanInfoPageListener;
@@ -130,6 +132,8 @@ public final class LateTimeClan extends JavaPlugin {
         new ClanSettingsModerateChatPageListener(this);
         new ClanSettingsToggleBankPageListener(this);
         new ClanDeleteConfirmPageListener(this);
+        new PlayerQuitListener(this);
+        new ClanPageListener(this);
 
         var clanMemberChangeGroupPageListener = new ClanMemberChangeGroupPageListener(this);
         cache = clanMemberChangeGroupPageListener.getCache();

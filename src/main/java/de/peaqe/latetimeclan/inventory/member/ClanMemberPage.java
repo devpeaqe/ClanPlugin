@@ -75,14 +75,15 @@ public class ClanMemberPage {
 
             var playerHead = new ItemBuilder(clanPlayerHead)
                     .setDisplayName("§8• §a" + clanPlayer.getName())
-                    .addLore(
+                    .setLore(
                             " ",
                             "§8• §7Gruppe: " + tempClanGroupModel.getColor() + tempClanGroupModel.getName(),
                             "§8• §7Status: " + (Bukkit.getPlayer(uuid) != null ? "§aOnline" : "§cOffline")
                     )
-                    .addLore(
+                    .addLoreWithCondition(
                             Bukkit.getPlayer(uuid) == null,
-                            "§8• §7Zuletzt online: §cXX:XX"
+                            "§8• §7Zuletzt gesehen: " +
+                                    ClanUtil.formatDate(this.lateTimeClan.getPlayerDatabase().getLastSeen(uuid), "§c")
                     )
                     .build();
 

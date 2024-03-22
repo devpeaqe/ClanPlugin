@@ -52,7 +52,7 @@ public class ClanMemberChangeGroupPage {
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(target.getUniqueId());
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
                 .setDisplayName("§8• §e" + target.getName())
-                .addLore(
+                .setLore(
                         " ",
                         "§8• §7Aktuelle Gruppe: " + target.getClanGroup().getColor() + target.getClanGroup().getName()
                 )
@@ -61,7 +61,7 @@ public class ClanMemberChangeGroupPage {
 
         final var member = new ItemBuilder(Material.PLAYER_HEAD)
                 .setDisplayName("§8• §7Mitglied")
-                .addLore(
+                .setLore(
                         " ",
                         "§8• §7Ändere den Rang des Mitglieds zum §7Mitglied"
                 )
@@ -70,7 +70,7 @@ public class ClanMemberChangeGroupPage {
 
         final var moderator = new ItemBuilder(Material.PLAYER_HEAD)
                 .setDisplayName("§8• §3Moderator")
-                .addLore(
+                .setLore(
                         " ",
                         "§8• §7Ändere den Rang des Mitglieds zum §3Moderator"
                 )
@@ -79,7 +79,7 @@ public class ClanMemberChangeGroupPage {
 
         final var leader = new ItemBuilder(Material.PLAYER_HEAD)
                 .setDisplayName("§8• §cLeitung")
-                .addLore(
+                .setLore(
                         " ",
                         "§8• §7Ändere den Rang des Mitglieds zum §cManager"
                 )

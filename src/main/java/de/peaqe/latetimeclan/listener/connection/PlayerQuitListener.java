@@ -3,12 +3,9 @@ package de.peaqe.latetimeclan.listener.connection;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  * *
@@ -19,36 +16,32 @@ import org.bukkit.inventory.meta.SkullMeta;
  * *
  */
 
-public class PlayerJoinListener implements Listener {
+public class PlayerQuitListener implements Listener {
 
     private final LateTimeClan lateTimeClan;
 
-    public PlayerJoinListener(LateTimeClan lateTimeClan) {
+    public PlayerQuitListener(LateTimeClan lateTimeClan) {
         this.lateTimeClan = lateTimeClan;
         Bukkit.getPluginManager().registerEvents(this, this.lateTimeClan);
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
+    public void onQuit(PlayerQuitEvent event) {
 
         var player = event.getPlayer();
-        this.lateTimeClan.getPlayerDatabase().registerPlayer(player);
 
-        var playerSkull = new ItemStack(Material.PLAYER_HEAD);
-        var playerSkullMeta = (SkullMeta) playerSkull.getItemMeta();
-
-        playerSkullMeta.setOwningPlayer(player);
-        playerSkull.setItemMeta(playerSkullMeta);
-
-        this.lateTimeClan.getHeadDatabase().insertHead(player.getName(), player.getUniqueId(), playerSkull);
+        // Update Datetime
+        if (!event.getReason().equals(PlayerQuitEvent.QuitReason.ERRONEOUS_STATE)) {
+            this.lateTimeClan.getPlayerDatabase().registerPlayer(player);
+        }
 
         var clanPlayer = ClanPlayerObject.fromPlayer(player);
 
         if (clanPlayer == null) return;
         clanPlayer.getClan().sendNotification(
-                "§8[§a+§8] %s",
+                "§8[§c-§8] %s",
                 player.getName()
         );
-
     }
+
 }

@@ -60,7 +60,7 @@ public class ClanInfoPage {
         var clanOwnerSkull = Base64Compiler.getPlayerHeadFromUUID(clanOwnerUUID);
         final var clanNameItem = new ItemBuilder(clanOwnerSkull)
                 .setDisplayName("§8• §e" + clanObject.getName())
-                .addLore(
+                .setLore(
                         " ",
                         "§8• §7Clan-Tag: §a" + clanObject.getTag(),
                         "§8• §7Status: §a" + ClanUtil.getClanInvitationStatus(clanObject).getStatus(),

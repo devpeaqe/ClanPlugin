@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -87,6 +89,14 @@ public class ClanUtil {
                 .setDisplayName("§8• §cZurück")
                 .glow()
                 .build();
+    }
+
+    public static String formatDate(Date date, String color) {
+        var format = new SimpleDateFormat("dd.MM.yyyy | HH:mm 'Uhr'");
+        return color + format.format(date)
+                .replace("|", "§7|" + color)
+                .replace(".", "§7." + color)
+                .replace(":", "§7:" + color);
     }
 
 }

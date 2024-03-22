@@ -52,7 +52,7 @@ public class ClanMemberChangeGroupConfirmPage {
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(target.getUniqueId());
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
                 .setDisplayName("§8• §e" + target.getName())
-                .addLore(
+                .setLore(
                         " ",
                         "§8• §7Gruppe: " + target.getClanGroup().getColor() + target.getClanGroup().getName()
                 )
@@ -61,7 +61,7 @@ public class ClanMemberChangeGroupConfirmPage {
 
         final var decline = new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
                 .setDisplayName("§8• §cAblehnen")
-                .addLore(
+                .setLore(
                         " ",
                         "§8• §7Kehre zurück zur Mitgliederliste zurück"
                 )
@@ -70,7 +70,7 @@ public class ClanMemberChangeGroupConfirmPage {
 
         final var confirm = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE)
                 .setDisplayName("§8• §aAkzeptieren")
-                .addLore(
+                .setLore(
                         " ",
                         "§8• §7Ändere die Clan-Gruppe von §e" + target.getName() + "§7 zum " +
                                 clanGroup.getColor() + clanGroup.getName() + "§7."

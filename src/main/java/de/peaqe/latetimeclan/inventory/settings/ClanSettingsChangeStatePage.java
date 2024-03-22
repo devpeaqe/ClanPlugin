@@ -56,7 +56,7 @@ public class ClanSettingsChangeStatePage {
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanObject.getClanFounderUUID()));
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
                 .setDisplayName("§8• §e" + clanObject.getName())
-                .addLore(
+                .setLore(
                         "",
                         "§8• §7Hier kannst du dein Clan Status einstellen.",
                         "§8• §7Aktueller Status: " + ClanUtil.getClanInvitationStatus(clanObject).getStatus(),

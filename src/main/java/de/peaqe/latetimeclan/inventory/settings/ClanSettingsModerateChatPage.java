@@ -53,7 +53,7 @@ public class ClanSettingsModerateChatPage {
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanObject.getClanFounderUUID()));
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
                 .setDisplayName("§8• §e" + clanObject.getName())
-                .addLore(
+                .setLore(
                         "",
                         "§8• §7Hier kannst du einstellen, ob der Clan-Chat §cde§aaktiviert §7sein soll.",
                         "§8• §7Aktuell aktiviert: " +
@@ -66,13 +66,13 @@ public class ClanSettingsModerateChatPage {
 
         var clanChatActivateItem = new ItemBuilder(Material.GREEN_DYE)
                 .setDisplayName("§8• §aAktivieren")
-                .addLore("", "§8• §aAktiviere §7den Clan-Chat sofern dieser deaktiviert ist.")
+                .setLore("", "§8• §aAktiviere §7den Clan-Chat sofern dieser deaktiviert ist.")
                 .glow(clanObject.getSettings().isClanChatToggled())
                 .build();
 
         var clanChatDeactivateItem = new ItemBuilder(Material.RED_DYE)
                 .setDisplayName("§8• §cDeaktivieren")
-                .addLore("", "§8• §cDeaktiviere §7den Clan-Chat sofern dieser aktiviert ist.")
+                .setLore("", "§8• §cDeaktiviere §7den Clan-Chat sofern dieser aktiviert ist.")
                 .glow(!clanObject.getSettings().isClanChatToggled())
                 .build();
 

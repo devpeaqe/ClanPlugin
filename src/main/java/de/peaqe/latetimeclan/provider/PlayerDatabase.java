@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +38,7 @@ public class PlayerDatabase extends DatabaseProvider {
             this.getConnection().createStatement().execute("CREATE TABLE IF NOT EXISTS latetime.player (" +
                     "  `" + PlayerProperty.NAME.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + PlayerProperty.UUID.getValue() + "` VARCHAR(255) NOT NULL," +
+                    "  `" + PlayerProperty.LAST_SEEN.getValue() + "` TIMESTAMP NOT NULL," +
                     "  PRIMARY KEY (`" + PlayerProperty.UUID.getValue() + "`)" +
                     ")");
         } catch (SQLException e) {
@@ -49,19 +51,23 @@ public class PlayerDatabase extends DatabaseProvider {
     public void registerPlayer(@NotNull Player player) {
 
         final var query = "INSERT INTO latetime.player (`" + PlayerProperty.NAME.getValue() + "`, `" +
-                PlayerProperty.UUID.getValue() + "`) VALUES (?, ?) " +
-                "ON DUPLICATE KEY UPDATE `" + PlayerProperty.NAME.getValue() + "` = ?";
+                PlayerProperty.UUID.getValue() + "`, `" + PlayerProperty.LAST_SEEN.getValue() +
+                "`) VALUES (?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE `" + PlayerProperty.NAME.getValue() + "` = ?, " +
+                "`" + PlayerProperty.LAST_SEEN.getValue() + "` = ?";
 
         this.connect();
         try (var statement = this.getConnection().prepareStatement(query)) {
 
             statement.setString(1, player.getName().toLowerCase());
             statement.setString(2, player.getUniqueId().toString());
-            statement.setString(3, player.getName().toLowerCase());
+            statement.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()));
+
+            statement.setString(4, player.getName().toLowerCase());
+            statement.setTimestamp(5, new java.sql.Timestamp(System.currentTimeMillis()));
 
             statement.executeUpdate();
 
-            // Update cache after successful registration
             playerCache.put(player.getName().toLowerCase(), Optional.of(player.getUniqueId()));
 
         } catch (SQLException e) {
@@ -127,6 +133,56 @@ public class PlayerDatabase extends DatabaseProvider {
         }
 
         return "Unknown";
+    }
+
+    // NOT CACHED
+    public Date getLastSeen(@NotNull String playerName) {
+
+        var query = "SELECT * FROM latetime.player WHERE `" + PlayerProperty.NAME.getValue() + "` = ?";
+
+        this.connect();
+        try (var statement = this.getConnection().prepareStatement(query)) {
+
+            statement.setString(1, playerName.toLowerCase());
+            var resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                var timeStamp = resultSet.getTimestamp(PlayerProperty.LAST_SEEN.getValue());
+                return new Date(timeStamp.getTime());
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.close();
+        }
+
+        return new Date();
+    }
+
+    // NOT CACHED
+    public Date getLastSeen(@NotNull UUID playerUniqueId) {
+
+        var query = "SELECT * FROM latetime.player WHERE `" + PlayerProperty.UUID.getValue() + "` = ?";
+
+        this.connect();
+        try (var statement = this.getConnection().prepareStatement(query)) {
+
+            statement.setString(1, playerUniqueId.toString());
+            var resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                var timeStamp = resultSet.getTimestamp(PlayerProperty.LAST_SEEN.getValue());
+                return new Date(timeStamp.getTime());
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.close();
+        }
+
+        return new Date();
     }
 
 }

@@ -53,7 +53,7 @@ public class ClanSettingsToggleBankPage {
         var clanTargetSkull = Base64Compiler.getPlayerHeadFromUUID(UUID.fromString(clanObject.getClanFounderUUID()));
         final var clanNameItem = new ItemBuilder(clanTargetSkull)
                 .setDisplayName("§8• §e" + clanObject.getName())
-                .addLore(
+                .setLore(
                         "",
                         "§8• §7Hier kannst du einstellen, ob die Clan-Bank für jenden sichtbar sein soll.",
                         "§8• §7Aktuell aktiviert: " +
@@ -66,7 +66,7 @@ public class ClanSettingsToggleBankPage {
 
         var clanBankActivateItem = new ItemBuilder(Material.GREEN_DYE)
                 .setDisplayName("§8• §aAktivieren")
-                .addLore("", "§8• §aAktiviere §7die Sichtbarkeit der Clan-Bank.")
+                .setLore("", "§8• §aAktiviere §7die Sichtbarkeit der Clan-Bank.")
                 .glow(clanObject.getSettings().isClanBankToggled())
                 .build();
 
