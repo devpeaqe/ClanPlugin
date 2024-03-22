@@ -22,7 +22,8 @@ import java.util.*;
 public class ClanDecoder {
 
     public static ClanObject getClanModel(String clanTag) {
-        return LateTimeClan.getInstance().getClanDatabase().getClan(clanTag);
+        var optionalClan = LateTimeClan.getInstance().getClanDatabase().getClan(clanTag);
+        return optionalClan.orElse(null);
     }
 
     public static ClanObject getClanModel(UUID clanFounderUUID) {

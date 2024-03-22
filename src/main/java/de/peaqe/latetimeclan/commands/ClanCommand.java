@@ -94,14 +94,6 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
-            clan.kick(clanPlayer);
-
-            player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
-            player.sendMessage(this.messages.compileMessage(
-                    "Du hast den Clan %s verlassen!",
-                    clan.getName()
-            ));
-
             clan.sendNotification(
                     "Das Mitglied %s hat den Clan §cverlassen§7.",
                     player.getName()
@@ -115,6 +107,14 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                             .setFooter("× LateTimeMC.DE » Clan-System", null)
                             .setColor(Color.RED)
             );
+
+            clan.kick(clanPlayer);
+
+            player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
+            player.sendMessage(this.messages.compileMessage(
+                    "Du hast den Clan %s verlassen!",
+                    clan.getName()
+            ));
 
             return true;
         }
@@ -131,7 +131,10 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             }
 
             var clanTag = args[1].toLowerCase();
-            var clan = this.lateTimeClan.getClanDatabase().getClan(clanTag);
+            var optionalClan = this.lateTimeClan.getClanDatabase().getClan(clanTag);
+            var clan = (ClanObject) null;
+
+            if (optionalClan.isPresent()) clan = optionalClan.get();
 
             if (clan == null) {
                 player.sendMessage(this.messages.compileMessage(

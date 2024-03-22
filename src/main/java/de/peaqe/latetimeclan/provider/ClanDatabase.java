@@ -1,18 +1,22 @@
 package de.peaqe.latetimeclan.provider;
 
 import de.peaqe.latetimeclan.LateTimeClan;
-import de.peaqe.latetimeclan.objects.ClanGroup;
 import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
 import de.peaqe.latetimeclan.objects.ClanObject;
+import de.peaqe.latetimeclan.objects.SettingsObject;
 import de.peaqe.latetimeclan.objects.util.ClanDecoder;
 import de.peaqe.latetimeclan.provider.util.ClanProperty;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * *
@@ -26,10 +30,13 @@ import java.util.UUID;
 public class ClanDatabase extends DatabaseProvider {
 
     private final LateTimeClan lateTimeClan;
+    private final ConcurrentMap<String, Optional<ClanObject>> clanCache;
+
 
     public ClanDatabase(LateTimeClan lateTimeClan) {
         super(lateTimeClan);
         this.lateTimeClan = lateTimeClan;
+        this.clanCache = new ConcurrentHashMap<>();
         this.createTableIfNotExists();
     }
 
@@ -67,8 +74,18 @@ public class ClanDatabase extends DatabaseProvider {
 
         if (clanObject == null || clanObject.getTag() == null) return;
 
+        // Cache
+        Optional<ClanObject> cachedClan = clanCache.computeIfAbsent(
+                clanObject.getTag(), this::getClanFromDatabase);
+
+        if (cachedClan.isPresent()) {
+            if (Objects.equals(cachedClan.get(), clanObject)) return;
+            this.updateClan(clanObject);
+            return;
+        }
+
         if (this.clanExists(clanObject.getTag())) {
-            if (Objects.equals(this.getClan(clanObject.getTag()), clanObject)) return;
+            if (Objects.equals(this.getClan(clanObject.getTag()), Optional.of(clanObject))) return;
             this.updateClan(clanObject);
             return;
         }
@@ -87,7 +104,6 @@ public class ClanDatabase extends DatabaseProvider {
             statement.setInt(7, clanObject.getClanBankAmount());
             this.lateTimeClan.getClanSettingsDatabase().insertClan(clanObject);
 
-            //this.simpleCache.cache(clanObject);
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -97,7 +113,11 @@ public class ClanDatabase extends DatabaseProvider {
         }
     }
 
-    public void updateClan(ClanObject clanObject) {
+    public Optional<ClanObject> getClan(String clanTag) {
+        return clanCache.computeIfAbsent(clanTag.toLowerCase(), this::getClanFromDatabase);
+    }
+
+    public void updateClan(@NotNull ClanObject clanObject) {
 
         final var query = "UPDATE latetime.clan SET " +
                 ClanProperty.NAME.getValue() + " = ?, " +
@@ -109,7 +129,11 @@ public class ClanDatabase extends DatabaseProvider {
                 ClanProperty.CLAN_BANK.getValue() + " = ? " +
                 "WHERE " + ClanProperty.TAG.getValue() + " = ?";
 
-        if (this.getClan(clanObject.getTag()) == null) {
+        // Cache
+        Optional<ClanObject> cachedClan = clanCache.computeIfAbsent(
+                clanObject.getTag(), tag -> Optional.of(clanObject));
+
+        if (cachedClan.isEmpty()) {
             this.createClan(clanObject);
             return;
         }
@@ -129,9 +153,6 @@ public class ClanDatabase extends DatabaseProvider {
             statement.setString(8, clanObject.getTag());
             this.lateTimeClan.getClanSettingsDatabase().insertClan(clanObject);
 
-            //this.simpleCache.remove(clanObject.getTag());
-            //this.simpleCache.cache(clanObject);
-
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -142,9 +163,8 @@ public class ClanDatabase extends DatabaseProvider {
     }
 
     public boolean clanExists(String clanTag) {
-        //if (this.simpleCache.containsKey(clanTag.toLowerCase())) {
-        //    return true;
-        //}
+
+        if (this.getClan(clanTag).isPresent()) return true;
 
         this.connect();
         try {
@@ -155,16 +175,21 @@ public class ClanDatabase extends DatabaseProvider {
             var resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                //var clanModel = new ClanObject(
-                //        resultSet.getString(ClanProperty.NAME.getValue()),
-                //        resultSet.getString(ClanProperty.TAG.getValue()),
-                //        resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
-                //        resultSet.getString(ClanProperty.CLAN_INVITATION_STATUS.getValue()),
-                //        resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
-                //        ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue()))
-                //);
 
-                //this.simpleCache.cache(clanModel);
+                var clanModel = new ClanObject(
+                        resultSet.getString(ClanProperty.NAME.getValue()),
+                        clanTag,
+                        resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
+                        ClanInvitationStatus.getFromStatus(resultSet.getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
+                        resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
+                        ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
+                        this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag)
+                                .orElse(new SettingsObject(true, false)),
+                        resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
+                );
+
+                clanCache.put(clanTag.toLowerCase(), Optional.of(clanModel));
+
                 return true;
             }
 
@@ -177,14 +202,11 @@ public class ClanDatabase extends DatabaseProvider {
         }
     }
 
-    @Nullable
-    public ClanObject getClan(String clanTag) {
-        //if (this.simpleCache.containsKey(clanTag) && this.simpleCache.containsKey(clanTag)) {
-        //    return this.simpleCache.get(clanTag);
-        //}
+    public Optional<ClanObject> getClanFromDatabase(String clanTag) {
 
         this.connect();
         try {
+
             final var query = "SELECT * FROM latetime.clan WHERE " + ClanProperty.TAG.getValue() + " = ?";
             var statement = this.getConnection().prepareStatement(query);
             statement.setString(1, clanTag.toLowerCase());
@@ -198,25 +220,23 @@ public class ClanDatabase extends DatabaseProvider {
                         resultSet.getString(ClanProperty.NAME.getValue()),
                         clanTag1,
                         resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
-                        ClanInvitationStatus.getFromStatus(resultSet
-                                .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
+                        ClanInvitationStatus.getFromStatus(resultSet.getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                         resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
                         ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
-                        this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag1),
+                        this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag1)
+                                .orElse(new SettingsObject(true, false)),
                         resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
                 );
 
-                //this.simpleCache.cache(clanModel);
-                return clanModel;
+                return Optional.of(clanModel);
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             this.close();
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Nullable
@@ -234,7 +254,7 @@ public class ClanDatabase extends DatabaseProvider {
 
             var clanTag = resultSet.getString(ClanProperty.TAG.getValue());
 
-            var clanModel = new ClanObject(
+            return new ClanObject(
                     resultSet.getString(ClanProperty.NAME.getValue()),
                     clanTag,
                     resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
@@ -242,48 +262,30 @@ public class ClanDatabase extends DatabaseProvider {
                             .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                     resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
                     ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
-                    this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag),
+                    this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag)
+                            .orElse(new SettingsObject(true, false)),
                     resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
             );
-
-            //this.simpleCache.cache(clanModel);
-
-            return clanModel;
         }
 
         return null;
     }
 
-    public Map<UUID, ClanGroup> getAllPlayersInClan(String clanTag) {
-
-        var players = new HashMap<UUID, ClanGroup>();
-        this.connect();
-
-        try {
-            var query = "SELECT * FROM latetime.clan WHERE " + ClanProperty.TAG.getValue() + " = ?";
-            var statement = this.getConnection().prepareStatement(query);
-            statement.setString(1, clanTag.toLowerCase());
-
-            var resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                return ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue()));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            this.close();
-        }
-
-        return players;
-    }
-
     public ClanObject getClanModelOfMember(UUID memberUUID) {
 
-        var clanModel = (ClanObject) null;
-        this.connect();
+        var clanModel = new AtomicReference<>((ClanObject) null);
+        var ignoreDatabase = new AtomicBoolean(false);
 
+        this.clanCache.forEach((clanTag, optionalClan) -> {
+            if (optionalClan.isPresent() && optionalClan.get().getMembers().containsKey(memberUUID)) {
+                clanModel.set(optionalClan.get());
+                ignoreDatabase.set(true);
+            }
+        });
+
+        if (ignoreDatabase.get() && clanModel.get() != null) return clanModel.get();
+
+        this.connect();
         try {
 
             var query = "SELECT * FROM latetime.clan WHERE " + ClanProperty.MEMBERS.getValue() + " LIKE ?";
@@ -297,7 +299,7 @@ public class ClanDatabase extends DatabaseProvider {
 
                 var clanTag = resultSet.getString(ClanProperty.TAG.getValue());
 
-                clanModel = new ClanObject(
+                clanModel.set(new ClanObject(
                         resultSet.getString(ClanProperty.NAME.getValue()),
                         clanTag,
                         resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
@@ -305,10 +307,10 @@ public class ClanDatabase extends DatabaseProvider {
                                 .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                         resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
                         ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
-                        this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag),
+                        this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag)
+                                .orElse(new SettingsObject(true, false)),
                         resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
-                );
-
+                ));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -316,7 +318,7 @@ public class ClanDatabase extends DatabaseProvider {
             this.close();
         }
 
-        return clanModel;
+        return clanModel.get();
     }
 
 }

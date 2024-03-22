@@ -69,7 +69,8 @@ public class ClanMemberPage {
 
             var clanPlayer = ClanPlayerObject.fromPlayer(uuid);
 
-            var clanPlayerHead = this.lateTimeClan.getHeadDatabase().getHead(HeadProperty.UUID, uuid.toString());
+            var clanPlayerHead = this.lateTimeClan.getHeadDatabase()
+                    .getHead(HeadProperty.UUID, uuid.toString()).orElse(null);
             if (clanPlayerHead == null) clanPlayerHead = this.lateTimeClan.getHeadManager().registerHead(uuid);
 
             var playerHead = new ItemBuilder(clanPlayerHead)

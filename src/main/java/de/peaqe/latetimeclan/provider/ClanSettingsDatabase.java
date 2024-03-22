@@ -7,6 +7,9 @@ import de.peaqe.latetimeclan.provider.util.ClanSettingsProperty;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * *
@@ -19,8 +22,11 @@ import java.sql.SQLException;
 
 public class ClanSettingsDatabase extends DatabaseProvider {
 
+    private final ConcurrentMap<String, Optional<SettingsObject>> settingsCache;
+
     public ClanSettingsDatabase(LateTimeClan lateTimeClan) {
         super(lateTimeClan);
+        this.settingsCache = new ConcurrentHashMap<>();
         this.createTableIfNotExists();
     }
 
@@ -60,6 +66,9 @@ public class ClanSettingsDatabase extends DatabaseProvider {
 
             statement.executeUpdate();
 
+            // Update cache after successful insertion
+            settingsCache.put(clanObject.getTag(), Optional.of(settings));
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -67,7 +76,12 @@ public class ClanSettingsDatabase extends DatabaseProvider {
         }
     }
 
-    SettingsObject getClanSettings(String clanTag) {
+    Optional<SettingsObject> getClanSettings(String clanTag) {
+
+        if (settingsCache.containsKey(clanTag)) {
+            return settingsCache.get(clanTag);
+        }
+
         var query = "SELECT * FROM latetime.clan_settings " +
                 "WHERE `" + ClanSettingsProperty.CLAN_TAG.getValue() + "` = ?";
 
@@ -77,11 +91,16 @@ public class ClanSettingsDatabase extends DatabaseProvider {
             statement.setString(1, clanTag);
             var resultSet = statement.executeQuery();
 
-            if (!resultSet.next()) return null;
-            return new SettingsObject(
+            if (!resultSet.next()) return Optional.empty();
+
+            var settingsObject = new SettingsObject(
                     resultSet.getBoolean(ClanSettingsProperty.CLAN_CHAT_TOGGLED.getValue()),
                     resultSet.getBoolean(ClanSettingsProperty.CLAN_BANK_TOGGLED.getValue())
             );
+
+            settingsCache.put(clanTag, Optional.of(settingsObject));
+
+            return Optional.of(settingsObject);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -89,5 +108,4 @@ public class ClanSettingsDatabase extends DatabaseProvider {
             this.close();
         }
     }
-
 }

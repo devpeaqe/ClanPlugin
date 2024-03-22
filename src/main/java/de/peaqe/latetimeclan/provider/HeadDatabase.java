@@ -9,14 +9,16 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * *
@@ -29,8 +31,11 @@ import java.util.UUID;
 
 public class HeadDatabase extends DatabaseProvider {
 
+    private final ConcurrentMap<String, Optional<ItemStack>> headCache;
+
     public HeadDatabase(LateTimeClan lateTimeClan) {
         super(lateTimeClan);
+        this.headCache = new ConcurrentHashMap<>();
         this.createTableIfNotExists();
     }
 
@@ -53,7 +58,7 @@ public class HeadDatabase extends DatabaseProvider {
     public void insertHead(String name, UUID uuid, ItemStack itemStack) {
 
         var headBase64 = Base64Compiler.toBase64(itemStack);
-        //if (this.headCache.containsValue(headBase64) || this.headCache.containsKey(uuid)) return;
+        if (this.headCache.containsKey(uuid.toString())) return;
 
         var query = "INSERT INTO latetime.heads (`" +
                 HeadProperty.NAME.getValue() + "`, `" +
@@ -72,6 +77,9 @@ public class HeadDatabase extends DatabaseProvider {
 
             statement.executeUpdate();
 
+            // Update cache after successful insertion
+            headCache.put(uuid.toString(), Optional.of(itemStack));
+
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage("§cError executing SQL query: " + e.getMessage());
             throw new RuntimeException(e);
@@ -80,20 +88,19 @@ public class HeadDatabase extends DatabaseProvider {
         }
     }
 
-    @Nullable
-    public ItemStack getHead(@NotNull HeadProperty headProperty, @NotNull String string) {
+    public Optional<ItemStack> getHead(@NotNull HeadProperty headProperty, @NotNull String string) {
 
         var placeHolder = new ItemBuilder(Material.PLAYER_HEAD).setDisplayName("§cUnable to load.").build();
-        if (string.isEmpty()) return placeHolder;
+        if (string.isEmpty()) return Optional.of(placeHolder);
 
         if (headProperty.equals(HeadProperty.NAME)) string = string.toLowerCase();
-        //if (headProperty.equals(HeadProperty.HEAD) && this.headCache.containsValue(string)) {
-        //    return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
-        //}
+        if (headProperty.equals(HeadProperty.HEAD) && this.headCache.containsKey(string)) {
+            return this.headCache.get(string);
+        }
 
-        //if (headProperty.equals(HeadProperty.UUID) && this.headCache.containsKey(UUID.fromString(string))) {
-        //    return Base64Compiler.fromBase64(this.headCache.get(UUID.fromString(string)));
-        //}
+        if (headProperty.equals(HeadProperty.UUID) && this.headCache.containsKey(string)) {
+            return this.headCache.get(string);
+        }
 
         var query = "SELECT `" + HeadProperty.HEAD.getValue() + "` FROM latetime.heads WHERE `" +
                 headProperty.getValue() + "` = ?";
@@ -109,7 +116,9 @@ public class HeadDatabase extends DatabaseProvider {
 
             if (resultSet.next()) {
                 var headBase64 = this.convertBlobToString(resultSet.getBlob(HeadProperty.HEAD.getValue()));
-                return Base64Compiler.fromBase64(headBase64);
+                var headItemStack = Base64Compiler.fromBase64(headBase64);
+                this.headCache.put(string, Optional.of(headItemStack));
+                return Optional.of(headItemStack);
             }
 
         } catch (SQLException e) {
@@ -118,11 +127,7 @@ public class HeadDatabase extends DatabaseProvider {
             this.close();
         }
 
-        return placeHolder;
-    }
-
-    public boolean headExists(HeadProperty headProperty, String string) {
-        return this.getHead(headProperty, string) != null;
+        return Optional.of(placeHolder);
     }
 
     private String convertBlobToString(Blob blob) {

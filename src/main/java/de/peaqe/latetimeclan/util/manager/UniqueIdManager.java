@@ -16,7 +16,7 @@ import java.util.UUID;
 public class UniqueIdManager {
 
     public static UUID getUUID(String name) {
-        return LateTimeClan.getInstance().getPlayerDatabase().getUniqueId(name);
+        return LateTimeClan.getInstance().getPlayerDatabase().getUniqueId(name).orElse(null);
     }
 
     public static String getName(UUID playerUniqueId) {

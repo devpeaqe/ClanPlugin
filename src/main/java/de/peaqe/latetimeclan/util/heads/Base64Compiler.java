@@ -58,6 +58,7 @@ public class Base64Compiler {
 
 
     public static ItemStack getPlayerHeadFromUUID(UUID clanOwnerUUID) {
-        return LateTimeClan.getInstance().getHeadDatabase().getHead(HeadProperty.UUID, clanOwnerUUID.toString());
+        return LateTimeClan.getInstance().getHeadDatabase().getHead(HeadProperty.UUID, clanOwnerUUID.toString())
+                .orElse(new ItemBuilder(Material.PLAYER_HEAD).setDisplayName("§cUnable to load").build());
     }
 }

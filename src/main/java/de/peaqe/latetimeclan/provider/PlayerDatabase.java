@@ -7,7 +7,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * *
@@ -20,8 +23,11 @@ import java.util.UUID;
 
 public class PlayerDatabase extends DatabaseProvider {
 
+    private final ConcurrentMap<String, Optional<UUID>> playerCache;
+
     public PlayerDatabase(LateTimeClan lateTimeClan) {
         super(lateTimeClan);
+        this.playerCache = new ConcurrentHashMap<>();
         this.createTableIfNotExists();
     }
 
@@ -55,6 +61,9 @@ public class PlayerDatabase extends DatabaseProvider {
 
             statement.executeUpdate();
 
+            // Update cache after successful registration
+            playerCache.put(player.getName().toLowerCase(), Optional.of(player.getUniqueId()));
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -62,7 +71,12 @@ public class PlayerDatabase extends DatabaseProvider {
         }
     }
 
-    public UUID getUniqueId(@NotNull String playerName) {
+    public Optional<UUID> getUniqueId(@NotNull String playerName) {
+
+        var cachedUniqueId = playerCache.get(playerName.toLowerCase());
+        if (cachedUniqueId != null) {
+            return cachedUniqueId;
+        }
 
         var query = "SELECT * FROM latetime.player WHERE `" + PlayerProperty.NAME.getValue() + "` = ?";
 
@@ -73,7 +87,9 @@ public class PlayerDatabase extends DatabaseProvider {
             var resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                return UUID.fromString(resultSet.getString(PlayerProperty.UUID.getValue()));
+                var uuid = UUID.fromString(resultSet.getString(PlayerProperty.UUID.getValue()));
+                playerCache.put(playerName.toLowerCase(), Optional.of(uuid));
+                return Optional.of(uuid);
             }
 
         } catch (SQLException e) {
@@ -82,10 +98,15 @@ public class PlayerDatabase extends DatabaseProvider {
             this.close();
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public String getName(UUID playerUniqueId) {
+
+        var playerName = Bukkit.getOfflinePlayer(playerUniqueId).getName();
+        if (playerName != null) {
+            return playerName;
+        }
 
         var query = "SELECT * FROM latetime.player WHERE `" + PlayerProperty.UUID.getValue() + "` = ?";
         this.connect();
@@ -96,12 +117,6 @@ public class PlayerDatabase extends DatabaseProvider {
             var resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-
-                var name = resultSet.getString(PlayerProperty.NAME.getValue());
-                var player = Bukkit.getOfflinePlayerIfCached(name);
-
-                if (player != null) return player.getName();
-
                 return resultSet.getString(PlayerProperty.NAME.getValue());
             }
 

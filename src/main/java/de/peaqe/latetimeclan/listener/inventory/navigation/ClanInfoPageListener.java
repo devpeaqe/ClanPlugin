@@ -59,17 +59,10 @@ public class ClanInfoPageListener implements Listener {
 
                 var clan = clanPlayer.getClan();
 
-                player.closeInventory();
-
                 if (clanPlayer.hasPermission(ClanAction.OPEN_SETTINGS)) {
+                    player.closeInventory();
                     player.openInventory(new ClanSettingsPage(this.lateTimeClan, clan).getInventory());
-                    return;
                 }
-
-                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                        "Du hast nicht die benötigte Berechtigung um die %s zu öffnen!",
-                        "Einstellungen"
-                ));
 
             }
 
