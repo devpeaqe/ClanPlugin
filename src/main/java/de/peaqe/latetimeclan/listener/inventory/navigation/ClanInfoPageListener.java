@@ -45,11 +45,11 @@ public class ClanInfoPageListener implements Listener {
         var slot = event.getSlot();
 
         switch (slot) {
-            case 20 -> {
+            case 29 -> {
                 // 20 » Statics
             }
 
-            case 22 -> {
+            case 31 -> {
 
                 var clanPlayer = ClanPlayerObject.fromPlayer(player);
                 if (clanPlayer == null) {
@@ -73,7 +73,7 @@ public class ClanInfoPageListener implements Listener {
 
             }
 
-            case 24 -> {
+            case 33 -> {
                 // 23 » Clan Member
                 var clanPlayer = ClanPlayerObject.fromPlayer(player);
                 if (clanPlayer == null) {

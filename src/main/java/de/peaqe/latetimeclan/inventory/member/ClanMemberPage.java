@@ -5,6 +5,7 @@ import de.peaqe.latetimeclan.objects.ClanGroup;
 import de.peaqe.latetimeclan.objects.ClanObject;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.provider.util.HeadProperty;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.ArrayUtils;
@@ -62,7 +63,6 @@ public class ClanMemberPage {
 
         sortedMembers.putAll(clanObject.getMembers());
 
-
         sortedMembers.forEach((uuid, clanGroupModel) -> {
 
             var tempClanGroupModel = (ClanGroup) clanGroupModel;
@@ -76,15 +76,20 @@ public class ClanMemberPage {
                     .setDisplayName("§8• §a" + clanPlayer.getName())
                     .addLore(
                             " ",
-                            "§7Gruppe: " + tempClanGroupModel.getColor() + tempClanGroupModel.getName()
+                            "§8• §7Gruppe: " + tempClanGroupModel.getColor() + tempClanGroupModel.getName(),
+                            "§8• §7Status: " + (Bukkit.getPlayer(uuid) != null ? "§aOnline" : "§cOffline")
+                    )
+                    .addLore(
+                            Bukkit.getPlayer(uuid) == null,
+                            "§8• §7Zuletzt online: §cXX:XX"
                     )
                     .build();
 
             var nextAvailableSlot = this.getNextAvailableSlot();
             if (nextAvailableSlot != -1) this.inventory.setItem(nextAvailableSlot, playerHead);
-
         });
 
+        this.inventory.setItem(borderItemSlots[borderItemSlots.length - 1], ClanUtil.getGoBackItem());
     }
 
 

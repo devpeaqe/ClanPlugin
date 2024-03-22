@@ -4,6 +4,7 @@ import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.objects.ClanGroup;
 import de.peaqe.latetimeclan.objects.ClanObject;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -89,6 +90,7 @@ public class ClanMemberChangeGroupPage {
         this.inventory.setItem(29, member);
         this.inventory.setItem(31, moderator);
         this.inventory.setItem(33, leader);
+        this.inventory.setItem(borderItemSlots[borderItemSlots.length - 1], ClanUtil.getGoBackItem());
 
     }
 

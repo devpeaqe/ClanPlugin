@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.objects.ClanObject;
+import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import net.kyori.adventure.text.Component;
@@ -66,18 +67,19 @@ public class ClanSettingsToggleBankPage {
         var clanBankActivateItem = new ItemBuilder(Material.GREEN_DYE)
                 .setDisplayName("§8• §aAktivieren")
                 .addLore("", "§8• §aAktiviere §7die Sichtbarkeit der Clan-Bank.")
-                .glow(clanObject.getSettings().isClanChatToggled())
+                .glow(clanObject.getSettings().isClanBankToggled())
                 .build();
 
         var clanBankDeactivateItem = new ItemBuilder(Material.RED_DYE)
                 .setDisplayName("§8• §cDeaktivieren")
                 .addLore("", "§8• §cDeaktiviere §7die Sichtbarkeit der Clan-Bank.")
-                .glow(!clanObject.getSettings().isClanChatToggled())
+                .glow(!clanObject.getSettings().isClanBankToggled())
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
         this.inventory.setItem(20, clanBankActivateItem);
         this.inventory.setItem(24, clanBankDeactivateItem);
+        this.inventory.setItem(borderItemSlots[borderItemSlots.length - 1], ClanUtil.getGoBackItem());
 
     }
 

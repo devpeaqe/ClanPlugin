@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan.listener.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberChangeGroupConfirmPage;
+import de.peaqe.latetimeclan.inventory.member.ClanMemberEditPage;
 import de.peaqe.latetimeclan.objects.ClanGroup;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.objects.util.ClanAction;
@@ -103,6 +104,13 @@ public class ClanMemberChangeGroupPageListener implements Listener {
                 player.openInventory(new ClanMemberChangeGroupConfirmPage(this.lateTimeClan, clanPlayer.getClan())
                         .getInventory(clanPlayer, target, ClanGroup.MANAGER));
 
+            }
+
+            case 44 -> {
+                // GO BACK
+                player.closeInventory();
+                player.openInventory(new ClanMemberEditPage(this.lateTimeClan, clanPlayer.getClan())
+                        .getInventory(clanPlayer, target));
             }
 
         }

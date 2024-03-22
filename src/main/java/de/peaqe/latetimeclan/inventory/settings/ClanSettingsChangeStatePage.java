@@ -88,6 +88,7 @@ public class ClanSettingsChangeStatePage {
         }
 
         this.inventory.setItem(13, clanNameItem);
+        this.inventory.setItem(borderItemSlots[borderItemSlots.length - 1], ClanUtil.getGoBackItem());
 
     }
 

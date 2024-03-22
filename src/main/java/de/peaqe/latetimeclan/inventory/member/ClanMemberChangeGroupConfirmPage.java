@@ -81,6 +81,7 @@ public class ClanMemberChangeGroupConfirmPage {
         this.inventory.setItem(13, clanNameItem);
         this.inventory.setItem(20, decline);
         this.inventory.setItem(24, confirm);
+        this.inventory.setItem(borderItemSlots[borderItemSlots.length - 1], ClanUtil.getGoBackItem());
 
     }
 

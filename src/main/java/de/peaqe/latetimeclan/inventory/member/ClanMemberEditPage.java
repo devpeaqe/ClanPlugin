@@ -64,7 +64,6 @@ public class ClanMemberEditPage {
                         " ",
                         "§8• §7Schmeiße §e" + target.getName() + "§7 aus dem Clan.",
                         " §8» §cDieser Vorgang kann §nnicht§r §crückgängig gemacht werden!",
-                        " ",
                         "§8• §7Berechtigt: " +
                                 (ClanUtil.isPermitted(sender, target, ClanAction.KICK) ? "§aJa" : "§cNein")
                 )
@@ -72,7 +71,7 @@ public class ClanMemberEditPage {
                 .build();
 
         final var clanChangeGroupItem = new ItemBuilder(Material.ENCHANTED_BOOK)
-                .setDisplayName("§8• §aRang verwaltung")
+                .setDisplayName("§8• §aRang Verwaltung")
                 .addLore(
                         " ",
                         "§8• §7Verwalte die Rollen von §e" + target.getName() + "§7.",
@@ -85,6 +84,7 @@ public class ClanMemberEditPage {
         this.inventory.setItem(13, clanNameItem);
         this.inventory.setItem(20, clanKickItem);
         this.inventory.setItem(24, clanChangeGroupItem);
+        this.inventory.setItem(borderItemSlots[borderItemSlots.length - 1], ClanUtil.getGoBackItem());
 
     }
 

@@ -5,6 +5,7 @@ import de.peaqe.latetimeclan.objects.ClanObject;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
+import de.peaqe.latetimeclan.util.heads.Head;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -60,7 +61,7 @@ public class ClanSettingsPage {
                 .build();
 
 
-        final var clanStatusItem = new ItemBuilder(Material.SPRUCE_DOOR)
+        final var clanStatusItem = new ItemBuilder(Head.compile(Head.BATTERY))
                 .setDisplayName("§8• §eClan Status")
                 .addLore(
                         "",
@@ -69,7 +70,7 @@ public class ClanSettingsPage {
                 )
                 .build();
 
-        final var clanChatItem = new ItemBuilder(Material.PAPER)
+        final var clanChatItem = new ItemBuilder(Head.compile(Head.PAPER_PEN))
                 .setDisplayName("§8• §eClan Chat")
                 .addLore(
                         "",
@@ -79,7 +80,7 @@ public class ClanSettingsPage {
                 )
                 .build();
 
-        final var clanBankItem = new ItemBuilder(Material.BOOK)
+        final var clanBankItem = new ItemBuilder(Head.compile(Head.PIGGY_BANK))
                 .setDisplayName("§8• §eClan Bank")
                 .addLore(
                         "",
@@ -93,6 +94,7 @@ public class ClanSettingsPage {
         this.inventory.setItem(29, clanStatusItem);
         this.inventory.setItem(31, clanChatItem);
         this.inventory.setItem(33, clanBankItem);
+        this.inventory.setItem(borderItemSlots[borderItemSlots.length - 1], ClanUtil.getGoBackItem());
 
     }
 

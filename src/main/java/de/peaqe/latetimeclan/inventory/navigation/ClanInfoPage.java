@@ -7,6 +7,7 @@ import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
+import de.peaqe.latetimeclan.util.heads.Head;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,7 +34,7 @@ public class ClanInfoPage {
         this.clanObject = clanObject;
         this.inventory = Bukkit.createInventory(
                 null,
-                9*4,
+                9*5,
                 Component.text(lateTimeClan.getMessages().compileMessage(
                         "§8Informationen"
                 ))
@@ -42,7 +43,7 @@ public class ClanInfoPage {
 
     public void initializeInventory(Player player) {
 
-        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
+        var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
 
         for (var borderItemSlot : borderItemSlots) {
             this.inventory.setItem(
@@ -62,16 +63,14 @@ public class ClanInfoPage {
                 .addLore(
                         " ",
                         "§8• §7Clan-Tag: §a" + clanObject.getTag(),
-                        "§8• §7Mitglieder: §a" + clanObject.getMembers().size() + "§8/§c" + clanObject.getMaxSize(),
                         "§8• §7Status: §a" + ClanUtil.getClanInvitationStatus(clanObject).getStatus(),
-                        "§8• §7Bank: " + ClanUtil.compressInt(clanObject.getClanBankAmount()) + "§7€",
                         "§8• §7Besitzer: §4" + clanOwnerName
                 )
                 .glow()
                 .build();
 
 
-        final var clanMemberItem = new ItemBuilder(Material.OAK_SIGN)
+        final var clanMemberItem = new ItemBuilder(Head.compile(Head.NERD))
                 .setDisplayName("§8• §eMitglieder")
                 .addLore(
                         " ",
@@ -80,7 +79,7 @@ public class ClanInfoPage {
                 )
                 .build();
 
-        final var clanSettingsItem = new ItemBuilder(Material.PAPER)
+        final var clanSettingsItem = new ItemBuilder(Head.compile(Head.SETTINGS))
                 .setDisplayName("§8• §eEinstellungen")
                 .addLore(
                         " ",
@@ -89,23 +88,26 @@ public class ClanInfoPage {
                 .build();
 
         // TODO: Add founderDate to Database
-        final var clanStaticsItem = new ItemBuilder(Material.EMERALD)
+        final var clanStaticsItem = new ItemBuilder(Head.compile(Head.KING))
                 .setDisplayName("§8• §aStatistiken")
                 .addLore(
                         "",
-                        "§8• §7Zeige dir die derzeitigen Statistiken deines Clans an."
+                        //"§8• §7Zeige dir die derzeitigen Statistiken deines Clans an.", "",
+                        "§8• §7Bank: " + ClanUtil.compressInt(clanObject.getClanBankAmount()) + "§7€",
+                        "§8• §7Erstellt am: §cXX:XX",
+                        "§8• §7Example static: §eSIUU"
                 )
                 .build();
 
         this.inventory.setItem(13, clanNameItem);
-        this.inventory.setItem(20, clanStaticsItem);
-        this.inventory.setItem(24, clanMemberItem);
+        this.inventory.setItem(29, clanStaticsItem);
+        this.inventory.setItem(33, clanMemberItem);
 
         var clanPlayer = ClanPlayerObject.fromPlayer(player);
         if (clanPlayer == null) return;
 
         if (clanPlayer.hasPermission(ClanAction.DELETE))
-            this.inventory.setItem(22, clanSettingsItem);
+            this.inventory.setItem(31, clanSettingsItem);
     }
 
     public Inventory getInventory(Player player) {

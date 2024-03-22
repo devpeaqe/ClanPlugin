@@ -3,6 +3,7 @@ package de.peaqe.latetimeclan.listener.inventory.member;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberChangeGroupPage;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberKickConfirmPage;
+import de.peaqe.latetimeclan.inventory.member.ClanMemberPage;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
@@ -113,6 +114,16 @@ public class ClanMemberEditPageListener implements Listener {
                         "Du hast nicht die benötigte Berechtigung um die Gruppe von %s zu bearbeiten!",
                         target.getName()
                 ));
+            }
+
+            case 35 -> {
+                // GO BACK
+                player.closeInventory();
+
+                var clanPlayer = ClanPlayerObject.fromPlayer(player);
+                if (clanPlayer == null) return;
+
+                player.openInventory(new ClanMemberPage(this.lateTimeClan, clanPlayer.getClan()).getInventory());
             }
 
         }

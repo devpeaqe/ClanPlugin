@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan.listener.inventory.settings;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
+import de.peaqe.latetimeclan.inventory.settings.ClanSettingsPage;
 import de.peaqe.latetimeclan.objects.ClanGroup;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.objects.util.ClanAction;
@@ -112,6 +113,12 @@ public class ClanSettingsToggleBankPageListener implements Listener {
                 player.openInventory(new ClanInfoPage(this.lateTimeClan, clanPlayer.getClan()).getInventory(player));
 
             }
+
+            case 35 -> {
+                player.closeInventory();
+                player.openInventory(new ClanSettingsPage(this.lateTimeClan, clanPlayer.getClan()).getInventory());
+            }
+
         }
     }
 

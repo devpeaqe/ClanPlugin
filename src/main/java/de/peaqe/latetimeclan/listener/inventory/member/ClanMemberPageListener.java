@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan.listener.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.member.ClanMemberEditPage;
+import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import net.kyori.adventure.text.Component;
@@ -45,11 +46,21 @@ public class ClanMemberPageListener implements Listener {
         var currentItem = event.getCurrentItem();
         if (currentItem == null || !currentItem.hasItemMeta() || !currentItem.getItemMeta().hasDisplayName()) return;
 
-        var currentItemPlayerName = currentItem.getItemMeta().getDisplayName().split("§8• §a")[1];
-        var currentClanPlayer = ClanPlayerObject.fromPlayer(UniqueIdManager.getUUID(currentItemPlayerName));
-
         var clanPlayer = ClanPlayerObject.fromPlayer(player);
         if (clanPlayer == null) return;
+
+        if (event.getSlot() == 44) {
+            player.closeInventory();
+            player.openInventory(new ClanInfoPage(this.lateTimeClan, clanPlayer.getClan())
+                    .getInventory(player));
+            return;
+        }
+
+        if (!currentItem.getItemMeta().getDisplayName().contains("§8• §a")) return;
+        var currentItemPlayerName = currentItem.getItemMeta().getDisplayName().split("§8• §a")[1];
+        if (currentItemPlayerName == null) return;
+
+        var currentClanPlayer = ClanPlayerObject.fromPlayer(UniqueIdManager.getUUID(currentItemPlayerName));
 
         player.closeInventory();
         player.openInventory(new ClanMemberEditPage(this.lateTimeClan, clanPlayer.getClan())
