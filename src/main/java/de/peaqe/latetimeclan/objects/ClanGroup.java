@@ -14,7 +14,7 @@ import java.util.List;
 public enum ClanGroup {
 
     MEMBER(0, "Mitglied", "§7"),
-    MODERATOR(1, "Moderator", "§3"),
+    MODERATOR(1, "Moderator", "§b"),
     MANAGER(2, "Manager", "§c"),
     OWNER(3, "Inhaber", "§4");
 

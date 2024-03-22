@@ -367,7 +367,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             }
             
             player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                    "Der Clan besitzt derzeit %s€ auf der Bank.",
+                    "Der Clan besitzt derzeit $%s auf der Bank.",
                     ClanUtil.compressInt(clanModel.getClanBankAmount())
             ));
             
@@ -389,8 +389,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
             if (amount <= 0) {
                 player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                        "Die von dir angegebene %s muss im positivem Bereich liegen und größer als 0 sein!",
-                        "Zahl"
+                        "Die von dir angegebene %s muss im positivem Bereich liegen und größer als %s sein!",
+                        "Zahl", "§c0"
                 ));
                 return true;
             }
@@ -431,16 +431,16 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
                 if (clanModel.getClanBankAmount() + amount > 5000000) {
                     player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                            "Die %s kann nicht mehr als %s€ betragen.",
+                            "Die %s kann nicht mehr als $%s betragen.",
                             "Clan-Bank",
                             ClanUtil.compressInt(5000000)
                     ));
                     player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                            "Aktueller Kontostand: %s€.",
+                            "Aktueller Kontostand: $%s.",
                             ClanUtil.compressInt(clanModel.getClanBankAmount())
                     ));
                     player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
-                            "Maximaler Betrag zum einzahlen: %s€.",
+                            "Maximaler Betrag zum einzahlen: $%s.",
                             ClanUtil.compressInt((clanModel.getClanBankAmount() - 5000000) * -1)
                     ));
                     return true;
@@ -450,9 +450,9 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 this.lateTimeClan.getClanDatabase().updateClan(clanModel);
 
                 clanModel.sendNotification(
-                        "Der Spieler %s hat %s in die %s eingezahlt.",
+                        "Der Spieler %s hat $%s in die %s eingezahlt.",
                         player.getName(),
-                        ClanUtil.compressInt(amount) + "§7€",
+                        ClanUtil.compressInt(amount),
                         "Clan-Bank"
                 );
 
@@ -462,7 +462,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                         new DiscordWebhook.EmbedObject().setTitle("Geld eingezahlt")
                                 .addField("Mitglied", player.getName(), true)
                                 .addField("Anzahl",
-                                        ClanUtil.compressIntWithoutColor(amount) + "€", true)
+                                        ClanUtil.compressIntWithoutColor(amount) + "", true)
                                 .addField("Clan", clanPlayer.getClan().getName(), true)
                                 .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
                                 .setFooter("× LateTimeMC.DE » Clan-System", null)
@@ -493,9 +493,9 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 this.lateTimeClan.getClanDatabase().updateClan(clanModel);
 
                 clanModel.sendNotification(
-                        "Der Spieler %s hat %s aus der %s abgehoben.",
+                        "Der Spieler %s hat $%s aus der %s abgehoben.",
                         player.getName(),
-                        ClanUtil.compressInt(amount) + "§7€",
+                        ClanUtil.compressInt(amount),
                         "Clan-Bank"
                 );
 
@@ -505,7 +505,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                         new DiscordWebhook.EmbedObject().setTitle("Geld abgehoben")
                                 .addField("Mitglied", player.getName(), true)
                                 .addField("Anzahl",
-                                        ClanUtil.compressIntWithoutColor(amount) + "€", true)
+                                        "$" + ClanUtil.compressIntWithoutColor(amount), true)
                                 .addField("Clan", clanPlayer.getClan().getName(), true)
                                 .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
                                 .setFooter("× LateTimeMC.DE » Clan-System", null)

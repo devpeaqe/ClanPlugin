@@ -4,6 +4,8 @@ import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
 import de.peaqe.latetimeclan.objects.ClanObject;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.objects.util.ClanAction;
+import de.peaqe.latetimeclan.util.heads.Head;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -78,6 +80,13 @@ public class ClanUtil {
         } catch (NumberFormatException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static ItemStack getGoBackItem() {
+        return new ItemBuilder(Head.compile(Head.GO_BACK))
+                .setDisplayName("§8• §cZurück")
+                .glow()
+                .build();
     }
 
 }

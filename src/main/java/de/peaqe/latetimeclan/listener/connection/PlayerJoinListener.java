@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan.listener.connection;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
+import de.peaqe.latetimeclan.util.heads.Head;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
