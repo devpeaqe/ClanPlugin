@@ -104,6 +104,18 @@ public class ClanUtil {
                 .replace(":", "§7:" + color);
     }
 
+    public static String formatBerlinTimeDate(Date date, String color) {
+        var format = new SimpleDateFormat("dd.MM.yyyy | HH:mm 'Uhr'");
+        format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
+
+        long adjustedTime = date.getTime() - (60 * 60 * 1000);
+
+        return color + format.format(new Date(adjustedTime))
+                .replace("|", "§7|" + color)
+                .replace(".", "§7." + color)
+                .replace(":", "§7:" + color);
+    }
+
     @Nullable
     public static String isBlockedChar(String name) {
 

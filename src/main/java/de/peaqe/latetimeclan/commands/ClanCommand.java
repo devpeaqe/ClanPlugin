@@ -735,7 +735,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     ),
                     new SettingsObject(true, false),
                     0,
-                    new java.sql.Timestamp(System.currentTimeMillis())
+                    new Date(System.currentTimeMillis() +
+                            (TimeZone.getTimeZone("Europe/Berlin").getRawOffset() - (60 * 60 * 1000)))
             );
 
             this.lateTimeClan.getClanDatabase().createClan(clanModel);

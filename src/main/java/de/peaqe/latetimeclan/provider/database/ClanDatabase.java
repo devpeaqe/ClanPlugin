@@ -74,7 +74,7 @@ public class ClanDatabase extends DatabaseProvider {
                 ClanProperty.MEMBERS.getValue() + ", " +
                 ClanProperty.CLAN_BANK.getValue() + ", " +
                 ClanProperty.CREATE_TIMESTAMP.getValue() + ") " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if (clanObject == null || clanObject.getTag() == null) return;
 
@@ -307,7 +307,6 @@ public class ClanDatabase extends DatabaseProvider {
     }
 
     public ClanObject getClanModelOfMember(UUID memberUUID) {
-
         var clanModel = new AtomicReference<>((ClanObject) null);
         var ignoreDatabase = new AtomicBoolean(false);
 
@@ -318,22 +317,19 @@ public class ClanDatabase extends DatabaseProvider {
             }
         });
 
-        if (ignoreDatabase.get() && clanModel.get() != null) return clanModel.get();
+        if (ignoreDatabase.get() && clanModel.get() != null) {
+            return clanModel.get();
+        }
 
         this.connect();
         try {
-
             var query = "SELECT * FROM latetime.clan WHERE " + ClanProperty.MEMBERS.getValue() + " LIKE ?";
             var statement = this.getConnection().prepareStatement(query);
-
             statement.setString(1, "%" + memberUUID.toString() + "%");
 
             var resultSet = statement.executeQuery();
-
             if (resultSet.next()) {
-
                 var clanTag = resultSet.getString(ClanProperty.TAG.getValue());
-
                 clanModel.set(new ClanObject(
                         resultSet.getString(ClanProperty.NAME.getValue()),
                         clanTag,
@@ -348,6 +344,14 @@ public class ClanDatabase extends DatabaseProvider {
                         resultSet.getInt(ClanProperty.CLAN_BANK.getValue()),
                         resultSet.getTimestamp(ClanProperty.CREATE_TIMESTAMP.getValue())
                 ));
+                this.clanCache.put(clanTag.toUpperCase(), Optional.of(clanModel.get()));
+            } else {
+                this.clanCache.entrySet().removeIf(entry -> {
+                    if (entry.getValue().isPresent()) {
+                        entry.getValue().get();
+                    }
+                    return true;
+                });
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
