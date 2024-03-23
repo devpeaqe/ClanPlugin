@@ -669,7 +669,53 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
         if (args.length == 3 && args[0].equalsIgnoreCase("create")) {
 
             var clanName = args[1];
-            var clanTag = args[2].toLowerCase();
+            var clanTag = args[2].toUpperCase();
+
+            if (clanTag.length() > 5) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Der %s darf %s 5 Zeichen lang sein!",
+                        "Clan-Tag", "§cmaximal"
+                ));
+                return true;
+            }
+
+            if (ClanUtil.isBlockedChar(clanName) != null) {
+                player.sendMessage(this.messages.compileMessage(
+                    "Du verwendest ein %s Zeichen im %s! %s",
+                        "§cverbotenes", "§eClan-Name", "§8(§c" + ClanUtil.isBlockedChar(clanName) + "§8)"
+                ));
+
+                this.lateTimeClan.getWebhookSender().sendWebhook(
+                        new DiscordWebhook.EmbedObject().setTitle("BADWORD DETECTED")
+                                .addField("Aktion", "Clan erstellung (Clan-Name)", true)
+                                .addField("Nutzer", player.getName(), true)
+                                .addField("UniqueId", player.getUniqueId().toString(), true)
+                                .addField("Angegebenes Wort", clanName, true)
+                                .addField("Überprüftes Wort", ClanUtil.getCheckedWort(clanName), true)
+                                .setFooter("× LateTimeMC.DE » Clan-System", null)
+                                .setColor(Color.RED)
+                );
+                return true;
+            }
+
+            if (ClanUtil.isBlockedChar(clanTag) != null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du verwendest ein %s Zeichen im %s! %s",
+                        "§cverbotenes", "§eClan-Tag", "§8(§c" + ClanUtil.isBlockedChar(clanTag) + "§8)"
+                ));
+
+                this.lateTimeClan.getWebhookSender().sendWebhook(
+                        new DiscordWebhook.EmbedObject().setTitle("BADWORD DETECTED")
+                                .addField("Aktion", "Clan erstellung (Clan-Tag)", true)
+                                .addField("Nutzer", player.getName(), true)
+                                .addField("Angegebenes Wort", clanTag, true)
+                                .addField("Überprüftes Wort", ClanUtil.getCheckedWort(clanTag), true)
+                                .setFooter("× LateTimeMC.DE » Clan-System", null)
+                                .setColor(Color.RED)
+                );
+                return true;
+            }
+
 
             if (this.lateTimeClan.getClanDatabase().clanExists(clanTag)) {
                 player.sendMessage(this.messages.compileMessage(

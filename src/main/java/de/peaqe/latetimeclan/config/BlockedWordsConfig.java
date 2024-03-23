@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * *
@@ -16,17 +17,17 @@ import java.io.IOException;
  * *
  */
 
-public class DatabaseConfig {
+public class BlockedWordsConfig {
 
     private final LateTimeClan lateTimeClan;
 
     private final File file;
     private final FileConfiguration config;
 
-    public DatabaseConfig(LateTimeClan lateTimeClan) {
+    public BlockedWordsConfig(LateTimeClan lateTimeClan) {
 
         this.lateTimeClan = lateTimeClan;
-        this.file = new File(this.lateTimeClan.getDataFolder().getAbsolutePath(), "database.yml");
+        this.file = new File(this.lateTimeClan.getDataFolder().getAbsolutePath(), "blocked-words.yml");
 
         if (!this.file.exists()) {
             try {
@@ -35,15 +36,10 @@ public class DatabaseConfig {
                 var bool1 = this.file.createNewFile();
 
                 if (bool1) {
-
                     var config1 = YamlConfiguration.loadConfiguration(this.file);
-                    config1 = YamlConfiguration.loadConfiguration(this.file);
 
-                    config1.set("hostname", "localhost");
-                    config1.set("username", "username");
-                    config1.set("database", "latetime");
-                    config1.set("password", "1234");
-                    config1.set("port", 3306);
+                    config1 = YamlConfiguration.loadConfiguration(this.file);
+                    config1.set("words", List.of("nigger", "niger"));
                     config1.save(this.file);
                 }
 
@@ -55,12 +51,8 @@ public class DatabaseConfig {
         this.config = YamlConfiguration.loadConfiguration(this.file);
     }
 
-    public String get(String key) {
-        return this.config.getString(key);
-    }
-
-    public int getInt(String key) {
-        return this.config.getInt(key);
+    public List<String> getBlockedWords() {
+        return this.config.getStringList("words");
     }
 
 }

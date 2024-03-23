@@ -1,5 +1,6 @@
 package de.peaqe.latetimeclan.util;
 
+import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
 import de.peaqe.latetimeclan.objects.ClanObject;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
@@ -7,6 +8,7 @@ import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.heads.Head;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -15,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * *
@@ -99,6 +102,36 @@ public class ClanUtil {
                 .replace("|", "§7|" + color)
                 .replace(".", "§7." + color)
                 .replace(":", "§7:" + color);
+    }
+
+    @Nullable
+    public static String isBlockedChar(String name) {
+
+        var blockedChars = LateTimeClan.getInstance().getBlockedWordsConfig().getBlockedWords();
+        var atomicBlockedChar = new AtomicReference<String>();
+
+        blockedChars.forEach(object -> {
+            if (!object.toLowerCase().contains(name.toLowerCase())) return;
+            atomicBlockedChar.set(name);
+        });
+
+        if (atomicBlockedChar.get() == null || atomicBlockedChar.get().isEmpty()) return null;
+        return atomicBlockedChar.get();
+    }
+
+    @Nullable
+    public static String getCheckedWort(String name) {
+
+        var blockedChars = LateTimeClan.getInstance().getBlockedWordsConfig().getBlockedWords();
+        var atomicBlockedChar = new AtomicReference<String>();
+
+        blockedChars.forEach(object -> {
+            if (!object.toLowerCase().contains(name.toLowerCase())) return;
+            atomicBlockedChar.set(object);
+        });
+
+        if (atomicBlockedChar.get() == null || atomicBlockedChar.get().isEmpty()) return null;
+        return atomicBlockedChar.get();
     }
 
 }

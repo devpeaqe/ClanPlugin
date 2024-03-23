@@ -2,6 +2,7 @@ package de.peaqe.latetimeclan;
 
 import de.peaqe.latetimeclan.commands.ClanChatCommand;
 import de.peaqe.latetimeclan.commands.ClanCommand;
+import de.peaqe.latetimeclan.config.BlockedWordsConfig;
 import de.peaqe.latetimeclan.config.DatabaseConfig;
 import de.peaqe.latetimeclan.listener.connection.PlayerJoinListener;
 import de.peaqe.latetimeclan.listener.connection.PlayerQuitListener;
@@ -48,6 +49,7 @@ public final class LateTimeClan extends JavaPlugin {
     //private DatabaseCache databaseCache;
     private WebhookSender webhookSender;
     private ClanSettingsDatabase clanSettingsDatabase;
+    private BlockedWordsConfig blockedWordsConfig;
 
     @Override
     public void onEnable() {
@@ -107,7 +109,6 @@ public final class LateTimeClan extends JavaPlugin {
     }
 
     private void registerManager() {
-
         this.messages = new Messages();
 
         this.clanDatabase =new ClanDatabase(this);
@@ -117,13 +118,10 @@ public final class LateTimeClan extends JavaPlugin {
         this.headManager = new HeadManager(this);
         this.invitationManager = new InvitationManager();
         this.webhookSender = new WebhookSender();
-
-        //this.databaseCache = this.clanDatabase.getDatabaseCache();
-
+        this.blockedWordsConfig = new BlockedWordsConfig(this);
     }
 
     private void registerListener() {
-
         new ClanInfoPageListener(this);
         new ClanMemberPageListener(this);
         new ClanMemberEditPageListener(this);
@@ -190,5 +188,9 @@ public final class LateTimeClan extends JavaPlugin {
 
     public ClanSettingsDatabase getClanSettingsDatabase() {
         return clanSettingsDatabase;
+    }
+
+    public BlockedWordsConfig getBlockedWordsConfig() {
+        return blockedWordsConfig;
     }
 }
