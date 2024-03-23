@@ -69,9 +69,6 @@ public class ClanMemberKickConfirmPageListener implements Listener {
 
                 if (ClanUtil.isPermitted(clanPlayer, target, ClanAction.KICK)) {
 
-                    // Kick target from clan
-                    clanPlayer.getClan().kick(target);
-
                     // Sender notify
                     player.closeInventory();
                     player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
@@ -106,6 +103,8 @@ public class ClanMemberKickConfirmPageListener implements Listener {
                                     .setColor(Color.RED)
                     );
 
+                    // Kick target from clan
+                    clanPlayer.getClan().kick(target);
                     target.reload();
                     return;
                 }
