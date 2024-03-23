@@ -7,9 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -61,10 +59,12 @@ public class PlayerDatabase extends DatabaseProvider {
 
             statement.setString(1, player.getName().toLowerCase());
             statement.setString(2, player.getUniqueId().toString());
-            statement.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()));
+            statement.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()),
+                    Calendar.getInstance(TimeZone.getTimeZone("Europe/Berlin")));
 
             statement.setString(4, player.getName().toLowerCase());
-            statement.setTimestamp(5, new java.sql.Timestamp(System.currentTimeMillis()));
+            statement.setTimestamp(5, new java.sql.Timestamp(System.currentTimeMillis()),
+                    Calendar.getInstance(TimeZone.getTimeZone("Europe/Berlin")));
 
             statement.executeUpdate();
 

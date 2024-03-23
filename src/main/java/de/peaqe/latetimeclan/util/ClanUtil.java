@@ -14,6 +14,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.TimeZone;
 
 /**
  * *
@@ -93,6 +94,7 @@ public class ClanUtil {
 
     public static String formatDate(Date date, String color) {
         var format = new SimpleDateFormat("dd.MM.yyyy | HH:mm 'Uhr'");
+        format.setTimeZone(TimeZone.getTimeZone("Europe/Berlin"));
         return color + format.format(date)
                 .replace("|", "§7|" + color)
                 .replace(".", "§7." + color)
