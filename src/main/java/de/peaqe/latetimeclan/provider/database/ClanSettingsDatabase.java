@@ -58,7 +58,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
         this.connect();
         try (var statement = this.getConnection().prepareStatement(query)) {
 
-            statement.setString(1, clanObject.getTag());
+            statement.setString(1, clanObject.getTag().toUpperCase());
             statement.setBoolean(2, clanObject.getSettings().isClanChatToggled());
             statement.setBoolean(3, clanObject.getSettings().isClanBankToggled());
 
@@ -68,7 +68,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
             statement.executeUpdate();
 
             // Update cache after successful insertion
-            settingsCache.put(clanObject.getTag(), Optional.of(settings));
+            settingsCache.put(clanObject.getTag().toUpperCase(), Optional.of(settings));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -78,21 +78,20 @@ public class ClanSettingsDatabase extends DatabaseProvider {
     }
 
     public void deleteClan(ClanObject clan) {
-        if (clan == null || clan.getTag() == null) return;
+        if (clan == null) return;
 
-        var query = "DELETE FROM latetime.clan_settings WHERE " + ClanSettingsProperty.CLAN_TAG.getValue() + " = ?";
+        var query = "DELETE FROM latetime.clan_settings WHERE `" + ClanSettingsProperty.CLAN_TAG.getValue() + "` = ?";
         this.connect();
 
         try (var statement = this.getConnection().prepareStatement(query)) {
             statement.setString(1, clan.getTag().toUpperCase());
             statement.executeUpdate();
+            this.settingsCache.remove(clan.getTag().toUpperCase());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             this.close();
         }
-
-        settingsCache.remove(clan.getTag().toUpperCase());
     }
 
     Optional<SettingsObject> getClanSettings(String clanTag) {

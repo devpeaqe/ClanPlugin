@@ -121,17 +121,17 @@ public class ClanDatabase extends DatabaseProvider {
     public void deleteClan(ClanObject clan) {
         if (clan == null || clan.getTag() == null) return;
 
-        var query = "DELETE FROM latetime.clan WHERE " + ClanProperty.TAG.getValue() + " = ?";
+        var query = "DELETE FROM latetime.clan WHERE `" + ClanProperty.TAG.getValue() + "` = ?";
         this.connect();
 
         try (var statement = this.getConnection().prepareStatement(query)) {
             statement.setString(1, clan.getTag());
             statement.executeUpdate();
+            this.clanCache.remove(clan.getTag().toUpperCase());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             this.close();
-            clanCache.remove(clan.getTag().toUpperCase());
         }
     }
 
