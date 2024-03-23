@@ -21,10 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * *
@@ -736,7 +734,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                             player.getUniqueId(), ClanGroup.OWNER
                     ),
                     new SettingsObject(true, false),
-                    0
+                    0,
+                    new java.sql.Timestamp(System.currentTimeMillis())
             );
 
             this.lateTimeClan.getClanDatabase().createClan(clanModel);

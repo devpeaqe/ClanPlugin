@@ -16,6 +16,7 @@ public enum ClanProperty {
     CLAN_INVITATION_STATUS("clan_invitation_status"),
     CLAN_FOUNDER_UUID("clan_founder_uuid"),
     CLAN_COLOR("clan_color"),
+    CREATE_TIMESTAMP("date_created"),
     MAX_SIZE("max_size"),
     MEMBERS("members"),
     CLAN_BANK("clan_bank");

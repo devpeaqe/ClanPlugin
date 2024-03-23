@@ -3,6 +3,7 @@ package de.peaqe.latetimeclan.objects;
 import de.peaqe.latetimeclan.LateTimeClan;
 import org.bukkit.Bukkit;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,10 +24,11 @@ public class ClanObject {
     private Map<UUID, ClanGroup> members;
     private SettingsObject settingsObject;
     private int clanBankAmount;
+    private Date dateCreated;
 
     public ClanObject(String name, String tag, String clanFounderUuid, String color,
                       ClanInvitationStatus clanInvitationStatus, int maxSize, Map<UUID, ClanGroup> members,
-                      SettingsObject settingsObject, int clanBankAmount) {
+                      SettingsObject settingsObject, int clanBankAmount, Date dateCreated) {
         this.name = name;
         this.tag = tag;
         this.clanFounderUuid = clanFounderUuid;
@@ -36,6 +38,7 @@ public class ClanObject {
         this.members = members;
         this.settingsObject = settingsObject;
         this.clanBankAmount = clanBankAmount;
+        this.dateCreated = dateCreated;
     }
 
     public ClanObject() {}
@@ -107,6 +110,15 @@ public class ClanObject {
     public void setMembers(Map<UUID, ClanGroup> members) {
         this.members = members;
     }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     public void delete() {
         LateTimeClan.getInstance().getClanSettingsDatabase().deleteClan(this);
         LateTimeClan.getInstance().getClanDatabase().deleteClan(this);

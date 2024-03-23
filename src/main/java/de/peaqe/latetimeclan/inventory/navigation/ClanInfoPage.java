@@ -95,8 +95,7 @@ public class ClanInfoPage {
                         "",
                         //"§8• §7Zeige dir die derzeitigen Statistiken deines Clans an.", "",
                         "§8• §7Bank: " + ClanUtil.compressInt(clanObject.getClanBankAmount()) + "§7€",
-                        "§8• §7Erstellt am: §cXX:XX",
-                        "§8• §7Example static: §eSIUU"
+                        "§8• §7Erstellt am: §c" + ClanUtil.formatDate(clanObject.getDateCreated(), "§c")
                 )
                 .build();
 

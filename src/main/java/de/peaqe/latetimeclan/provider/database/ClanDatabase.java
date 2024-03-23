@@ -11,9 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.sql.SQLException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,6 +52,7 @@ public class ClanDatabase extends DatabaseProvider {
                     "  `" + ClanProperty.MAX_SIZE.getValue() + "` INT NOT NULL," +
                     "  `" + ClanProperty.MEMBERS.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + ClanProperty.CLAN_BANK.getValue() + "` INT NOT NULL," +
+                    "  `" + ClanProperty.CREATE_TIMESTAMP.getValue() + "` TIMESTAMP NOT NULL," +
                     "  PRIMARY KEY (`tag`)" +
                     ")");
         } catch (SQLException e) {
@@ -72,7 +72,8 @@ public class ClanDatabase extends DatabaseProvider {
                 ClanProperty.CLAN_INVITATION_STATUS.getValue() + ", " +
                 ClanProperty.MAX_SIZE.getValue() + ", " +
                 ClanProperty.MEMBERS.getValue() + ", " +
-                ClanProperty.CLAN_BANK.getValue() + ") " +
+                ClanProperty.CLAN_BANK.getValue() + ", " +
+                ClanProperty.CREATE_TIMESTAMP.getValue() + ") " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         if (clanObject == null || clanObject.getTag() == null) return;
@@ -101,11 +102,13 @@ public class ClanDatabase extends DatabaseProvider {
             statement.setString(1, clanObject.getName());
             statement.setString(2, clanObject.getTag().toUpperCase());
             statement.setString(3, clanObject.getClanFounderUUID());
-            statement.setString(4, clanObject.getColor() + "");
+            statement.setString(4, clanObject.getColor());
             statement.setString(5, clanObject.getClanInvitationStatus().getStatus());
             statement.setInt(6, clanObject.getMaxSize());
             statement.setString(7, ClanDecoder.mapToString(clanObject.getMembers()));
             statement.setInt(8, clanObject.getClanBankAmount());
+            statement.setTimestamp(9, new java.sql.Timestamp(System.currentTimeMillis()),
+                    Calendar.getInstance(TimeZone.getTimeZone("Europe/Berlin")));
             //statement.setString(9, clanObject.getTag());
             this.lateTimeClan.getClanSettingsDatabase().insertClan(clanObject);
 
@@ -149,7 +152,8 @@ public class ClanDatabase extends DatabaseProvider {
                 ClanProperty.CLAN_INVITATION_STATUS.getValue() + " = ?, " +
                 ClanProperty.MAX_SIZE.getValue() + " = ?, " +
                 ClanProperty.MEMBERS.getValue() + " = ?, " +
-                ClanProperty.CLAN_BANK.getValue() + " = ? " +
+                ClanProperty.CLAN_BANK.getValue() + " = ?, " +
+                ClanProperty.CREATE_TIMESTAMP.getValue() + " = ? " +
                 "WHERE " + ClanProperty.TAG.getValue() + " = ?";
 
         // Cache
@@ -169,11 +173,12 @@ public class ClanDatabase extends DatabaseProvider {
             statement.setString(1, clanObject.getName());
             statement.setString(2, clanObject.getTag().toUpperCase());
             statement.setString(3, clanObject.getClanFounderUUID());
-            statement.setString(4, clanObject.getColor() + "");
+            statement.setString(4, clanObject.getColor());
             statement.setString(5, clanObject.getClanInvitationStatus().getStatus());
             statement.setInt(6, clanObject.getMaxSize());
             statement.setString(7, ClanDecoder.mapToString(clanObject.getMembers()));
             statement.setInt(8, clanObject.getClanBankAmount());
+            statement.setTimestamp(8, new Timestamp(clanObject.getDateCreated().getTime()));
             statement.setString(9, clanObject.getTag());
             this.lateTimeClan.getClanSettingsDatabase().insertClan(clanObject);
 
@@ -210,7 +215,8 @@ public class ClanDatabase extends DatabaseProvider {
                         ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
                         this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag)
                                 .orElse(new SettingsObject(true, false)),
-                        resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
+                        resultSet.getInt(ClanProperty.CLAN_BANK.getValue()),
+                        resultSet.getTimestamp(ClanProperty.CREATE_TIMESTAMP.getValue())
                 );
 
                 clanCache.put(clanTag.toUpperCase(), Optional.of(clanModel));
@@ -251,7 +257,8 @@ public class ClanDatabase extends DatabaseProvider {
                         ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
                         this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag1)
                                 .orElse(new SettingsObject(true, false)),
-                        resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
+                        resultSet.getInt(ClanProperty.CLAN_BANK.getValue()),
+                        resultSet.getTimestamp(ClanProperty.CREATE_TIMESTAMP.getValue())
                 );
 
                 return Optional.of(clanModel);
@@ -291,7 +298,8 @@ public class ClanDatabase extends DatabaseProvider {
                     ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
                     this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag)
                             .orElse(new SettingsObject(true, false)),
-                    resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
+                    resultSet.getInt(ClanProperty.CLAN_BANK.getValue()),
+                    resultSet.getTimestamp(ClanProperty.CREATE_TIMESTAMP.getValue())
             );
         }
 
@@ -337,7 +345,8 @@ public class ClanDatabase extends DatabaseProvider {
                         ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
                         this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag)
                                 .orElse(new SettingsObject(true, false)),
-                        resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
+                        resultSet.getInt(ClanProperty.CLAN_BANK.getValue()),
+                        resultSet.getTimestamp(ClanProperty.CREATE_TIMESTAMP.getValue())
                 ));
             }
         } catch (SQLException e) {
