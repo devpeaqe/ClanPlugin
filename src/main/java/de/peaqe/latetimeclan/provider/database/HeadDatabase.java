@@ -1,6 +1,7 @@
-package de.peaqe.latetimeclan.provider;
+package de.peaqe.latetimeclan.provider.database;
 
 import de.peaqe.latetimeclan.LateTimeClan;
+import de.peaqe.latetimeclan.provider.DatabaseProvider;
 import de.peaqe.latetimeclan.provider.util.HeadProperty;
 import de.peaqe.latetimeclan.util.ItemBuilder;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;

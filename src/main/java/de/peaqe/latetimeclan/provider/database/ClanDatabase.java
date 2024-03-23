@@ -1,10 +1,11 @@
-package de.peaqe.latetimeclan.provider;
+package de.peaqe.latetimeclan.provider.database;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
 import de.peaqe.latetimeclan.objects.ClanObject;
 import de.peaqe.latetimeclan.objects.SettingsObject;
 import de.peaqe.latetimeclan.objects.util.ClanDecoder;
+import de.peaqe.latetimeclan.provider.DatabaseProvider;
 import de.peaqe.latetimeclan.provider.util.ClanProperty;
 import org.jetbrains.annotations.NotNull;
 

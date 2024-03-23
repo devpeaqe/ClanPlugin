@@ -16,10 +16,10 @@ import de.peaqe.latetimeclan.listener.inventory.settings.ClanSettingsToggleBankP
 import de.peaqe.latetimeclan.listener.plugin.PluginDisableListener;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.objects.ClanGroup;
-import de.peaqe.latetimeclan.provider.ClanDatabase;
-import de.peaqe.latetimeclan.provider.ClanSettingsDatabase;
-import de.peaqe.latetimeclan.provider.HeadDatabase;
-import de.peaqe.latetimeclan.provider.PlayerDatabase;
+import de.peaqe.latetimeclan.provider.database.ClanDatabase;
+import de.peaqe.latetimeclan.provider.database.ClanSettingsDatabase;
+import de.peaqe.latetimeclan.provider.database.HeadDatabase;
+import de.peaqe.latetimeclan.provider.database.PlayerDatabase;
 import de.peaqe.latetimeclan.util.database.DatabaseConnection;
 import de.peaqe.latetimeclan.util.manager.HeadManager;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
