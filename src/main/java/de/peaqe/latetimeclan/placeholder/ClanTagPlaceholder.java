@@ -55,4 +55,9 @@ public class ClanTagPlaceholder extends PlaceholderExpansion {
                 clanPlayer.getClan().getTag().toUpperCase() + "§8]";
     }
 
+    //@Override
+    //public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
+    //    return super.onPlaceholderRequest(player, params);
+    //}
+
 }
