@@ -74,7 +74,7 @@ public final class LateTimeClan extends JavaPlugin {
         this.registerListener();
 
         // Other
-        new ClanTagPlaceholder(this);
+        new ClanTagPlaceholder();
 
         try {
             var embed = new DiscordWebhook.EmbedObject();
