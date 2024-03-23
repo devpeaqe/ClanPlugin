@@ -17,18 +17,20 @@ import java.util.UUID;
 
 public class ClanObject {
 
-    private String name, tag, clanFounderUuid;
+    private String name, tag, clanFounderUuid, color;
     private ClanInvitationStatus clanInvitationStatus;
     private int maxSize;
     private Map<UUID, ClanGroup> members;
     private SettingsObject settingsObject;
     private int clanBankAmount;
 
-    public ClanObject(String name, String tag, String clanFounderUuid, ClanInvitationStatus clanInvitationStatus,
-                      int maxSize, Map<UUID, ClanGroup> members, SettingsObject settingsObject, int clanBankAmount) {
+    public ClanObject(String name, String tag, String clanFounderUuid, String color,
+                      ClanInvitationStatus clanInvitationStatus, int maxSize, Map<UUID, ClanGroup> members,
+                      SettingsObject settingsObject, int clanBankAmount) {
         this.name = name;
         this.tag = tag;
         this.clanFounderUuid = clanFounderUuid;
+        this.color = color;
         this.clanInvitationStatus = clanInvitationStatus;
         this.maxSize = maxSize;
         this.members = members;
@@ -108,6 +110,14 @@ public class ClanObject {
     public void delete() {
         LateTimeClan.getInstance().getClanSettingsDatabase().deleteClan(this);
         LateTimeClan.getInstance().getClanDatabase().deleteClan(this);
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public void addMember(ClanPlayerObject clanPlayerObject) {

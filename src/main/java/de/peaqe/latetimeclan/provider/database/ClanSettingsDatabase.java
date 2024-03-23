@@ -84,7 +84,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
         this.connect();
 
         try (var statement = this.getConnection().prepareStatement(query)) {
-            statement.setString(1, clan.getTag().toLowerCase());
+            statement.setString(1, clan.getTag().toUpperCase());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -92,7 +92,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
             this.close();
         }
 
-        settingsCache.remove(clan.getTag().toLowerCase());
+        settingsCache.remove(clan.getTag().toUpperCase());
     }
 
     Optional<SettingsObject> getClanSettings(String clanTag) {

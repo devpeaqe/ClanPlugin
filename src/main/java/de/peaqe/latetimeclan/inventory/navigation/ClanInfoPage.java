@@ -6,6 +6,7 @@ import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
+import de.peaqe.latetimeclan.util.color.Hex;
 import de.peaqe.latetimeclan.util.heads.Base64Compiler;
 import de.peaqe.latetimeclan.util.heads.Head;
 import net.kyori.adventure.text.Component;
@@ -62,7 +63,7 @@ public class ClanInfoPage {
                 .setDisplayName("§8• §e" + clanObject.getName())
                 .setLore(
                         " ",
-                        "§8• §7Clan-Tag: §a" + clanObject.getTag(),
+                        "§8• §7Clan-Tag: §a" + Hex.color(clanObject.getColor()) + clanObject.getTag(),
                         "§8• §7Status: §a" + ClanUtil.getClanInvitationStatus(clanObject).getStatus(),
                         "§8• §7Besitzer: §4" + clanOwnerName
                 )

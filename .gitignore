@@ -121,3 +121,4 @@ build.gradle
 .gitignore
 gradle.properties
 /src/main/java/de/peaqe/latetimeclan/util/ItemBuilder.java
+/src/main/java/de/peaqe/latetimeclan/util/GradientString.java

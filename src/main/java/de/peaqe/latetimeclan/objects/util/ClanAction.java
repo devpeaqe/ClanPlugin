@@ -12,8 +12,8 @@ package de.peaqe.latetimeclan.objects.util;
 public enum ClanAction {
 
     DELETE(3),
-    CHANGE_COLOR(3),
     BANK_REMOVE(3),
+    CHANGE_COLOR(2),
     CHANGE_GROUP(2),
     PROMOTE(2),
     DEMOTE(2),

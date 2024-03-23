@@ -48,6 +48,7 @@ public class ClanDatabase extends DatabaseProvider {
                     "  `" + ClanProperty.NAME.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + ClanProperty.TAG.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + ClanProperty.CLAN_FOUNDER_UUID.getValue() + "` VARCHAR(255) NOT NULL," +
+                    "  `" + ClanProperty.CLAN_COLOR.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + ClanProperty.CLAN_INVITATION_STATUS.getValue() + "` VARCHAR(255) NOT NULL," +
                     "  `" + ClanProperty.MAX_SIZE.getValue() + "` INT NOT NULL," +
                     "  `" + ClanProperty.MEMBERS.getValue() + "` VARCHAR(255) NOT NULL," +
@@ -67,11 +68,12 @@ public class ClanDatabase extends DatabaseProvider {
                 ClanProperty.NAME.getValue() + ", " +
                 ClanProperty.TAG.getValue() + ", " +
                 ClanProperty.CLAN_FOUNDER_UUID.getValue() + ", " +
+                ClanProperty.CLAN_COLOR.getValue() + ", " +
                 ClanProperty.CLAN_INVITATION_STATUS.getValue() + ", " +
                 ClanProperty.MAX_SIZE.getValue() + ", " +
                 ClanProperty.MEMBERS.getValue() + ", " +
-                ClanProperty.CLAN_BANK.getValue() +
-                ") VALUES (?, ?, ?, ?, ?, ?, ?)";
+                ClanProperty.CLAN_BANK.getValue() + ") " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         if (clanObject == null || clanObject.getTag() == null) return;
 
@@ -97,12 +99,14 @@ public class ClanDatabase extends DatabaseProvider {
             var statement = this.getConnection().prepareStatement(query);
 
             statement.setString(1, clanObject.getName());
-            statement.setString(2, clanObject.getTag().toLowerCase());
+            statement.setString(2, clanObject.getTag().toUpperCase());
             statement.setString(3, clanObject.getClanFounderUUID());
-            statement.setString(4, clanObject.getClanInvitationStatus().getStatus());
-            statement.setInt(5, clanObject.getMaxSize());
-            statement.setString(6, ClanDecoder.mapToString(clanObject.getMembers()));
-            statement.setInt(7, clanObject.getClanBankAmount());
+            statement.setString(4, clanObject.getColor() + "");
+            statement.setString(5, clanObject.getClanInvitationStatus().getStatus());
+            statement.setInt(6, clanObject.getMaxSize());
+            statement.setString(7, ClanDecoder.mapToString(clanObject.getMembers()));
+            statement.setInt(8, clanObject.getClanBankAmount());
+            //statement.setString(9, clanObject.getTag());
             this.lateTimeClan.getClanSettingsDatabase().insertClan(clanObject);
 
             statement.executeUpdate();
@@ -127,12 +131,12 @@ public class ClanDatabase extends DatabaseProvider {
             throw new RuntimeException(e);
         } finally {
             this.close();
-            clanCache.remove(clan.getTag().toLowerCase());
+            clanCache.remove(clan.getTag().toUpperCase());
         }
     }
 
     public Optional<ClanObject> getClan(String clanTag) {
-        return clanCache.computeIfAbsent(clanTag.toLowerCase(), this::getClanFromDatabase);
+        return clanCache.computeIfAbsent(clanTag.toUpperCase(), this::getClanFromDatabase);
     }
 
     public void updateClan(@NotNull ClanObject clanObject) {
@@ -141,6 +145,7 @@ public class ClanDatabase extends DatabaseProvider {
                 ClanProperty.NAME.getValue() + " = ?, " +
                 ClanProperty.TAG.getValue() + " = ?, " +
                 ClanProperty.CLAN_FOUNDER_UUID.getValue() + " = ?, " +
+                ClanProperty.CLAN_COLOR.getValue() + " = ?, " +
                 ClanProperty.CLAN_INVITATION_STATUS.getValue() + " = ?, " +
                 ClanProperty.MAX_SIZE.getValue() + " = ?, " +
                 ClanProperty.MEMBERS.getValue() + " = ?, " +
@@ -162,13 +167,14 @@ public class ClanDatabase extends DatabaseProvider {
             var statement = this.getConnection().prepareStatement(query);
 
             statement.setString(1, clanObject.getName());
-            statement.setString(2, clanObject.getTag().toLowerCase());
+            statement.setString(2, clanObject.getTag().toUpperCase());
             statement.setString(3, clanObject.getClanFounderUUID());
-            statement.setString(4, clanObject.getClanInvitationStatus().getStatus());
-            statement.setInt(5, clanObject.getMaxSize());
-            statement.setString(6, ClanDecoder.mapToString(clanObject.getMembers()));
-            statement.setInt(7, clanObject.getClanBankAmount());
-            statement.setString(8, clanObject.getTag());
+            statement.setString(4, clanObject.getColor() + "");
+            statement.setString(5, clanObject.getClanInvitationStatus().getStatus());
+            statement.setInt(6, clanObject.getMaxSize());
+            statement.setString(7, ClanDecoder.mapToString(clanObject.getMembers()));
+            statement.setInt(8, clanObject.getClanBankAmount());
+            statement.setString(9, clanObject.getTag());
             this.lateTimeClan.getClanSettingsDatabase().insertClan(clanObject);
 
             statement.executeUpdate();
@@ -188,7 +194,7 @@ public class ClanDatabase extends DatabaseProvider {
         try {
             var query = "SELECT * FROM latetime.clan WHERE " + ClanProperty.TAG.getValue() + " = ?";
             var statement = this.getConnection().prepareStatement(query);
-            statement.setString(1, clanTag.toLowerCase());
+            statement.setString(1, clanTag.toUpperCase());
 
             var resultSet = statement.executeQuery();
 
@@ -198,6 +204,7 @@ public class ClanDatabase extends DatabaseProvider {
                         resultSet.getString(ClanProperty.NAME.getValue()),
                         clanTag,
                         resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
+                        resultSet.getString(ClanProperty.CLAN_COLOR.getValue()),
                         ClanInvitationStatus.getFromStatus(resultSet.getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                         resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
                         ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
@@ -206,7 +213,7 @@ public class ClanDatabase extends DatabaseProvider {
                         resultSet.getInt(ClanProperty.CLAN_BANK.getValue())
                 );
 
-                clanCache.put(clanTag.toLowerCase(), Optional.of(clanModel));
+                clanCache.put(clanTag.toUpperCase(), Optional.of(clanModel));
 
                 return true;
             }
@@ -227,7 +234,7 @@ public class ClanDatabase extends DatabaseProvider {
 
             final var query = "SELECT * FROM latetime.clan WHERE " + ClanProperty.TAG.getValue() + " = ?";
             var statement = this.getConnection().prepareStatement(query);
-            statement.setString(1, clanTag.toLowerCase());
+            statement.setString(1, clanTag.toUpperCase());
 
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -238,6 +245,7 @@ public class ClanDatabase extends DatabaseProvider {
                         resultSet.getString(ClanProperty.NAME.getValue()),
                         clanTag1,
                         resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
+                        resultSet.getString(ClanProperty.CLAN_COLOR.getValue()),
                         ClanInvitationStatus.getFromStatus(resultSet.getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                         resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
                         ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
@@ -276,6 +284,7 @@ public class ClanDatabase extends DatabaseProvider {
                     resultSet.getString(ClanProperty.NAME.getValue()),
                     clanTag,
                     resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
+                    resultSet.getString(ClanProperty.CLAN_COLOR.getValue()),
                     ClanInvitationStatus.getFromStatus(resultSet
                             .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                     resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
@@ -321,6 +330,7 @@ public class ClanDatabase extends DatabaseProvider {
                         resultSet.getString(ClanProperty.NAME.getValue()),
                         clanTag,
                         resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
+                        resultSet.getString(ClanProperty.CLAN_COLOR.getValue()),
                         ClanInvitationStatus.getFromStatus(resultSet
                                 .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
                         resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),

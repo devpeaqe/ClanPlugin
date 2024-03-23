@@ -7,6 +7,7 @@ import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.objects.*;
 import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
+import de.peaqe.latetimeclan.util.color.Hex;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import org.bukkit.Bukkit;
@@ -407,6 +408,118 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             ));
             
         }
+
+        // /clan color <color>
+        if (args.length == 2 && args[0].equalsIgnoreCase("color")) {
+
+            var clanModel = this.lateTimeClan.getClanDatabase().getClanModelOfMember(player.getUniqueId());
+
+            if (clanModel == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit in keinem Clan!"
+                ));
+                return true;
+            }
+
+            var clanPlayerSender = ClanPlayerObject.fromPlayer(player);
+
+            if (clanPlayerSender == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Es ist ein Fehler aufgetreten! Bitte wende dich an unseren Support."
+                ));
+                player.sendMessage(this.messages.compileMessage(
+                        "Discord » %s", "https://discord.gg/USHsrPjU8J"
+                ));
+                return true;
+            }
+
+            if (!clanPlayerSender.hasPermission(ClanAction.CHANGE_COLOR)) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du bist derzeit nicht berechtigt die Farbe des %s ändern zu können!",
+                        "Clan-Tags"
+                ));
+                return true;
+            }
+
+            var hex = args[1];
+
+            if (hex.length() != 7) {
+                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Die von dir angegebene %s ist ungültig!", "Hex-Code"
+                ));
+                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Gebe den %s in folgendem Format an: #%s",
+                        "Hex-Code", "§eAABBCC"
+                ));
+                return true;
+            }
+
+            if (hex.charAt(0) != '#') {
+                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Die von dir angegebene %s ist ungültig!", "Hex-Code"
+                ));
+                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Gebe den %s in folgendem Format an: #%s",
+                        "Hex-Code", "§eAABBCC"
+                ));
+                return true;
+            }
+
+            if (hex.replace("#", "").equalsIgnoreCase(clanModel.getColor())) {
+                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Du hast diese %s des %s bereits angegeben!",
+                        "Farbe", "Clan-Tags"
+                ));
+                return true;
+            }
+
+            try {
+
+                var hexColor = Hex.color(hex.replace("#", ""));
+                var tmpColor = Hex.color(clanModel.getColor());
+
+                clanModel.setColor(hex.replace("#", ""));
+                this.lateTimeClan.getClanDatabase().updateClan(clanModel);
+
+                clanModel.sendNotification(
+                        "Die Farbe des %s wurde geändert.",
+                        "Clan-Tags"
+                );
+
+                //if (tmpColor != null) {
+                //    clanModel.sendNotification(
+                //            "Vorher: %s", tmpColor + clanModel.getTag()
+                //    );
+                //}
+
+                clanModel.sendNotification(
+                        "Vorher: %s", tmpColor + clanModel.getTag()
+                );
+
+                clanModel.sendNotification(
+                        "Nachher: %s", hexColor + clanModel.getTag()
+                );
+
+                this.lateTimeClan.getWebhookSender().sendWebhook(
+                        new DiscordWebhook.EmbedObject().setTitle("Clan-Tag Farbe geändert")
+                                .addField("Mitglied", player.getName(), true)
+                                .addField("Alte Farbe", tmpColor.toString(), true)
+                                .addField("Neue Farbe", hexColor.toString(), true)
+                                .addField("Clan", clanModel.getName(), true)
+                                .addField("Clan-Tag", clanModel.getTag(), true)
+                                .setFooter("× LateTimeMC.DE » Clan-System", null)
+                                .setColor(Color.ORANGE)
+                );
+
+            } catch (IllegalArgumentException e) {
+                player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                        "Du hast einen §cungültigen %s angegeben! Bitte versuche einen anderen.",
+                        "Hex-Code"
+                ));
+                return true;
+            }
+
+        }
         
         // /clan bank action <amount>
         if (args.length == 3 && args[0].equalsIgnoreCase("bank")) {
@@ -570,6 +683,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     clanName,
                     clanTag,
                     player.getUniqueId().toString(),
+                    "FFEF66", // light yellow
                     ClanInvitationStatus.INVITATION,
                     10,
                     Map.of(

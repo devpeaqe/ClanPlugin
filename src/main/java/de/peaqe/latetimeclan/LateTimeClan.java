@@ -16,6 +16,7 @@ import de.peaqe.latetimeclan.listener.inventory.settings.ClanSettingsToggleBankP
 import de.peaqe.latetimeclan.listener.plugin.PluginDisableListener;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.objects.ClanGroup;
+import de.peaqe.latetimeclan.placeholder.ClanTagPlaceholder;
 import de.peaqe.latetimeclan.provider.database.ClanDatabase;
 import de.peaqe.latetimeclan.provider.database.ClanSettingsDatabase;
 import de.peaqe.latetimeclan.provider.database.HeadDatabase;
@@ -72,6 +73,8 @@ public final class LateTimeClan extends JavaPlugin {
         // Listener's
         this.registerListener();
 
+        // Other
+        new ClanTagPlaceholder(this);
 
         try {
             var embed = new DiscordWebhook.EmbedObject();
@@ -116,6 +119,7 @@ public final class LateTimeClan extends JavaPlugin {
         this.webhookSender = new WebhookSender();
 
         //this.databaseCache = this.clanDatabase.getDatabaseCache();
+
     }
 
     private void registerListener() {
