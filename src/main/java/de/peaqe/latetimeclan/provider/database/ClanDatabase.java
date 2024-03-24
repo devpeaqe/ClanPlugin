@@ -9,7 +9,6 @@ import de.peaqe.latetimeclan.provider.DatabaseProvider;
 import de.peaqe.latetimeclan.provider.util.ClanProperty;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -270,40 +269,6 @@ public class ClanDatabase extends DatabaseProvider {
         }
 
         return Optional.empty();
-    }
-
-    @Nullable
-    public ClanObject getClanModelByCondition(ClanProperty clanProperty, Object conditionItem) throws SQLException {
-
-        var sql = "SELECT * FROM latetime.clan WHERE " + clanProperty.getValue() + " = ?";
-
-        this.connect();
-
-        var preparedStatement = this.getConnection().prepareStatement(sql);
-        preparedStatement.setObject(1, conditionItem);
-
-        var resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-
-            var clanTag = resultSet.getString(ClanProperty.TAG.getValue());
-
-            return new ClanObject(
-                    resultSet.getString(ClanProperty.NAME.getValue()),
-                    clanTag,
-                    resultSet.getString(ClanProperty.CLAN_FOUNDER_UUID.getValue()),
-                    resultSet.getString(ClanProperty.CLAN_COLOR.getValue()),
-                    ClanInvitationStatus.getFromStatus(resultSet
-                            .getString(ClanProperty.CLAN_INVITATION_STATUS.getValue())),
-                    resultSet.getInt(ClanProperty.MAX_SIZE.getValue()),
-                    ClanDecoder.stringToMap(resultSet.getString(ClanProperty.MEMBERS.getValue())),
-                    this.lateTimeClan.getClanSettingsDatabase().getClanSettings(clanTag)
-                            .orElse(new SettingsObject(true, false)),
-                    resultSet.getInt(ClanProperty.CLAN_BANK.getValue()),
-                    resultSet.getTimestamp(ClanProperty.CREATE_TIMESTAMP.getValue())
-            );
-        }
-
-        return null;
     }
 
     public ClanObject getClanModelOfMember(UUID memberUUID) {

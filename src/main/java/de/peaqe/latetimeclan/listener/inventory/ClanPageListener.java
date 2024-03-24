@@ -7,6 +7,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.logging.Level;
+
 /**
  * *
  *
@@ -32,8 +34,9 @@ public class ClanPageListener implements Listener {
         if (event.getClickedInventory() == null) return;
         if (!event.getView().getOriginalTitle().startsWith(this.lateTimeClan.getMessages()
                 .compileMessage(""))) return;
-        if (event.getCurrentItem() == null) {
-        }
+        if (event.getCurrentItem() == null) return;
+
+        Bukkit.getLogger().log(Level.INFO, "Clicked: " + event.getCurrentItem().getType());
 
     }
 }

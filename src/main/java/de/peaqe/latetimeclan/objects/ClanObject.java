@@ -63,11 +63,6 @@ public class ClanObject {
     public String getClanFounderUUID() {
         return clanFounderUuid;
     }
-
-    public void setClanFounderUUID(String clanFounderUuid) {
-        this.clanFounderUuid = clanFounderUuid;
-    }
-
     public ClanInvitationStatus getClanInvitationStatus() {
         return clanInvitationStatus;
     }
@@ -78,10 +73,6 @@ public class ClanObject {
 
     public int getMaxSize() {
         return maxSize;
-    }
-
-    public void setMaxSize(int maxSize) {
-        this.maxSize = maxSize;
     }
 
     public SettingsObject getSettings() {
