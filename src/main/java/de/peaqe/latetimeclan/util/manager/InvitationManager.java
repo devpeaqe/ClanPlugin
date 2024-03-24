@@ -56,9 +56,6 @@ class InvitationCache {
     }
 
     public boolean invite(ClanObject clanObject, UUID uuid) {
-
-        var invitationList = this.clanInvitaionConfig.getPlayerInvitedFrom(clanObject);
-
         if (!this.isClanJoinable(clanObject)) return false;
         if (this.isInvited(uuid, clanObject)) return false;
 
@@ -67,9 +64,6 @@ class InvitationCache {
     }
 
     public void unInvite(UUID uuid, ClanObject clanObject) {
-
-        var invitationList = this.clanInvitaionConfig.getPlayerInvitedFrom(clanObject);
-
         if (!this.isInvited(uuid, clanObject)) return;
         this.clanInvitaionConfig.removeInvitation(clanObject, uuid);
     }
@@ -84,7 +78,6 @@ class InvitationCache {
         return (!clanObject.getClanInvitationStatus().equals(ClanInvitationStatus.CLOSED));
     }
 
-    // TODO: Filter to get all clans the player was invited from
     public List<String> getInvitations(UUID uuid) {
         return this.clanInvitaionConfig.getClansWithInvitation(uuid);
     }
