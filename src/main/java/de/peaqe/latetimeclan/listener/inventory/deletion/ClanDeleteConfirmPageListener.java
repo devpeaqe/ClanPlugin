@@ -77,6 +77,8 @@ public class ClanDeleteConfirmPageListener implements Listener {
                                 .setColor(Color.RED)
                 );
 
+                this.lateTimeClan.getClanInvitaionConfig().clearInvitations(clanPlayer.getClan());
+
                 player.closeInventory();
                 clanPlayer.getClan().delete();
 
