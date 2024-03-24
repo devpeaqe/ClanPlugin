@@ -2,7 +2,6 @@ package de.peaqe.latetimeclan.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.objects.ClanGroup;
-import de.peaqe.latetimeclan.objects.ClanObject;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.ItemBuilder;
@@ -25,7 +24,7 @@ public class ClanMemberChangeGroupPage {
 
     private final Inventory inventory;
 
-    public ClanMemberChangeGroupPage(LateTimeClan lateTimeClan, ClanObject clanObject) {
+    public ClanMemberChangeGroupPage(LateTimeClan lateTimeClan) {
         this.inventory = Bukkit.createInventory(
                 null,
                 9*5,
@@ -35,7 +34,7 @@ public class ClanMemberChangeGroupPage {
         );
     }
 
-    public void initializeInventory(ClanPlayerObject sender, ClanPlayerObject target) {
+    public void initializeInventory(ClanPlayerObject target) {
 
         var borderItemSlots = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27,
                 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
@@ -94,8 +93,8 @@ public class ClanMemberChangeGroupPage {
 
     }
 
-    public Inventory getInventory(ClanPlayerObject sender, ClanPlayerObject target) {
-        this.initializeInventory(sender, target);
+    public Inventory getInventory(ClanPlayerObject target) {
+        this.initializeInventory(target);
         return inventory;
     }
 

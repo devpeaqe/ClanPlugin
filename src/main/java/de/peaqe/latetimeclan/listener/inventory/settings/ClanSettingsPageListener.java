@@ -5,21 +5,14 @@ import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsChangeStatePage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsModerateChatPage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsToggleBankPage;
-import de.peaqe.latetimeclan.objects.ClanGroup;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.objects.util.ClanAction;
-import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * *
@@ -33,12 +26,10 @@ import java.util.UUID;
 public class ClanSettingsPageListener implements Listener {
 
     private final LateTimeClan lateTimeClan;
-    private final Map<UUID, ClanGroup> cache;
 
     public ClanSettingsPageListener(LateTimeClan lateTimeClan) {
         this.lateTimeClan = lateTimeClan;
         Bukkit.getPluginManager().registerEvents(this, this.lateTimeClan);
-        this.cache = new HashMap<>();
     }
 
     @EventHandler
@@ -118,24 +109,5 @@ public class ClanSettingsPageListener implements Listener {
 
         }
 
-    }
-
-    private ClanPlayerObject getClanPlayerFromItemStack(ItemStack itemStack) {
-
-        if (itemStack == null) return null;
-        if (!itemStack.hasItemMeta()) return null;
-        if (!itemStack.getItemMeta().hasDisplayName()) return null;
-
-        var targetName = itemStack.getItemMeta().getDisplayName().split("§8• §e")[1];
-        if (targetName == null) return null;
-
-        var targetUUID = UniqueIdManager.getUUID(targetName);
-        if (targetUUID == null) return null;
-
-        return ClanPlayerObject.fromPlayer(targetUUID);
-    }
-
-    public Map<UUID, ClanGroup> getCache() {
-        return cache;
     }
 }

@@ -1,14 +1,11 @@
 package de.peaqe.latetimeclan.objects.util;
 
-import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.objects.ClanGroup;
-import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
 import de.peaqe.latetimeclan.objects.ClanObject;
-import de.peaqe.latetimeclan.objects.ClanPlayerObject;
-import de.peaqe.latetimeclan.provider.util.ClanProperty;
 
-import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * *
@@ -20,20 +17,6 @@ import java.util.*;
  */
 
 public class ClanDecoder {
-
-    public static ClanObject getClanModel(String clanTag) {
-        var optionalClan = LateTimeClan.getInstance().getClanDatabase().getClan(clanTag);
-        return optionalClan.orElse(null);
-    }
-
-    public static ClanObject getClanModel(UUID clanFounderUUID) {
-        try {
-            return LateTimeClan.getInstance().getClanDatabase()
-                    .getClanModelByCondition(ClanProperty.CLAN_FOUNDER_UUID, clanFounderUUID.toString());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public static String mapToString(Map<UUID, ClanGroup> map) {
 
@@ -75,69 +58,6 @@ public class ClanDecoder {
                 "Clan Invitation Status: " + clan.getClanInvitationStatus().getStatus() + "\n" +
                 "Max Size: " + clan.getMaxSize() + "\n" +
                 "Members: " + mapToString(clan.getMembers()) + "\n";
-    }
-
-    public static ClanObject fromString(String str) {
-
-        var parts = str.split("\n");
-        var clan = new ClanObject();
-
-        for (String part : parts) {
-
-            var keyValue = part.split(": ");
-
-            if (keyValue.length == 2) {
-
-                var key = keyValue[0].trim();
-                var value = keyValue[1].trim();
-
-                switch (key) {
-                    case "Name":
-                        clan.setName(value);
-                        break;
-                    case "Tag":
-                        clan.setTag(value);
-                        break;
-                    case "Clan Founder UUID":
-                        clan.setClanFounderUUID(value);
-                        break;
-                    case "Clan Invitation Status":
-                        clan.setClanInvitationStatus(ClanInvitationStatus.getFromStatus(value));
-                        break;
-                    case "Max Size":
-                        clan.setMaxSize(Integer.parseInt(value));
-                        break;
-                    case "Members":
-                        clan.setMembers(stringToMap(value));
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-        return clan;
-    }
-
-    public List<ClanPlayerObject> getPlayersFromClan(String clanTag) {
-
-        var clan = getClanModel(clanTag);
-        if (clan == null) return new ArrayList<>();
-
-        var members = getClanModel(clanTag).getMembers();
-        var memberList = new ArrayList<ClanPlayerObject>();
-
-        members.forEach((uuid, clanGroupModel) -> memberList.add(ClanPlayerObject.fromPlayer(uuid)));
-        return memberList;
-
-    }
-
-    public static List<ClanPlayerObject> getPlayersFromClan(ClanObject clan) {
-
-        var members = getClanModel(clan.getTag()).getMembers();
-        var memberList = new ArrayList<ClanPlayerObject>();
-
-        members.forEach((uuid, clanGroupModel) -> memberList.add(ClanPlayerObject.fromPlayer(uuid)));
-        return memberList;
     }
 
 }

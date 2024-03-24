@@ -9,6 +9,7 @@ import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -74,7 +76,7 @@ public class ClanMemberChangeGroupPageListener implements Listener {
                 this.cache.put(target.getUniqueId(), ClanGroup.MEMBER);
 
                 //clanPlayer.getClan().reload();
-                player.openInventory(new ClanMemberChangeGroupConfirmPage(this.lateTimeClan, clanPlayer.getClan())
+                player.openInventory(new ClanMemberChangeGroupConfirmPage(this.lateTimeClan)
                         .getInventory(clanPlayer, target, ClanGroup.MEMBER));
 
             }
@@ -88,7 +90,7 @@ public class ClanMemberChangeGroupPageListener implements Listener {
                 this.cache.put(target.getUniqueId(), ClanGroup.MODERATOR);
 
                //target.getClan().reload();
-                player.openInventory(new ClanMemberChangeGroupConfirmPage(this.lateTimeClan, clanPlayer.getClan())
+                player.openInventory(new ClanMemberChangeGroupConfirmPage(this.lateTimeClan)
                         .getInventory(clanPlayer, target, ClanGroup.MODERATOR));
             }
 
@@ -101,7 +103,7 @@ public class ClanMemberChangeGroupPageListener implements Listener {
                 this.cache.put(target.getUniqueId(), ClanGroup.MANAGER);
 
                 //target.getClan().reload();
-                player.openInventory(new ClanMemberChangeGroupConfirmPage(this.lateTimeClan, clanPlayer.getClan())
+                player.openInventory(new ClanMemberChangeGroupConfirmPage(this.lateTimeClan)
                         .getInventory(clanPlayer, target, ClanGroup.MANAGER));
 
             }
@@ -109,7 +111,7 @@ public class ClanMemberChangeGroupPageListener implements Listener {
             case 44 -> {
                 // GO BACK
                 player.closeInventory();
-                player.openInventory(new ClanMemberEditPage(this.lateTimeClan, clanPlayer.getClan())
+                player.openInventory(new ClanMemberEditPage(this.lateTimeClan)
                         .getInventory(clanPlayer, target));
             }
 
@@ -121,9 +123,14 @@ public class ClanMemberChangeGroupPageListener implements Listener {
 
         if (itemStack == null) return null;
         if (!itemStack.hasItemMeta()) return null;
+        if (itemStack.getItemMeta() == null) return null;
         if (!itemStack.getItemMeta().hasDisplayName()) return null;
+        if (itemStack.getItemMeta().displayName() == null) return null;
 
-        var targetName = itemStack.getItemMeta().getDisplayName().split("§8• §e")[1];
+        var itemName = PlainTextComponentSerializer.plainText()
+                .serialize(Objects.requireNonNull(itemStack.getItemMeta().displayName()));
+
+        var targetName = itemName.split("§8• §e")[1];
         if (targetName == null) return null;
 
         var targetUUID = UniqueIdManager.getUUID(targetName);

@@ -25,26 +25,6 @@ public class HeadManager {
         this.lateTimeClan = lateTimeClan;
     }
 
-    public ItemStack registerHead(String playerName) {
-
-        var head = new ItemStack(Material.PLAYER_HEAD);
-        var headMeta = (SkullMeta) head.getItemMeta();
-
-        var target = Bukkit.getOfflinePlayerIfCached(playerName);
-        if (target == null) target = Bukkit.getOfflinePlayer(playerName);
-
-        headMeta.setOwningPlayer(target);
-        head.setItemMeta(headMeta);
-
-        this.lateTimeClan.getHeadDatabase().insertHead(
-                target.getName(),
-                target.getUniqueId(),
-                head
-        );
-
-        return head;
-    }
-
     public ItemStack registerHead(UUID playerUniqueId) {
 
         var head = new ItemStack(Material.PLAYER_HEAD);

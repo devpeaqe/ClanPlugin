@@ -355,11 +355,6 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                         clanModel.getName()
                 ));
 
-                //player.sendMessage(this.messages.compileMessage(
-                //        "Du hast den Spieler %s eingeladen.",
-                //        target.getName()
-                //));
-
                 clanModel.sendNotification(
                         "Der Spieler %s wurde von %s eingeladen.",
                         target.getName(),
@@ -484,12 +479,6 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                         "Clan-Tags"
                 );
 
-                //if (tmpColor != null) {
-                //    clanModel.sendNotification(
-                //            "Vorher: %s", tmpColor + clanModel.getTag()
-                //    );
-                //}
-
                 clanModel.sendNotification(
                         "Vorher: %s", tmpColor + clanModel.getTag()
                 );
@@ -501,8 +490,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 this.lateTimeClan.getWebhookSender().sendWebhook(
                         new DiscordWebhook.EmbedObject().setTitle("Clan-Tag Farbe geändert")
                                 .addField("Mitglied", player.getName(), true)
-                                .addField("Alte Farbe", tmpColor.toString(), true)
-                                .addField("Neue Farbe", hexColor.toString(), true)
+                                .addField("Alte Farbe", tmpColor, true)
+                                .addField("Neue Farbe", hexColor, true)
                                 .addField("Clan", clanModel.getName(), true)
                                 .addField("Clan-Tag", clanModel.getTag(), true)
                                 .setFooter("× LateTimeMC.DE » Clan-System", null)
@@ -522,7 +511,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
         // /clan bank action <amount>
         if (args.length == 3 && args[0].equalsIgnoreCase("bank")) {
 
-            var amount = (int) 0;
+            var amount = 0;
 
             try {
                 amount = Integer.parseInt(args[2]);
@@ -608,7 +597,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                         new DiscordWebhook.EmbedObject().setTitle("Geld eingezahlt")
                                 .addField("Mitglied", player.getName(), true)
                                 .addField("Anzahl",
-                                        ClanUtil.compressIntWithoutColor(amount) + "", true)
+                                        ClanUtil.compressIntWithoutColor(amount), true)
                                 .addField("Clan", clanPlayer.getClan().getName(), true)
                                 .addField("Clan-Tag", clanPlayer.getClan().getTag(), true)
                                 .setFooter("× LateTimeMC.DE » Clan-System", null)
@@ -775,6 +764,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 matches.add("info");
                 matches.add("bank");
                 if (clanPlayer.hasPermission(ClanAction.INVITE)) matches.add("invite");
+                if (clanPlayer.hasPermission(ClanAction.CHANGE_COLOR)) matches.add("color");
                 if (!clanPlayer.getClanGroup().equals(ClanGroup.OWNER)) matches.add("leave");
                 return matches;
             }
@@ -801,6 +791,11 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
                 return matches;
             }
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("color")) {
+            if (!(clanPlayer != null && clanPlayer.hasPermission(ClanAction.CHANGE_COLOR))) return matches;
+            matches.add("#");
         }
         
         if (args.length == 2 && args[0].equalsIgnoreCase("bank")) {

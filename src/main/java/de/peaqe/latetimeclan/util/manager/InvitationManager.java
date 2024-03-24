@@ -52,10 +52,6 @@ class InvitationCache {
         this.invitations = new HashMap<>();
     }
 
-    public InvitationCache(Map<UUID, List<String>> invitations) {
-        this.invitations = invitations;
-    }
-
     public boolean invite(UUID uuid, ClanObject clanObject) {
 
         var clanInvitations = this.invitations.get(uuid);

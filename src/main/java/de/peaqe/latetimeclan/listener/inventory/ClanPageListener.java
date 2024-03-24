@@ -28,11 +28,12 @@ public class ClanPageListener implements Listener {
     @EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event) {
 
-        if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (!(event.getWhoClicked() instanceof Player)) return;
         if (event.getClickedInventory() == null) return;
         if (!event.getView().getOriginalTitle().startsWith(this.lateTimeClan.getMessages()
                 .compileMessage(""))) return;
-        if (event.getCurrentItem() == null) return;
+        if (event.getCurrentItem() == null) {
+        }
 
     }
 }

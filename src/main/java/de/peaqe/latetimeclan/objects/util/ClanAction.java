@@ -15,8 +15,6 @@ public enum ClanAction {
     BANK_REMOVE(3),
     CHANGE_COLOR(2),
     CHANGE_GROUP(2),
-    PROMOTE(2),
-    DEMOTE(2),
     CHANGE_STATE(2),
     OPEN_SETTINGS(2),
     SETTINGS_MODERATE_CHAT(2),

@@ -6,8 +6,10 @@ import de.peaqe.latetimeclan.inventory.settings.ClanSettingsPage;
 import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.objects.util.ClanAction;
+import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -16,8 +18,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * *
@@ -119,17 +121,23 @@ public class ClanSettingsChangeStatePageListener implements Listener {
 
     }
 
-    @Nullable
     private ClanInvitationStatus getClanInvitationStatusFromItemStack(ItemStack itemStack) {
 
         if (itemStack == null) return null;
         if (!itemStack.hasItemMeta()) return null;
+        if (itemStack.getItemMeta() == null) return null;
         if (!itemStack.getItemMeta().hasDisplayName()) return null;
+        if (itemStack.getItemMeta().displayName() == null) return null;
 
-        var clanInvitationStatusName = itemStack.getItemMeta().getDisplayName().split("§8• ")[1];
+        var itemName = PlainTextComponentSerializer.plainText()
+                .serialize(Objects.requireNonNull(itemStack.getItemMeta().displayName()));
+
+        var clanInvitationStatusName = itemName.split("§8• ")[1];
         if (clanInvitationStatusName == null) return null;
+
+        var targetUUID = UniqueIdManager.getUUID(clanInvitationStatusName);
+        if (targetUUID == null) return null;
 
         return ClanInvitationStatus.getFromStatus(clanInvitationStatusName);
     }
-
 }

@@ -1,11 +1,13 @@
 package de.peaqe.latetimeclan.config;
 
 import de.peaqe.latetimeclan.LateTimeClan;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 /**
  * *
@@ -18,33 +20,34 @@ import java.io.IOException;
 
 public class DatabaseConfig {
 
-    private final LateTimeClan lateTimeClan;
-
-    private final File file;
     private final FileConfiguration config;
 
     public DatabaseConfig(LateTimeClan lateTimeClan) {
 
-        this.lateTimeClan = lateTimeClan;
-        this.file = new File(this.lateTimeClan.getDataFolder().getAbsolutePath(), "database.yml");
+        File file = new File(lateTimeClan.getDataFolder().getAbsolutePath(), "database.yml");
 
-        if (!this.file.exists()) {
+        if (!file.exists()) {
             try {
 
-                var bool = this.lateTimeClan.getDataFolder().mkdirs();
-                var bool1 = this.file.createNewFile();
+                var bool = lateTimeClan.getDataFolder().mkdirs();
+                var bool1 = file.createNewFile();
+
+                if (bool) {
+                    Bukkit.getLogger().log(Level.INFO,
+                            "Created Folder: " + lateTimeClan.getDataFolder().getAbsolutePath());
+                }
 
                 if (bool1) {
 
-                    var config1 = YamlConfiguration.loadConfiguration(this.file);
-                    config1 = YamlConfiguration.loadConfiguration(this.file);
+                    var config1 = YamlConfiguration.loadConfiguration(file);
+                    config1 = YamlConfiguration.loadConfiguration(file);
 
                     config1.set("hostname", "localhost");
                     config1.set("username", "username");
                     config1.set("database", "latetime");
                     config1.set("password", "1234");
                     config1.set("port", 3306);
-                    config1.save(this.file);
+                    config1.save(file);
                 }
 
             } catch (IOException e) {
@@ -52,7 +55,7 @@ public class DatabaseConfig {
             }
         }
 
-        this.config = YamlConfiguration.loadConfiguration(this.file);
+        this.config = YamlConfiguration.loadConfiguration(file);
     }
 
     public String get(String key) {

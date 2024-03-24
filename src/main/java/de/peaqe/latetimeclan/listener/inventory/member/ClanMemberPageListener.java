@@ -6,11 +6,15 @@ import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Objects;
 
 /**
  * *
@@ -56,16 +60,32 @@ public class ClanMemberPageListener implements Listener {
             return;
         }
 
-        if (!currentItem.getItemMeta().getDisplayName().contains("§8• §a")) return;
-        var currentItemPlayerName = currentItem.getItemMeta().getDisplayName().split("§8• §a")[1];
-        if (currentItemPlayerName == null) return;
-
-        var currentClanPlayer = ClanPlayerObject.fromPlayer(UniqueIdManager.getUUID(currentItemPlayerName));
+        var currentClanPlayer = this.getClanPlayerFromItemStack(currentItem);
 
         player.closeInventory();
-        player.openInventory(new ClanMemberEditPage(this.lateTimeClan, clanPlayer.getClan())
+        player.openInventory(new ClanMemberEditPage(this.lateTimeClan)
                 .getInventory(clanPlayer, currentClanPlayer));
 
+    }
+
+    private ClanPlayerObject getClanPlayerFromItemStack(ItemStack itemStack) {
+
+        if (itemStack == null) return null;
+        if (!itemStack.hasItemMeta()) return null;
+        if (itemStack.getItemMeta() == null) return null;
+        if (!itemStack.getItemMeta().hasDisplayName()) return null;
+        if (itemStack.getItemMeta().displayName() == null) return null;
+
+        var itemName = PlainTextComponentSerializer.plainText()
+                .serialize(Objects.requireNonNull(itemStack.getItemMeta().displayName()));
+
+        var targetName = itemName.split("§8• §e")[1];
+        if (targetName == null) return null;
+
+        var targetUUID = UniqueIdManager.getUUID(targetName);
+        if (targetUUID == null) return null;
+
+        return ClanPlayerObject.fromPlayer(targetUUID);
     }
 
 }

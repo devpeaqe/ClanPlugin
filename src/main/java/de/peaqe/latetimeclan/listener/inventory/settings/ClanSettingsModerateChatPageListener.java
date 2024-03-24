@@ -3,7 +3,6 @@ package de.peaqe.latetimeclan.listener.inventory.settings;
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.inventory.navigation.ClanInfoPage;
 import de.peaqe.latetimeclan.inventory.settings.ClanSettingsPage;
-import de.peaqe.latetimeclan.objects.ClanGroup;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
@@ -18,9 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * *
@@ -34,12 +30,10 @@ import java.util.UUID;
 public class ClanSettingsModerateChatPageListener implements Listener {
 
     private final LateTimeClan lateTimeClan;
-    private final Map<UUID, ClanGroup> cache;
 
     public ClanSettingsModerateChatPageListener(LateTimeClan lateTimeClan) {
         this.lateTimeClan = lateTimeClan;
         Bukkit.getPluginManager().registerEvents(this, this.lateTimeClan);
-        this.cache = new HashMap<>();
     }
 
     @EventHandler
@@ -75,6 +69,7 @@ public class ClanSettingsModerateChatPageListener implements Listener {
                     return;
                 }
 
+                // TODO: Find way
                 //if (clanPlayer.getClan().getSettings().isClanChatToggled() == clanChatToggled) {
                 //    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
                 //            "Der Clan-Chat ist bereits %s!",

@@ -1,7 +1,5 @@
 package de.peaqe.latetimeclan.messages;
 
-import de.peaqe.latetimeclan.objects.ClanPlayerObject;
-
 /**
  * *
  *
@@ -44,12 +42,6 @@ public class Messages {
         }
 
         return this.prefix + result;
-    }
-
-    public String sendClanMessage(ClanPlayerObject clanPlayerObject, String message) {
-        return this.prefix.replace("Clan", "ClanChat") +
-                "§8( " + clanPlayerObject.getClanGroup().getColor() + clanPlayerObject.getName() + " §8) » " +
-                message;
     }
 
     private String getColorHighlight(int index) {

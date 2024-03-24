@@ -137,31 +137,6 @@ public class PlayerDatabase extends DatabaseProvider {
     }
 
     // NOT CACHED
-    public Date getLastSeen(@NotNull String playerName) {
-
-        var query = "SELECT * FROM latetime.player WHERE `" + PlayerProperty.NAME.getValue() + "` = ?";
-
-        this.connect();
-        try (var statement = this.getConnection().prepareStatement(query)) {
-
-            statement.setString(1, playerName.toLowerCase());
-            var resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                var timeStamp = resultSet.getTimestamp(PlayerProperty.LAST_SEEN.getValue());
-                return new Date(timeStamp.getTime());
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            this.close();
-        }
-
-        return new Date();
-    }
-
-    // NOT CACHED
     public Date getLastSeen(@NotNull UUID playerUniqueId) {
 
         var query = "SELECT * FROM latetime.player WHERE `" + PlayerProperty.UUID.getValue() + "` = ?";

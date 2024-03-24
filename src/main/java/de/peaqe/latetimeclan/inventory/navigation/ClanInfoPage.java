@@ -89,12 +89,10 @@ public class ClanInfoPage {
                 )
                 .build();
 
-        // TODO: Add founderDate to Database
         final var clanStaticsItem = new ItemBuilder(Head.compile(Head.KING))
                 .setDisplayName("§8• §aStatistiken")
                 .addLore(
                         "",
-                        //"§8• §7Zeige dir die derzeitigen Statistiken deines Clans an.", "",
                         "§8• §7Bank: " + ClanUtil.compressInt(clanObject.getClanBankAmount()) + "§7€",
                         "§8• §7Erstellt am: §c" +
                                 ClanUtil.formatBerlinTimeDate(new Date(clanObject.getDateCreated().getTime()), "§c")

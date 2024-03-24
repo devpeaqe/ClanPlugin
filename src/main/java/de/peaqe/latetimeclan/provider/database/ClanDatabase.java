@@ -346,12 +346,7 @@ public class ClanDatabase extends DatabaseProvider {
                 ));
                 this.clanCache.put(clanTag.toUpperCase(), Optional.of(clanModel.get()));
             } else {
-                this.clanCache.entrySet().removeIf(entry -> {
-                    if (entry.getValue().isPresent()) {
-                        entry.getValue().get();
-                    }
-                    return true;
-                });
+                this.clanCache.entrySet().removeIf(entry -> entry.getValue().isPresent());
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -9,6 +9,7 @@ import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.manager.UniqueIdManager;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -18,6 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * *
@@ -55,7 +57,11 @@ public class ClanMemberKickConfirmPageListener implements Listener {
             case 20 -> {
                 // DECLINE
                 player.closeInventory();
-                player.openInventory(new ClanMemberPage(this.lateTimeClan, ClanPlayerObject.fromPlayer(player).getClan()).getInventory());
+
+                var clanPlayer = ClanPlayerObject.fromPlayer(player);
+                if (clanPlayer == null) return;
+
+                player.openInventory(new ClanMemberPage(this.lateTimeClan, clanPlayer.getClan()).getInventory());
             }
 
             case 24 -> {
@@ -127,7 +133,7 @@ public class ClanMemberKickConfirmPageListener implements Listener {
                 var target = this.getClanPlayerFromItemStack(event.getClickedInventory().getItem(13));
                 if (target == null) return;
 
-                player.openInventory(new ClanMemberEditPage(this.lateTimeClan, clanPlayer.getClan())
+                player.openInventory(new ClanMemberEditPage(this.lateTimeClan)
                         .getInventory(clanPlayer, target));
             }
 
@@ -139,9 +145,14 @@ public class ClanMemberKickConfirmPageListener implements Listener {
 
         if (itemStack == null) return null;
         if (!itemStack.hasItemMeta()) return null;
+        if (itemStack.getItemMeta() == null) return null;
         if (!itemStack.getItemMeta().hasDisplayName()) return null;
+        if (itemStack.getItemMeta().displayName() == null) return null;
 
-        var targetName = itemStack.getItemMeta().getDisplayName().split("§8• §e")[1];
+        var itemName = PlainTextComponentSerializer.plainText()
+                .serialize(Objects.requireNonNull(itemStack.getItemMeta().displayName()));
+
+        var targetName = itemName.split("§8• §e")[1];
         if (targetName == null) return null;
 
         var targetUUID = UniqueIdManager.getUUID(targetName);

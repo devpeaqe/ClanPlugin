@@ -41,7 +41,8 @@ public class ClanObject {
         this.dateCreated = dateCreated;
     }
 
-    public ClanObject() {}
+    public ClanObject() {
+    }
 
     public String getName() {
         return name;
@@ -91,10 +92,6 @@ public class ClanObject {
         this.settingsObject = settingsObject;
     }
 
-    public String getClanFounderUuid() {
-        return clanFounderUuid;
-    }
-
     public int getClanBankAmount() {
         return clanBankAmount;
     }
@@ -113,10 +110,6 @@ public class ClanObject {
 
     public Date getDateCreated() {
         return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
     }
 
     public void delete() {

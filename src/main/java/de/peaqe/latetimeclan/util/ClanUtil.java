@@ -9,13 +9,9 @@ import de.peaqe.latetimeclan.util.heads.Head;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -41,35 +37,6 @@ public class ClanUtil {
 
     }
 
-    public static String getPlayerHeadUrl(String playerName) {
-        try {
-
-            var url = "https://crafatar.com/renders/head/" + playerName + "?overlay";
-            var connection = (HttpURLConnection) new URL(url).openConnection();
-
-            connection.setRequestMethod("GET");
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-
-                var scanner = new Scanner(connection.getInputStream());
-                var response = new StringBuilder();
-
-                while (scanner.hasNextLine()) {
-                    response.append(scanner.nextLine());
-                }
-
-                scanner.close();
-                return response.toString();
-            } else {
-                throw new IOException("Failed to fetch player head, response code: " + responseCode);
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static String compressInt(int number) {
         var formatter = new DecimalFormat("#,###");
         return "§b" + formatter.format(number).replace(",", "§7.§b");
@@ -78,14 +45,6 @@ public class ClanUtil {
     public static String compressIntWithoutColor(int number) {
         var formatter = new DecimalFormat("#,###");
         return formatter.format(number).replace(",", ".");
-    }
-
-    public static int decompressString(String compressedNumber) {
-        try {
-            return Integer.parseInt(compressedNumber.replaceAll("[^\\d.]", ""));
-        } catch (NumberFormatException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static ItemStack getGoBackItem() {

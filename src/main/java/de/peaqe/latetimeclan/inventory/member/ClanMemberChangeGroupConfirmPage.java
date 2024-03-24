@@ -2,7 +2,6 @@ package de.peaqe.latetimeclan.inventory.member;
 
 import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.objects.ClanGroup;
-import de.peaqe.latetimeclan.objects.ClanObject;
 import de.peaqe.latetimeclan.objects.ClanPlayerObject;
 import de.peaqe.latetimeclan.objects.util.ClanAction;
 import de.peaqe.latetimeclan.util.ClanUtil;
@@ -26,7 +25,7 @@ public class ClanMemberChangeGroupConfirmPage {
 
     private final Inventory inventory;
 
-    public ClanMemberChangeGroupConfirmPage(LateTimeClan lateTimeClan, ClanObject clanObject) {
+    public ClanMemberChangeGroupConfirmPage(LateTimeClan lateTimeClan) {
         this.inventory = Bukkit.createInventory(
                 null,
                 9*4,
