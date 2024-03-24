@@ -14,7 +14,6 @@ import de.peaqe.latetimeclan.listener.inventory.settings.ClanSettingsChangeState
 import de.peaqe.latetimeclan.listener.inventory.settings.ClanSettingsModerateChatPageListener;
 import de.peaqe.latetimeclan.listener.inventory.settings.ClanSettingsPageListener;
 import de.peaqe.latetimeclan.listener.inventory.settings.ClanSettingsToggleBankPageListener;
-import de.peaqe.latetimeclan.listener.plugin.PluginDisableListener;
 import de.peaqe.latetimeclan.messages.Messages;
 import de.peaqe.latetimeclan.objects.ClanGroup;
 import de.peaqe.latetimeclan.placeholder.ClanTagPlaceholder;
@@ -27,6 +26,7 @@ import de.peaqe.latetimeclan.util.manager.HeadManager;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
 import de.peaqe.latetimeclan.webhook.WebhookSender;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.awt.*;
@@ -38,6 +38,7 @@ public final class LateTimeClan extends JavaPlugin {
 
     private static LateTimeClan instance;
 
+    private Economy economy;
     private Messages messages;
     private ClanDatabase clanDatabase;
     private HeadDatabase headDatabase;
@@ -55,6 +56,11 @@ public final class LateTimeClan extends JavaPlugin {
     public void onEnable() {
 
         instance = this;
+
+        if (!setupEconomy()) {
+            getLogger().severe("Disabled due to no Vault dependency found!");
+            getServer().getPluginManager().disablePlugin(this);
+        }
 
         var databaseConfig = new DatabaseConfig(this);
 
@@ -129,7 +135,6 @@ public final class LateTimeClan extends JavaPlugin {
         new ClanMemberChangeGroupConfirmPageListener(this);
         new PlayerJoinListener(this);
         new ClanSettingsPageListener(this);
-        new PluginDisableListener(this);
         new ClanSettingsChangeStatePageListener(this);
         new ClanSettingsModerateChatPageListener(this);
         new ClanSettingsToggleBankPageListener(this);
@@ -146,8 +151,24 @@ public final class LateTimeClan extends JavaPlugin {
         new ClanChatCommand(this);
     }
 
+    private boolean setupEconomy() {
+        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        var rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) return false;
+
+        this.economy = rsp.getProvider();
+        return true;
+    }
+
+
     public static LateTimeClan getInstance() {
         return instance;
+    }
+
+    public Economy getEconomy() {
+        return economy;
     }
 
     public Messages getMessages() {

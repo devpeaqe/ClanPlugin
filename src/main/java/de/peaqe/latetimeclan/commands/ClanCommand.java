@@ -581,6 +581,24 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     return true;
                 }
 
+                if (this.lateTimeClan.getEconomy().getBalance(player) < amount) {
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Du besitzt derzeit nicht genügend Guthaben um dies auf die %s einzuzahlen.",
+                            "Clan-Bank"
+                    ));
+                    return true;
+                }
+
+                // Remove money from the player
+                var response = this.lateTimeClan.getEconomy().withdrawPlayer(player, amount);
+
+                if (!response.transactionSuccess()) {
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Bei der Zahlung ist ein Fehler aufgetreten. Bitte versuche es später erneut."
+                    ));
+                    return true;
+                }
+
                 clanModel.setClanBankAmount(clanModel.getClanBankAmount() + amount);
                 this.lateTimeClan.getClanDatabase().updateClan(clanModel);
 
@@ -590,8 +608,6 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                         ClanUtil.compressInt(amount),
                         "Clan-Bank"
                 );
-
-                // TODO: Add money system and remove them from the player
 
                 this.lateTimeClan.getWebhookSender().sendWebhook(
                         new DiscordWebhook.EmbedObject().setTitle("Geld eingezahlt")
@@ -624,6 +640,24 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     return true;
                 }
 
+                if (this.lateTimeClan.getEconomy().getBalance(player) < amount) {
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Du besitzt derzeit nicht genügend Guthaben um dies auf die %s einzuzahlen.",
+                            "Clan-Bank"
+                    ));
+                    return true;
+                }
+
+                // Give the money from the player
+                var response = this.lateTimeClan.getEconomy().depositPlayer(player, amount);
+
+                if (!response.transactionSuccess()) {
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Bei der Zahlung ist ein Fehler aufgetreten. Bitte versuche es später erneut."
+                    ));
+                    return true;
+                }
+
                 clanModel.setClanBankAmount(clanModel.getClanBankAmount() - amount);
                 this.lateTimeClan.getClanDatabase().updateClan(clanModel);
 
@@ -633,8 +667,6 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                         ClanUtil.compressInt(amount),
                         "Clan-Bank"
                 );
-
-                // TODO: Add money system and add them to the player
 
                 this.lateTimeClan.getWebhookSender().sendWebhook(
                         new DiscordWebhook.EmbedObject().setTitle("Geld abgehoben")
