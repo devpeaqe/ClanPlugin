@@ -65,6 +65,7 @@ public final class LateTimeClan extends JavaPlugin {
         }
 
         var databaseConfig = new DatabaseConfig(this);
+        this.clanInvitaionConfig = new ClanInvitaionConfig(this);
 
         this.databaseConnection = new DatabaseConnection(
                 databaseConfig.get("hostname"),
@@ -124,10 +125,9 @@ public final class LateTimeClan extends JavaPlugin {
         this.headDatabase = new HeadDatabase(this);
         this.playerDatabase = new PlayerDatabase(this);
         this.headManager = new HeadManager(this);
-        this.invitationManager = new InvitationManager();
+        this.invitationManager = new InvitationManager(this.clanInvitaionConfig);
         this.webhookSender = new WebhookSender();
         this.blockedWordsConfig = new BlockedWordsConfig(this);
-        this.clanInvitaionConfig = new ClanInvitaionConfig(this);
     }
 
     private void registerListener() {

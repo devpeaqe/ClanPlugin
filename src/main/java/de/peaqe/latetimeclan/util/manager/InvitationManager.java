@@ -1,6 +1,5 @@
 package de.peaqe.latetimeclan.util.manager;
 
-import de.peaqe.latetimeclan.LateTimeClan;
 import de.peaqe.latetimeclan.config.ClanInvitaionConfig;
 import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
 import de.peaqe.latetimeclan.objects.ClanObject;
@@ -21,8 +20,8 @@ public class InvitationManager {
 
     private final InvitationCache invitationCache;
 
-    public InvitationManager() {
-        this.invitationCache = new InvitationCache();
+    public InvitationManager(ClanInvitaionConfig clanInvitaionConfig) {
+        this.invitationCache = new InvitationCache(clanInvitaionConfig);
     }
 
     public boolean invite(UUID uuid, ClanObject clanObject) {
@@ -51,16 +50,15 @@ class InvitationCache {
 
     private final ClanInvitaionConfig clanInvitaionConfig;
 
-    public InvitationCache() {
-        this.clanInvitaionConfig = LateTimeClan.getInstance().getClanInvitaionConfig();
+    public InvitationCache(ClanInvitaionConfig clanInvitaionConfig) {
+        this.clanInvitaionConfig = clanInvitaionConfig;
     }
 
     public boolean invite(ClanObject clanObject, UUID uuid) {
         if (!this.isClanJoinable(clanObject)) return false;
         if (this.isInvited(uuid, clanObject)) return false;
 
-        this.clanInvitaionConfig.addInvitation(clanObject, uuid);
-        return true;
+        return this.clanInvitaionConfig.addInvitation(clanObject, uuid);
     }
 
     public void unInvite(UUID uuid, ClanObject clanObject) {
@@ -69,8 +67,7 @@ class InvitationCache {
     }
 
     public boolean isInvited(UUID uuid, ClanObject clanObject) {
-        var invitationList = this.clanInvitaionConfig.getPlayerInvitedFrom(clanObject);
-        return invitationList.contains(uuid);
+        return this.clanInvitaionConfig.wasInvited(clanObject, uuid);
     }
 
     public boolean isClanJoinable(ClanObject clanObject) {

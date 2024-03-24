@@ -57,10 +57,10 @@ public class ClanInvitaionConfig {
 
     private final String clanInvitationPath = "Inviations.";
 
-    public void addInvitation(ClanObject clanObject, UUID targetUUID) {
+    public boolean addInvitation(ClanObject clanObject, UUID targetUUID) {
 
         var invitationList = this.config.getStringList(clanObject.getTag());
-        if (invitationList.contains(targetUUID.toString())) return;
+        if (invitationList.contains(targetUUID.toString())) return false;
 
         invitationList.add(targetUUID.toString());
         this.config.set(clanInvitationPath + clanObject.getTag(), invitationList);
@@ -70,6 +70,8 @@ public class ClanInvitaionConfig {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        return true;
     }
 
     public void removeInvitation(ClanObject clanObject, UUID targetUUID) {
@@ -114,7 +116,7 @@ public class ClanInvitaionConfig {
         var clansWithInvitation = new ArrayList<String>();
 
         for (var clanTag : this.config.getKeys(false)) {
-            var invitationList = this.config.getStringList(clanTag);
+            var invitationList = this.config.getStringList(this.clanInvitationPath + clanTag);
             if (invitationList.contains(targetUUID.toString())) {
                 clansWithInvitation.add(clanTag);
             }
@@ -122,4 +124,8 @@ public class ClanInvitaionConfig {
         return clansWithInvitation;
     }
 
+    public boolean wasInvited(ClanObject clanObject, UUID uuid) {
+        var invitationList = this.config.getStringList(this.clanInvitationPath + clanObject.getTag());
+        return invitationList.contains(uuid.toString());
+    }
 }
