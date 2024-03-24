@@ -1,9 +1,12 @@
 package de.peaqe.latetimeclan.util.manager;
 
+import de.peaqe.latetimeclan.LateTimeClan;
+import de.peaqe.latetimeclan.config.ClanInvitaionConfig;
 import de.peaqe.latetimeclan.objects.ClanInvitationStatus;
 import de.peaqe.latetimeclan.objects.ClanObject;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * *
@@ -23,15 +26,15 @@ public class InvitationManager {
     }
 
     public boolean invite(UUID uuid, ClanObject clanObject) {
-        return this.invitationCache.invite(uuid, clanObject);
+        return this.invitationCache.invite(clanObject, uuid);
     }
 
     public void unInvite(UUID uuid, ClanObject clanObject) {
         this.invitationCache.unInvite(uuid, clanObject);
     }
 
-    public boolean isInvited(UUID uuid, String clanTag) {
-        return this.invitationCache.isInvited(uuid, clanTag);
+    public boolean isInvited(UUID uuid, ClanObject clanObject) {
+        return this.invitationCache.isInvited(uuid, clanObject);
     }
 
     public boolean isClanJoinable(ClanObject clanObject) {
@@ -39,47 +42,41 @@ public class InvitationManager {
     }
 
     public List<String> getInvitations(UUID uuid) {
-        return this.invitationCache.getInvitations().get(uuid);
+        return this.invitationCache.getInvitations(uuid);
     }
 
 }
 
 class InvitationCache {
 
-    private final Map<UUID, List<String>> invitations;
+    private final ClanInvitaionConfig clanInvitaionConfig;
 
     public InvitationCache() {
-        this.invitations = new HashMap<>();
+        this.clanInvitaionConfig = LateTimeClan.getInstance().getClanInvitaionConfig();
     }
 
-    public boolean invite(UUID uuid, ClanObject clanObject) {
+    public boolean invite(ClanObject clanObject, UUID uuid) {
 
-        var clanInvitations = this.invitations.get(uuid);
-        if (clanInvitations == null) clanInvitations = new ArrayList<>();
+        var invitationList = this.clanInvitaionConfig.getPlayerInvitedFrom(clanObject);
 
         if (!this.isClanJoinable(clanObject)) return false;
-        if (this.isInvited(uuid, clanObject.getTag())) return false;
-        clanInvitations.add(clanObject.getTag());
+        if (this.isInvited(uuid, clanObject)) return false;
 
-        this.invitations.put(uuid, clanInvitations);
+        this.clanInvitaionConfig.addInvitation(clanObject, uuid);
         return true;
     }
 
     public void unInvite(UUID uuid, ClanObject clanObject) {
 
-        var clanInvitations = this.invitations.get(uuid);
-        if (clanInvitations == null) clanInvitations = new ArrayList<>();
+        var invitationList = this.clanInvitaionConfig.getPlayerInvitedFrom(clanObject);
 
-        if (!this.isInvited(uuid, clanObject.getTag())) return;
-        clanInvitations.remove(clanObject.getTag());
-
-        this.invitations.put(uuid, clanInvitations);
+        if (!this.isInvited(uuid, clanObject)) return;
+        this.clanInvitaionConfig.removeInvitation(clanObject, uuid);
     }
 
-    public boolean isInvited(UUID uuid, String clanTag) {
-        System.out.println(this.invitations);
-        if (this.invitations.get(uuid) == null || this.invitations.get(uuid).isEmpty()) return false;
-        return this.invitations.get(uuid).contains(clanTag);
+    public boolean isInvited(UUID uuid, ClanObject clanObject) {
+        var invitationList = this.clanInvitaionConfig.getPlayerInvitedFrom(clanObject);
+        return invitationList.contains(uuid);
     }
 
     public boolean isClanJoinable(ClanObject clanObject) {
@@ -87,7 +84,9 @@ class InvitationCache {
         return (!clanObject.getClanInvitationStatus().equals(ClanInvitationStatus.CLOSED));
     }
 
-    public Map<UUID, List<String>> getInvitations() {
-        return invitations;
+    // TODO: Filter to get all clans the player was invited from
+    public List<String> getInvitations(UUID uuid) {
+        return this.clanInvitaionConfig.getClansWithInvitation(uuid);
     }
+
 }

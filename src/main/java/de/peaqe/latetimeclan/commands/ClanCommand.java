@@ -223,7 +223,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             }
 
             if (!(this.invitationManager.isClanJoinable(clan) &&
-                    this.invitationManager.isInvited(player.getUniqueId(), clan.getTag()))) {
+                    this.invitationManager.isInvited(player.getUniqueId(), clan))) {
                 player.sendMessage(this.messages.compileMessage(
                         "Der Clan %s nimmt derzeit keine neuen Mitglieder auf!",
                         clan.getName()
@@ -315,55 +315,67 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 ));
                 return true;
             }
-
-            // TODO: Add offline support
-            var target = Bukkit.getPlayer(args[1]);
-            if (target == null) {
+            
+            var targetUUID = this.lateTimeClan.getPlayerDatabase().getUniqueId(args[1]).orElse(null);
+            if (targetUUID == null) {
                 player.sendMessage(this.messages.compileMessage(
-                        "Der Spieler %s konnte nicht gefunden werden oder ist derzeit nicht online!",
+                        "Der Spieler %s konnte nicht gefunden werden!",
+                        args[1]
+                ));
+                return true;
+            }
+            
+            var targetName = this.lateTimeClan.getPlayerDatabase().getName(targetUUID);
+            if (targetName == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Der Spieler %s konnte nicht gefunden werden!",
                         args[1]
                 ));
                 return true;
             }
 
-            if (target.getName().equalsIgnoreCase(player.getName())) {
+            if (targetName.equalsIgnoreCase(player.getName())) {
                 player.sendMessage(this.messages.compileMessage(
                         "Du kannst dich nicht selbst einladen!"
                 ));
                 return true;
             }
 
-            if (this.lateTimeClan.getClanDatabase().getClanModelOfMember(target.getUniqueId()) != null) {
+            if (this.lateTimeClan.getClanDatabase().getClanModelOfMember(targetUUID) != null) {
                 player.sendMessage(this.messages.compileMessage(
                         "Der Spieler %s ist bereits in einem Clan!",
-                        target.getName()
+                        targetName
                 ));
                 return true;
             }
 
-            if (this.invitationManager.isInvited(target.getUniqueId(), clanModel.getTag())) {
+            if (this.invitationManager.isInvited(targetUUID, clanModel)) {
                 player.sendMessage(this.messages.compileMessage(
                         "Der Spieler %s hat bereits eine Einladung vom Clan erhalten!",
-                        target.getName()
+                        targetName
                 ));
                 return true;
             }
 
-            if (this.invitationManager.invite(target.getUniqueId(), clanModel)) {
-                target.sendMessage(this.messages.compileMessage(
-                        "Du wurdest von dem Clan %s eingeladen.",
-                        clanModel.getName()
-                ));
+            if (this.invitationManager.invite(targetUUID, clanModel)) {
+
+                var target = Bukkit.getPlayer(targetUUID);
+                if (target != null) {
+                    target.sendMessage(this.messages.compileMessage(
+                            "Du wurdest von dem Clan %s eingeladen.",
+                            clanModel.getName()
+                    ));
+                }
 
                 clanModel.sendNotification(
                         "Der Spieler %s wurde von %s eingeladen.",
-                        target.getName(),
+                        targetName,
                         player.getName()
                 );
 
                 this.lateTimeClan.getWebhookSender().sendWebhook(
                         new DiscordWebhook.EmbedObject().setTitle("Clan Einladung")
-                                .addField("Mitglied", target.getName(), true)
+                                .addField("Mitglied", targetName, true)
                                 .addField("Eingeladen von", player.getName(), true)
                                 .addField("Clan", clanModel.getName(), true)
                                 .addField("Clan-Tag", clanModel.getTag(), true)
@@ -784,7 +796,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd,
+                                                @NotNull String label, @NotNull String[] args) {
 
         ArrayList<String> matches = new ArrayList<>();
         if (!(sender instanceof Player player)) return matches;
