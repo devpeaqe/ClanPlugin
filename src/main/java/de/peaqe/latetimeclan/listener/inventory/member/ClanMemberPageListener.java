@@ -79,7 +79,7 @@ public class ClanMemberPageListener implements Listener {
         var itemName = PlainTextComponentSerializer.plainText()
                 .serialize(Objects.requireNonNull(itemStack.getItemMeta().displayName()));
 
-        var targetName = itemName.split("§8• §e")[1];
+        var targetName = itemName.split("§8• §a")[1];
         if (targetName == null) return null;
 
         var targetUUID = UniqueIdManager.getUUID(targetName);

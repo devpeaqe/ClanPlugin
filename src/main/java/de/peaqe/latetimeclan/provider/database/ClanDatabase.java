@@ -165,9 +165,7 @@ public class ClanDatabase extends DatabaseProvider {
         }
 
         this.connect();
-        try {
-
-            var statement = this.getConnection().prepareStatement(query);
+        try (var statement = this.getConnection().prepareStatement(query)) {
 
             statement.setString(1, clanObject.getName());
             statement.setString(2, clanObject.getTag().toUpperCase());
@@ -177,8 +175,8 @@ public class ClanDatabase extends DatabaseProvider {
             statement.setInt(6, clanObject.getMaxSize());
             statement.setString(7, ClanDecoder.mapToString(clanObject.getMembers()));
             statement.setInt(8, clanObject.getClanBankAmount());
-            statement.setTimestamp(8, new Timestamp(clanObject.getDateCreated().getTime()));
-            statement.setString(9, clanObject.getTag());
+            statement.setTimestamp(9, new Timestamp(clanObject.getDateCreated().getTime()));
+            statement.setString(10, clanObject.getTag());
             this.lateTimeClan.getClanSettingsDatabase().insertClan(clanObject);
 
             statement.executeUpdate();

@@ -10,6 +10,9 @@ import de.peaqe.latetimeclan.util.ClanUtil;
 import de.peaqe.latetimeclan.util.color.Hex;
 import de.peaqe.latetimeclan.util.manager.InvitationManager;
 import de.peaqe.latetimeclan.webhook.DiscordWebhook;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -94,11 +97,6 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
-            clan.sendNotification(
-                    "Das Mitglied %s hat den Clan §cverlassen§7.",
-                    player.getName()
-            );
-
             this.lateTimeClan.getWebhookSender().sendWebhook(
                     new DiscordWebhook.EmbedObject().setTitle("Clan verlassen")
                             .addField("Mitglied", player.getName(), true)
@@ -109,12 +107,18 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             );
 
             clan.kick(clanPlayer);
+            clanPlayer.setNull();
 
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f);
             player.sendMessage(this.messages.compileMessage(
                     "Du hast den Clan %s verlassen!",
                     clan.getName()
             ));
+
+            clan.sendNotification(
+                    "Das Mitglied %s hat den Clan §cverlassen§7.",
+                    player.getName()
+            );
 
             return true;
         }
@@ -202,6 +206,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 );
                 
                 clan.addMember(clanPlayer);
+                this.lateTimeClan.getInvitationManager().unInvite(player.getUniqueId(), clan);
 
                 player.sendMessage(this.messages.compileMessage(
                         "Du bist dem Clan %s beigetreten!",
@@ -231,8 +236,6 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
-            this.invitationManager.unInvite(player.getUniqueId(), clan);
-
             var clanPlayer = new ClanPlayerObject(
                     player.getName(),
                     player.getUniqueId(),
@@ -258,6 +261,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             );
 
             clan.addMember(clanPlayer);
+            this.lateTimeClan.getInvitationManager().unInvite(player.getUniqueId(), clan);
 
             player.sendMessage(this.messages.compileMessage(
                     "Du bist dem Clan %s beigetreten!",
@@ -273,6 +277,41 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                             .setFooter("× LateTimeMC.DE » Clan-System", null)
                             .setColor(Color.GREEN)
             );
+
+            return true;
+        }
+
+        // /clan decline <clan-tag>
+        if (args.length == 2 && args[0].equalsIgnoreCase("decline")) {
+
+            var clanTag = args[1].toLowerCase();
+            var optionalClan = this.lateTimeClan.getClanDatabase().getClan(clanTag);
+            var clan = (ClanObject) null;
+
+            if (optionalClan.isPresent()) clan = optionalClan.get();
+
+            if (clan == null) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Der Clan %s existiert nicht!",
+                        clanTag
+                ));
+                return true;
+            }
+
+            if (!this.invitationManager.isInvited(player.getUniqueId(), clan)) {
+                player.sendMessage(this.messages.compileMessage(
+                        "Du wurdest von dem Clan %s nicht eingeladen.",
+                        clan.getName()
+                ));
+                return true;
+            }
+
+            this.invitationManager.unInvite(player.getUniqueId(), clan);
+
+            player.sendMessage(this.messages.compileMessage(
+                    "Du hast die %s von dem Clan %s abgelehnt.",
+                    "Einladung", clan.getName()
+            ));
 
             return true;
         }
@@ -361,10 +400,27 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
                 var target = Bukkit.getPlayer(targetUUID);
                 if (target != null) {
+                    var message = Component.text(this.messages.compileMessage("", "")).asComponent();
+
+                    var accept = Component.text("§8[§aAnnehmen§8]").asComponent();
+                    accept = accept.hoverEvent(HoverEvent.showText(
+                            Component.text("§7Akzeptiere die §eEinladung§7.")));
+                    accept = accept.clickEvent(ClickEvent.runCommand("/clan join " + clanModel.getTag()));
+
+                    var decline = Component.text("§8[§cAblehnen§8]").asComponent();
+                    decline = decline.hoverEvent(HoverEvent.showText(
+                            Component.text("§7Lehne die §eEinladung§7 ab.")));
+                    decline = decline.clickEvent(ClickEvent.runCommand("/clan decline " + clanModel.getTag()));
+
+                    message = message.append(accept);
+                    message = message.append(Component.space());
+                    message = message.append(decline);
+
                     target.sendMessage(this.messages.compileMessage(
                             "Du wurdest von dem Clan %s eingeladen.",
                             clanModel.getName()
                     ));
+                    target.sendMessage(message);
                 }
 
                 clanModel.sendNotification(
@@ -701,10 +757,11 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
             var clanName = args[1];
             var clanTag = args[2].toUpperCase();
+            var amount = 25000;
 
-            if (clanTag.length() > 5) {
+            if (clanTag.length() > 4) {
                 player.sendMessage(this.messages.compileMessage(
-                        "Der %s darf %s 5 Zeichen lang sein!",
+                        "Der %s darf %s 4 Zeichen lang sein!",
                         "Clan-Tag", "§cmaximal"
                 ));
                 return true;
@@ -715,6 +772,24 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     "Du verwendest ein %s Zeichen im %s! %s",
                         "§cverbotenes", "§eClan-Name", "§8(§c" + ClanUtil.isBlockedChar(clanName) + "§8)"
                 ));
+
+                if (this.lateTimeClan.getEconomy().getBalance(player) < amount) {
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Du besitzt derzeit nicht genügend Guthaben um ein %s zu erstellen.",
+                            "Clan"
+                    ));
+                    return true;
+                }
+
+                // Take money from the player
+                var response = this.lateTimeClan.getEconomy().depositPlayer(player, amount);
+
+                if (!response.transactionSuccess()) {
+                    player.sendMessage(this.lateTimeClan.getMessages().compileMessage(
+                            "Bei der Zahlung ist ein Fehler aufgetreten. Bitte versuche es später erneut."
+                    ));
+                    return true;
+                }
 
                 this.lateTimeClan.getWebhookSender().sendWebhook(
                         new DiscordWebhook.EmbedObject().setTitle("BADWORD DETECTED")
@@ -850,7 +925,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
             }
         }
             
-        if (args.length == 2 && args[0].equalsIgnoreCase("join")) {
+        if (args.length == 2 && (args[0].equalsIgnoreCase("join") ||
+                args[0].equalsIgnoreCase("decline"))) {
             if (this.invitationManager.getInvitations(player.getUniqueId()) != null &&
                     !this.invitationManager.getInvitations(player.getUniqueId()).isEmpty()) {
                 this.invitationManager.getInvitations(player.getUniqueId()).forEach(clanTag -> {

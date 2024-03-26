@@ -60,7 +60,6 @@ public class ClanInvitaionConfig {
     public boolean addInvitation(ClanObject clanObject, UUID targetUUID) {
 
         var invitationList = this.config.getStringList(clanObject.getTag());
-        if (invitationList.contains(targetUUID.toString())) return false;
 
         invitationList.add(targetUUID.toString());
         this.config.set(clanInvitationPath + clanObject.getTag(), invitationList);
@@ -77,7 +76,6 @@ public class ClanInvitaionConfig {
     public void removeInvitation(ClanObject clanObject, UUID targetUUID) {
 
         var invitationList = this.config.getStringList(clanObject.getTag());
-        if (!invitationList.contains(targetUUID.toString())) return;
 
         invitationList.remove(targetUUID.toString());
         this.config.set(clanInvitationPath + clanObject.getTag(), invitationList);

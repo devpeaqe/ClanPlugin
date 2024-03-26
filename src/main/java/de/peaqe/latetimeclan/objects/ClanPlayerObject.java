@@ -92,9 +92,8 @@ public class ClanPlayerObject {
     }
 
     public void reload() {
-        if (!this.clan.getMembers().containsKey(this.uniqueId)) {
-            this.setNull();
-        }
+        if (this.clan.getMembers().containsKey(this.uniqueId)) return;
+        this.setNull();
     }
 
     public static ClanPlayerObject fromPlayer(Player player) {
@@ -144,9 +143,9 @@ public class ClanPlayerObject {
     }
 
     public void setNull() {
-        this.setClan(null);
-        this.setClanGroup(null);
-        this.setName(null);
-        this.setUniqueId(null);
+        if (this.getName() != null) this.setName(null);
+        if (this.getUniqueId() != null) this.setUniqueId(null);
+        if (this.getClanGroup() != null) this.setClanGroup(null);
+        if (this.getClan() != null) this.setClan(null);
     }
 }

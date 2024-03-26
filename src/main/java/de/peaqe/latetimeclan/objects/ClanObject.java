@@ -105,7 +105,6 @@ public class ClanObject {
 
     public void delete() {
         LateTimeClan.getInstance().getClanSettingsDatabase().deleteClan(this);
-        LateTimeClan.getInstance().getClanDatabase().deleteClan(this);
     }
 
     public String getColor() {
@@ -140,7 +139,6 @@ public class ClanObject {
         this.setMembers(currentMembers);
 
         LateTimeClan.getInstance().getClanDatabase().updateClan(this);
-        clanPlayerObject.reload();
 
     }
 

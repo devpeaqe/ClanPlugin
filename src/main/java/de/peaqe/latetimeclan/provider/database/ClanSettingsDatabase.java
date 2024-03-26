@@ -86,6 +86,7 @@ public class ClanSettingsDatabase extends DatabaseProvider {
         try (var statement = this.getConnection().prepareStatement(query)) {
             statement.setString(1, clan.getTag().toUpperCase());
             statement.executeUpdate();
+            LateTimeClan.getInstance().getClanDatabase().deleteClan(clan);
             this.settingsCache.remove(clan.getTag().toUpperCase());
         } catch (SQLException e) {
             throw new RuntimeException(e);
