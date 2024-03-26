@@ -87,22 +87,8 @@ public class ClanInvitaionConfig {
         }
     }
 
-    public List<UUID> getPlayerInvitedFrom(ClanObject clanObject) {
-        var invitationList = this.config.getStringList(clanObject.getTag());
-        return invitationList.stream().map(UUID::fromString).toList();
-    }
-
     public void clearInvitations(ClanObject clanObject) {
         this.config.set(clanInvitationPath + clanObject.getTag(), null);
-        try {
-            this.config.save(this.file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void clearInvitations() {
-        this.config.set(clanInvitationPath, null);
         try {
             this.config.save(this.file);
         } catch (IOException e) {
