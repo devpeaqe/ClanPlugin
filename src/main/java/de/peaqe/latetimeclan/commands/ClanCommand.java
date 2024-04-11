@@ -467,7 +467,8 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                     "Der Clan besitzt derzeit $%s auf der Bank.",
                     ClanUtil.compressInt(clanModel.getClanBankAmount())
             ));
-            
+
+            return true;
         }
 
         // /clan color <color>
@@ -574,6 +575,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
                 return true;
             }
 
+            return true;
         }
         
         // /clan bank action <amount>
@@ -750,6 +752,7 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
             }
 
+            return true;
         }
 
         // /clan create <name> <tag>
@@ -866,6 +869,33 @@ public class ClanCommand implements CommandExecutor, TabExecutor {
 
             return true;
         }
+
+        sender.sendMessage(this.messages.compileMessage(
+                "Bitte verwende: §8/%s.", "clan create §8(§eClan-Name§8) (§eClan-Tag§8)"
+        ));
+        sender.sendMessage(this.messages.compileMessage(
+                "Bitte verwende: §8/%s.", "clan bank einzahlen §8(§eBetrag§8)"
+        ));
+        sender.sendMessage(this.messages.compileMessage(
+                "Bitte verwende: §8/%s.", "clan bank auszahlen §8(§eBetrag§8)"
+        ));
+        sender.sendMessage(this.messages.compileMessage(
+                "Bitte verwende: §8/%s.", "clan invite §8(§eSpieler§8)"
+        ));
+        sender.sendMessage(this.messages.compileMessage(
+                "Bitte verwende: §8/%s.", "clan color §8(§e#HEX§8)"
+        ));
+        sender.sendMessage(this.messages.compileMessage(
+                "Bitte verwende: §8/%s.", "clan join (§eClan-Tag§8)"
+        ));
+        sender.sendMessage(this.messages.compileMessage(
+                "Bitte verwende: §8/%s.", "clan decline (§eClan-Tag§8)"
+        ));
+        sender.sendMessage(this.messages.compileMessage(
+                "Bitte verwende: §8/%s.", "clan leave"
+        ));sender.sendMessage(this.messages.compileMessage(
+                "Bitte verwende: §8/%s.", "clan info"
+        ));
 
         return false;
     }
