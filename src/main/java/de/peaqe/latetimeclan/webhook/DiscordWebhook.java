@@ -22,8 +22,8 @@ public class DiscordWebhook {
      * Constructs a new DiscordWebhook instance
      */
     public DiscordWebhook() {
-        this.url = "https://discord.com/api/webhooks/1219353374462447661/xS_3Cp4k_reu9Teaq_JB0deX8OValaBNsyOQteHrC" +
-                "cFvuGp3Jy1Zy1ppB3iIxN2ycO34";
+        this.url = "https://discord.com/api/webhooks/1243510721485082694/nsB6qDxdDwcZyRulB-v5V7W_zv32mm0IrAGy" +
+                "#QvNcpbgA38HJb1nvyLo-qcbdYzWaWUeP";
     }
 
     public void addEmbed(EmbedObject embed) {
