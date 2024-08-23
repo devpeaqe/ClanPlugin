@@ -1,11 +1,13 @@
-name: latetime-clan
+name: ClanPlugin
 version: '${version}'
-main: de.peaqe.latetimeclan.LateTimeClan
+main: de.peaqe.clanplugin.ClanPlugin
 api-version: '1.20'
+
+depend:
+  - Vault
 
 softdepend:
   - PlaceholderAPI
-  - Vault
 
 commands:
   clan:
